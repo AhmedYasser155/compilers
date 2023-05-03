@@ -2,6 +2,7 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
+    #include "y.tab.h"
 %}
 %%
 "int" return INT;
@@ -11,6 +12,8 @@
 "void" return VOID;
 "string" return STRING;
 "bool" return BOOL;
+"const" return CONST;
+
 "+" return PLUS;
 "-" return MINUS;
 "*" return MULTIPLY;
@@ -65,7 +68,7 @@
 
 
 [a-zA-Z][a-zA-Z0-9]* {
-    yylval.iVal=atoi(yytext);
+    yylval.sVal=strdup(yytext); 
     return IDENTIFIER;
 }
 
@@ -99,7 +102,7 @@
     return COMMENT;
 }
 
-[ \t\n]+
+[ \t\n]+ {}
 [*+-/=%~&|^(){}:;<>.,?!] return *yytext;
 
 . return yytext[0];
@@ -109,4 +112,6 @@
 int yywrap(void) {
     return 1;
 }
+
+
 
