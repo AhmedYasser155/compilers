@@ -22,11 +22,32 @@ program                         :   statement
                                 |   program statement
                                 
 statement                       :   variableDeclarationStatement
+                                |   ConstDeclarationStatement
+
+Boolean                         :   TRUE
+                                |   FALSE
 
 variableDeclarationStatement    :   INT IDENTIFIER ';' {printf("variableDeclaration with int \n");} ;
                                     |INT IDENTIFIER ASSIGN DIGIT ';' {printf("variableDeclaration with int \n");} ;
+                                    | CHAR IDENTIFIER ';' {printf("variableDeclaration with char \n");} ;
+                                    | CHAR IDENTIFIER ASSIGN CHAR_LITERAL ';' {printf("variableDeclaration with char \n");} ;
+                                    | FLOAT IDENTIFIER ';' {printf("variableDeclaration with float \n");} ;
+                                    | FLOAT IDENTIFIER ASSIGN FLOAT_LITERAL ';' {printf("variableDeclaration with float \n");} ;
+                                    | STRING IDENTIFIER ';' {printf("variableDeclaration with string \n");} ;
+                                    | STRING IDENTIFIER ASSIGN STRING_LITERAL ';' {printf("variableDeclaration with string \n");} ;
+                                    | DOUBLE IDENTIFIER ';' {printf("variableDeclaration with double \n");} ;
+                                    | DOUBLE IDENTIFIER ASSIGN FLOAT_LITERAL ';' {printf("variableDeclaration with double \n");} ;
+                                    | BOOL IDENTIFIER ';' {printf("variableDeclaration with bool \n");} ;
+                                    | BOOL IDENTIFIER ASSIGN Boolean ';' {printf("variableDeclaration with bool \n");} ;
 
 
+ConstDeclarationStatement           :   CONST INT IDENTIFIER ASSIGN DIGIT ';' {printf("ConstDeclaration with int \n");} ;
+                                    | CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL ';' {printf("ConstDeclaration with char \n");} ;
+                                    | CONST FLOAT IDENTIFIER ASSIGN FLOAT_LITERAL ';' {printf("ConstDeclaration with float \n");} ;
+                                    | CONST STRING IDENTIFIER ASSIGN STRING_LITERAL ';' {printf("ConstDeclaration with string \n");} ;
+                                    | CONST DOUBLE IDENTIFIER ASSIGN FLOAT_LITERAL ';' {printf("ConstDeclaration with double \n");} ;
+                                    | CONST BOOL IDENTIFIER ASSIGN Boolean ';' {printf("ConstDeclaration with bool \n");} ;
+                                    
 %%
 
 int yyerror(const char* s)
