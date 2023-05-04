@@ -205,9 +205,10 @@ functionStatement : FUNCTION IDENTIFIER LEFT_PARENTHESIS parameter RIGHT_PARENTH
                   | FUNCTION IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printf("functionStatement \n");}
 
 
-parameter       : variableDeclarationStatement ',' parameter
-                | variableDeclarationStatement
-                | IDENTIFIER
+parameter       : noSemiColumnVariableDeclarationStatement ',' parameter
+                | noSemiColumnVariableDeclarationStatement
+                | noSemiColumnConstDeclaration ',' parameter
+                | noSemiColumnConstDeclaration
                 | /* empty */
 
 returnStatement : RETURN argument ';' {printf("returnStatement \n");}

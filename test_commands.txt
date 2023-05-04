@@ -61,7 +61,7 @@ function myFunction() {
     z = 6;
 }
 
-function myFunction(int x;) {
+function myFunction(int x) {
     x = 5;
     z = 6;
     return x;
@@ -73,10 +73,20 @@ function myFunction(int x, int y) {
     return x;
 }
 
-function myFunction(const string x, int y = 6) {
+function myFunction(string x = "sdvd", int y) {
+    x = 5;
+    z = 6;
+    return x;
+}
+
+function myFunction(int z = 8, int y = 6) {
     x = 5;
     z = 6;
     return 5;
+}
+
+function myFunction(const char x = 's') {
+    x = 5;
 }
 
 myFunction(x, y);
