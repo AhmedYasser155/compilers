@@ -1,0 +1,93 @@
+// hellp samdfnav
+
+if (true) {
+  x = 5;
+}
+
+if (true) {
+    x = 5;
+    z = 6;
+} else {
+    x = 6;
+} 
+
+
+while (true) {
+    x = 5;
+    z = 6;
+}
+
+repeat {
+    x = 5;
+    z = 6;
+} until (true)
+
+
+for (int i = 0; i < 10; i++) 
+{
+    x = 5;
+    z = 6;
+}
+
+for (i = 0; i < 10; i++) {
+    x = 5;
+    z = 6;
+}
+
+
+switch (x) {
+    case "sfdg":
+        x = 5;
+        z = 6;
+        break;
+    case "sd":
+        x = 5;
+        z = 6;
+        break;
+    default:
+        x = 5;
+        z = 6;
+        break;
+}
+
+enum MyEnum {
+    A,
+    B,
+    C
+}
+
+function myFunction() {
+    x = 5;
+    z = 6;
+}
+
+function myFunction(int x;) {
+    x = 5;
+    z = 6;
+    return x;
+}
+
+function myFunction(int x, int y) {
+    x = 5;
+    z = 6;
+    return x;
+}
+
+function myFunction(const string x, int y = 6) {
+    x = 5;
+    z = 6;
+    return 5;
+}
+
+myFunction(x, y);
+myFunction();
+
+print("hello world");
+print(x);
+print("hello", y, z);
+
+
+
+
+
+
