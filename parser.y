@@ -22,10 +22,21 @@ program                         :   statement
                                 |   program statement
                                 
 statement                       :   variableDeclarationStatement
-                                |   ConstDeclarationStatement
+                                |   constDeclarationStatement
+                                |   assignmentStatement
+                                |   ifStatement
 
-Boolean                         :   TRUE
+
+boolean                         :   TRUE
                                 |   FALSE
+
+expression                      : intMathExpression
+                                | floatMathExpression
+                                | stringExpression
+                                | STRING_LITERAL
+                                | CHAR_LITERAL
+                                /*| boolean*/
+                                | logicalExpression
 
 variableDeclarationStatement    :   INT IDENTIFIER ';' {printf("variableDeclaration with int \n");} ;
                                     |INT IDENTIFIER ASSIGN DIGIT ';' {printf("variableDeclaration with int \n");} ;
@@ -38,16 +49,81 @@ variableDeclarationStatement    :   INT IDENTIFIER ';' {printf("variableDeclarat
                                     | DOUBLE IDENTIFIER ';' {printf("variableDeclaration with double \n");} ;
                                     | DOUBLE IDENTIFIER ASSIGN FLOAT_LITERAL ';' {printf("variableDeclaration with double \n");} ;
                                     | BOOL IDENTIFIER ';' {printf("variableDeclaration with bool \n");} ;
-                                    | BOOL IDENTIFIER ASSIGN Boolean ';' {printf("variableDeclaration with bool \n");} ;
+                                    | BOOL IDENTIFIER ASSIGN boolean ';' {printf("variableDeclaration with bool \n");} ;
 
 
-ConstDeclarationStatement           :   CONST INT IDENTIFIER ASSIGN DIGIT ';' {printf("ConstDeclaration with int \n");} ;
+constDeclarationStatement           : CONST INT IDENTIFIER ASSIGN DIGIT ';' {printf("ConstDeclaration with int \n");} ;
                                     | CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL ';' {printf("ConstDeclaration with char \n");} ;
                                     | CONST FLOAT IDENTIFIER ASSIGN FLOAT_LITERAL ';' {printf("ConstDeclaration with float \n");} ;
                                     | CONST STRING IDENTIFIER ASSIGN STRING_LITERAL ';' {printf("ConstDeclaration with string \n");} ;
                                     | CONST DOUBLE IDENTIFIER ASSIGN FLOAT_LITERAL ';' {printf("ConstDeclaration with double \n");} ;
-                                    | CONST BOOL IDENTIFIER ASSIGN Boolean ';' {printf("ConstDeclaration with bool \n");} ;
+                                    | CONST BOOL IDENTIFIER ASSIGN boolean ';' {printf("ConstDeclaration with bool \n");} ;
+
+assignmentStatement                 : IDENTIFIER ASSIGN expression ';' {printf("assignmentStatement \n");} ;
+                              
+
+intMathExpression                   :    IDENTIFIER   /*TODO: the type of the identifier should be int*/
+                                    |    DIGIT  
+                                    |   intMathExpression PLUS intMathExpression
+                                    |   intMathExpression MINUS intMathExpression
+                                    |   intMathExpression MULTIPLY intMathExpression
+                                    |   intMathExpression DIVIDE intMathExpression
+                                    |   intMathExpression MODULO intMathExpression
+                                    |   intMathExpression INCREMENT
+                                    |   intMathExpression DECREMENT
+                                    |   LEFT_PARENTHESIS intMathExpression RIGHT_PARENTHESIS
                                     
+floatMathExpression                 :   IDENTIFIER  /* TODO: the type of the identifier should be float */
+                                    |   FLOAT_LITERAL
+                                    |   floatMathExpression PLUS floatMathExpression
+                                    |   floatMathExpression MINUS floatMathExpression
+                                    |   floatMathExpression MULTIPLY floatMathExpression
+                                    |   floatMathExpression DIVIDE floatMathExpression
+                                    |   floatMathExpression MODULO floatMathExpression
+                                    |   floatMathExpression INCREMENT
+                                    |   floatMathExpression DECREMENT
+                                    |   LEFT_PARENTHESIS floatMathExpression RIGHT_PARENTHESIS
+                                
+stringExpression                    :  IDENTIFIER  /* TODO: the type of the identifier should be string */
+                                    |   STRING_LITERAL
+                                    |   stringExpression PLUS stringExpression
+                                    |   LEFT_PARENTHESIS stringExpression RIGHT_PARENTHESIS
+
+
+
+logicalExpression                   :  boolean
+                                    |   intMathExpression GREATER intMathExpression
+                                    |   intMathExpression LESS intMathExpression
+                                    |   intMathExpression GREATER_EQUAL intMathExpression
+                                    |   intMathExpression LESS_EQUAL intMathExpression
+                                    |   intMathExpression EQUAL intMathExpression
+                                    |   intMathExpression NOT_EQUAL intMathExpression
+                                    |   floatMathExpression GREATER floatMathExpression
+                                    |   floatMathExpression LESS floatMathExpression
+                                    |   floatMathExpression GREATER_EQUAL floatMathExpression
+                                    |   floatMathExpression LESS_EQUAL floatMathExpression
+                                    |   floatMathExpression EQUAL floatMathExpression
+                                    |   floatMathExpression NOT_EQUAL floatMathExpression
+                                    |   stringExpression GREATER stringExpression
+                                    |   stringExpression LESS stringExpression
+                                    |   stringExpression GREATER_EQUAL stringExpression
+                                    |   stringExpression LESS_EQUAL stringExpression
+                                    |   stringExpression EQUAL stringExpression
+                                    |   stringExpression NOT_EQUAL stringExpression
+                                    |   LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS
+                                    |   logicalExpression AND logicalExpression
+                                    |   logicalExpression OR logicalExpression
+                                    |   NOT logicalExpression
+
+
+ifStatement                         :   IF LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE statement RIGHT_CURLY_BRACE
+                                    |   IF LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE statement RIGHT_CURLY_BRACE ELSE LEFT_CURLY_BRACE statement RIGHT_CURLY_BRACE
+                                    |   /* ifelse expression?? */ 
+
+
+
+
+
 %%
 
 int yyerror(const char* s)
