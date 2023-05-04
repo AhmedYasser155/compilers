@@ -116,11 +116,10 @@ logicalExpression                   :  boolean
                                     |   NOT logicalExpression
 
 
-ifStatement                         :   IF LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE statement RIGHT_CURLY_BRACE
-                                    |   IF LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE statement RIGHT_CURLY_BRACE ELSE LEFT_CURLY_BRACE statement RIGHT_CURLY_BRACE
-                                    |   /* ifelse expression?? */ 
-
-
+ifStatement                         :   IF LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE statement RIGHT_CURLY_BRACE {printf("if statement\n");} ;
+                                    |   IF LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE statement RIGHT_CURLY_BRACE ELSE LEFT_CURLY_BRACE statement RIGHT_CURLY_BRACE {printf("if else statement \n");} ;
+                                    /*|    elseif() expression?? */ 
+                                  
 
 
 
