@@ -21,21 +21,40 @@
 program                         :   statement
                                 |   program statement
                                 
-statement                       :   variableDeclarationStatement
+statement                       :   blockStatements
+                                |   functionStatement
+
+blockStatements                 :   blockStatement
+                                |   blockStatements blockStatement
+
+blockStatement                  :   variableDeclarationStatement
                                 |   constDeclarationStatement
                                 |   assignmentStatement
                                 |   ifStatement
                                 |   switchStatement
                                 |   whileStatement
                                 |   forStatement
-                                |repeatStatement
-                                | enumStatement
-                                | functionStatement
-                                | returnStatement
-                                | printStatement
-                                | continueBreakStatement
-                                |functionCallStatement
-                                |comment
+                                |   repeatStatement
+                                |   enumStatement
+                                |   returnStatement
+                                |   printStatement
+                                |   continueBreakStatement
+                                |   functionCallStatement
+                                |   comment
+
+types                           :   INT
+                                |   CHAR
+                                |   FLOAT
+                                |   STRING
+                                |   DOUBLE
+                                |   BOOL
+
+
+values                          :  DIGIT
+                                |   FLOAT_LITERAL
+                                |   STRING_LITERAL
+                                |   CHAR_LITERAL
+                                |   boolean
 
 
 boolean                         :   TRUE
@@ -49,28 +68,43 @@ expression                      : intMathExpression
                                 /*| boolean*/
                                 | logicalExpression
 
-variableDeclarationStatement    :   INT IDENTIFIER ';' {printf("variableDeclaration with int \n");} ;
-                                    |INT IDENTIFIER ASSIGN DIGIT ';' {printf("variableDeclaration with int \n");} ;
-                                    | CHAR IDENTIFIER ';' {printf("variableDeclaration with char \n");} ;
-                                    | CHAR IDENTIFIER ASSIGN CHAR_LITERAL ';' {printf("variableDeclaration with char \n");} ;
-                                    | FLOAT IDENTIFIER ';' {printf("variableDeclaration with float \n");} ;
-                                    | FLOAT IDENTIFIER ASSIGN FLOAT_LITERAL ';' {printf("variableDeclaration with float \n");} ;
-                                    | STRING IDENTIFIER ';' {printf("variableDeclaration with string \n");} ;
-                                    | STRING IDENTIFIER ASSIGN STRING_LITERAL ';' {printf("variableDeclaration with string \n");} ;
-                                    | DOUBLE IDENTIFIER ';' {printf("variableDeclaration with double \n");} ;
-                                    | DOUBLE IDENTIFIER ASSIGN FLOAT_LITERAL ';' {printf("variableDeclaration with double \n");} ;
-                                    | BOOL IDENTIFIER ';' {printf("variableDeclaration with bool \n");} ;
-                                    | BOOL IDENTIFIER ASSIGN boolean ';' {printf("variableDeclaration with bool \n");} ;
+variableDeclarationStatement    :  assignVariableDeclaration
+                                |  nonAssignVariableDeclaration
+
+noSemiColumnVariableDeclarationStatement :  noSemiColumnAssignVariableDeclaration
+                                          |  noSemiColumnNonAssignVariableDeclaration
 
 
-constDeclarationStatement           : CONST INT IDENTIFIER ASSIGN DIGIT ';' {printf("ConstDeclaration with int \n");} ;
-                                    | CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL ';' {printf("ConstDeclaration with char \n");} ;
-                                    | CONST FLOAT IDENTIFIER ASSIGN FLOAT_LITERAL ';' {printf("ConstDeclaration with float \n");} ;
-                                    | CONST STRING IDENTIFIER ASSIGN STRING_LITERAL ';' {printf("ConstDeclaration with string \n");} ;
-                                    | CONST DOUBLE IDENTIFIER ASSIGN FLOAT_LITERAL ';' {printf("ConstDeclaration with double \n");} ;
-                                    | CONST BOOL IDENTIFIER ASSIGN boolean ';' {printf("ConstDeclaration with bool \n");} ;
+assignVariableDeclaration           :  noSemiColumnAssignVariableDeclaration ';' {printf("variableDeclaration with semiColun \n");} ;
 
-assignmentStatement                 : IDENTIFIER ASSIGN expression {printf("assignmentStatement \n");} ;
+noSemiColumnAssignVariableDeclaration :  INT IDENTIFIER ASSIGN DIGIT {printf("variableDeclaration with int \n");} ;
+                                    | CHAR IDENTIFIER ASSIGN CHAR_LITERAL {printf("variableDeclaration with char \n");} ;
+                                    | FLOAT IDENTIFIER ASSIGN FLOAT_LITERAL {printf("variableDeclaration with float \n");} ;
+                                    | STRING IDENTIFIER ASSIGN STRING_LITERAL {printf("variableDeclaration with string \n");} ;
+                                    | DOUBLE IDENTIFIER ASSIGN FLOAT_LITERAL {printf("variableDeclaration with double \n");} ;
+                                    | BOOL IDENTIFIER ASSIGN boolean {printf("variableDeclaration with bool \n");} ;
+
+
+nonAssignVariableDeclaration        :  noSemiColumnNonAssignVariableDeclaration ';' {printf("variableDeclaration with semiColun \n");} ;
+
+noSemiColumnNonAssignVariableDeclaration : INT IDENTIFIER {printf("variableDeclaration with int \n");} ;
+                                    | CHAR IDENTIFIER {printf("variableDeclaration with char \n");} ;
+                                    | FLOAT IDENTIFIER {printf("variableDeclaration with float \n");} ;
+                                    | STRING IDENTIFIER {printf("variableDeclaration with string \n");} ;
+                                    | DOUBLE IDENTIFIER {printf("variableDeclaration with double \n");} ;
+                                    | BOOL IDENTIFIER {printf("variableDeclaration with bool \n");} ;
+
+
+constDeclarationStatement           : noSemiColumnConstDeclaration ';' {printf("ConstDeclaration with int \n");} ;
+
+noSemiColumnConstDeclaration        : CONST INT IDENTIFIER ASSIGN DIGIT {printf("ConstDeclaration with int \n");} ;
+                                    | CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL {printf("ConstDeclaration with char \n");} ;
+                                    | CONST FLOAT IDENTIFIER ASSIGN FLOAT_LITERAL {printf("ConstDeclaration with float \n");} ;
+                                    | CONST STRING IDENTIFIER ASSIGN STRING_LITERAL {printf("ConstDeclaration with string \n");} ;
+                                    | CONST DOUBLE IDENTIFIER ASSIGN FLOAT_LITERAL {printf("ConstDeclaration with double \n");} ;
+                                    | CONST BOOL IDENTIFIER ASSIGN boolean {printf("ConstDeclaration with bool \n");} ;
+
+assignmentStatement                 : IDENTIFIER ASSIGN expression ';' {printf("assignmentStatement \n");} ;
                               
 
 intMathExpression                   :    IDENTIFIER   /*TODO: the type of the identifier should be int*/
@@ -127,34 +161,56 @@ logicalExpression                   :  boolean
                                     |   NOT logicalExpression {printf("NOT logicalExpression \n");}
 
 
-ifStatement                         :   IF LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE statement RIGHT_CURLY_BRACE {printf("ifStatement \n");} 
-                                    |   IF LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE statement RIGHT_CURLY_BRACE ELSE LEFT_CURLY_BRACE statement RIGHT_CURLY_BRACE {printf("if-else-Statement \n");}
+ifStatement                         :   IF LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printf("ifStatement \n");} 
+                                    |   IF LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE ELSE LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printf("if-else-Statement \n");}
                                     |   /* ifelse expression?? */ 
 
-whileStatement  : WHILE LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE statement RIGHT_CURLY_BRACE {printf("whileStatement \n");}
+whileStatement  : WHILE LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printf("whileStatement \n");}
 
-repeatStatement : REPEAT LEFT_CURLY_BRACE statement RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS {printf("repeatStatement \n");}
+repeatStatement : REPEAT LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS {printf("repeatStatement \n");}
 
-forStatement    : FOR LEFT_PARENTHESIS assignmentStatement ';' logicalExpression ';' assignmentStatement RIGHT_PARENTHESIS LEFT_CURLY_BRACE statement RIGHT_CURLY_BRACE {printf("forStatement \n");}
+forAssignment   : IDENTIFIER ASSIGN intMathExpression {printf("forAssignment \n");}
+                | IDENTIFIER ASSIGN floatMathExpression {printf("forAssignment \n");}
+                | IDENTIFIER ASSIGN stringExpression {printf("forAssignment \n");}
+                | IDENTIFIER ASSIGN boolean {printf("forAssignment \n");}
+                | IDENTIFIER INCREMENT
+                | IDENTIFIER DECREMENT
+
+forDeclaration  : IDENTIFIER ASSIGN intMathExpression ';' {printf("forDeclaration \n");}
+                | IDENTIFIER ASSIGN floatMathExpression ';' {printf("forDeclaration \n");}
+                | IDENTIFIER ASSIGN stringExpression ';' {printf("forDeclaration \n");}
+                | IDENTIFIER ASSIGN boolean ';' {printf("forDeclaration \n");}
+                | assignVariableDeclaration
+
+forStatement    : FOR LEFT_PARENTHESIS forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printf("forStatement \n");}
+
 
 switchStatement : SWITCH LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS LEFT_CURLY_BRACE caseStatement RIGHT_CURLY_BRACE {printf("switchStatement \n");} 
 
-caseStatement   : CASE DIGIT ':' statement BREAK ';' caseStatement 
-                | CASE DIGIT ':' statement BREAK ';'
-                | DEFAULT ':' statement BREAK ';'
-                | DEFAULT ':' statement BREAK ';' caseStatement
+
+caseStatement   : CASE values ':' blockStatements BREAK ';' caseStatement 
+                | CASE values ':' blockStatements BREAK ';'
+                | DEFAULT ':' blockStatements BREAK ';'
                 | /* empty */
 
-enumStatement   : ENUM IDENTIFIER LEFT_CURLY_BRACE IDENTIFIER EQUAL DIGIT ',' IDENTIFIER EQUAL DIGIT RIGHT_CURLY_BRACE {printf("enumStatement \n");}
 
-functionStatement : FUNCTION IDENTIFIER LEFT_PARENTHESIS parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE statement RIGHT_CURLY_BRACE {printf("functionStatement \n");}
-                  | FUNCTION IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE statement RIGHT_CURLY_BRACE {printf("functionStatement \n");}
+enumIdentifiers : IDENTIFIER ',' enumIdentifiers
+                | IDENTIFIER
+                
 
-parameter       : IDENTIFIER ',' parameter
+enumStatement   : ENUM IDENTIFIER LEFT_CURLY_BRACE enumIdentifiers RIGHT_CURLY_BRACE {printf("enumStatement \n");}
+
+
+functionStatement : FUNCTION IDENTIFIER LEFT_PARENTHESIS parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printf("functionStatement \n");}
+                  | FUNCTION IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printf("functionStatement \n");}
+
+
+parameter       : variableDeclarationStatement ',' parameter
+                | variableDeclarationStatement
                 | IDENTIFIER
                 | /* empty */
 
-returnStatement : RETURN expression ';' {printf("returnStatement \n");}
+returnStatement : RETURN argument ';' {printf("returnStatement \n");}
                 | RETURN ';' {printf("returnStatement \n");}
 
 continueBreakStatement  : BREAK ';' {printf("breakStatement \n");}
@@ -165,15 +221,17 @@ continueBreakStatement  : BREAK ';' {printf("breakStatement \n");}
                 | CONTINUE {printf("continueStatement \n");}
                
 
-printStatement  : PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS ';' {printf("printStatement \n");}
+
+printStatement  : PRINT LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';' {printf("printStatement \n");}
                 | PRINT LEFT_PARENTHESIS RIGHT_PARENTHESIS ';' {printf("printStatement \n");}
 
-functionCallStatement   : IDENTIFIER LEFT_PARENTHESIS argument RIGHT_PARENTHESIS {printf("functionCall \n");}
-                | IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS {printf("functionCall \n");}
+functionCallStatement   : IDENTIFIER LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';' {printf("functionCall \n");}
+                | IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS ';' {printf("functionCall \n");}
 
 argument        : expression ',' argument
                 | expression
-                
+
+
 comment         : COMMENT {printf("comment \n");}
 
 %%
