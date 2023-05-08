@@ -86,4 +86,10 @@ print("hello world");
 print(x);
 print("hello", y, z);
 
+main() {
+    x = 5;
+    z = 6;
+    return 5;
+}
+
 

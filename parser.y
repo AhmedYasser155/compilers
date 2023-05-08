@@ -23,6 +23,7 @@ program                         :   statement
                                 
 statement                       :   blockStatements
                                 |   functionStatement
+                                |   main
 
 blockStatements                 :   blockStatement
                                 |   blockStatements blockStatement
@@ -234,6 +235,8 @@ argument        : expression ',' argument
 
 
 comment         : COMMENT {printf("comment \n");}
+
+main            : MAIN LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printf("main \n");}
 
 %%
 
