@@ -43,12 +43,12 @@ blockStatement                  :   variableDeclarationStatement
                                 |   functionCallStatement
                                 |   comment
 
-types                           :   INT
+/*types                           :   INT
                                 |   CHAR
                                 |   FLOAT
                                 |   STRING
                                 |   DOUBLE
-                                |   BOOL
+                                |   BOOL*/
 
 
 values                          :  DIGIT
@@ -78,12 +78,18 @@ noSemiColumnVariableDeclarationStatement :  noSemiColumnAssignVariableDeclaratio
 
 assignVariableDeclaration           :  noSemiColumnAssignVariableDeclaration ';' {printf("variableDeclaration with semiColun \n");} ;
 
+
+
 noSemiColumnAssignVariableDeclaration :  INT IDENTIFIER ASSIGN DIGIT {printf("variableDeclaration with int \n");} ;
                                     | CHAR IDENTIFIER ASSIGN CHAR_LITERAL {printf("variableDeclaration with char \n");} ;
                                     | FLOAT IDENTIFIER ASSIGN FLOAT_LITERAL {printf("variableDeclaration with float \n");} ;
                                     | STRING IDENTIFIER ASSIGN STRING_LITERAL {printf("variableDeclaration with string \n");} ;
                                     | DOUBLE IDENTIFIER ASSIGN FLOAT_LITERAL {printf("variableDeclaration with double \n");} ;
                                     | BOOL IDENTIFIER ASSIGN boolean {printf("variableDeclaration with bool \n");} ;
+                                    | INT IDENTIFIER ASSIGN intMathExpression {printf("variableDeclaration with intMathExpression \n");} ;
+                                    | FLOAT IDENTIFIER ASSIGN floatMathExpression {printf("variableDeclaration with floatMathExpression \n");} ;
+                                    | STRING IDENTIFIER ASSIGN stringExpression {printf("variableDeclaration with stringExpression \n");} ;
+                                    | BOOL IDENTIFIER ASSIGN logicalExpression {printf("variableDeclaration with logicalExpression \n");} ;
 
 
 nonAssignVariableDeclaration        :  noSemiColumnNonAssignVariableDeclaration ';' {printf("variableDeclaration with semiColun \n");} ;
@@ -104,6 +110,10 @@ noSemiColumnConstDeclaration        : CONST INT IDENTIFIER ASSIGN DIGIT {printf(
                                     | CONST STRING IDENTIFIER ASSIGN STRING_LITERAL {printf("ConstDeclaration with string \n");} ;
                                     | CONST DOUBLE IDENTIFIER ASSIGN FLOAT_LITERAL {printf("ConstDeclaration with double \n");} ;
                                     | CONST BOOL IDENTIFIER ASSIGN boolean {printf("ConstDeclaration with bool \n");} ;
+                                    | CONST INT IDENTIFIER ASSIGN intMathExpression {printf("ConstDeclaration with intMathExpression \n");} ;
+                                    | CONST FLOAT IDENTIFIER ASSIGN floatMathExpression {printf("ConstDeclaration with floatMathExpression \n");} ;
+                                    | CONST STRING IDENTIFIER ASSIGN stringExpression {printf("ConstDeclaration with stringExpression \n");} ;
+                                    | CONST BOOL IDENTIFIER ASSIGN logicalExpression {printf("ConstDeclaration with logicalExpression \n");} ;
 
 assignmentStatement                 : IDENTIFIER ASSIGN expression ';' {printf("assignmentStatement \n");} ;
                               
