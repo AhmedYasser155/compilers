@@ -8,7 +8,6 @@
 "int" return INT;
 "float" return FLOAT;
 "char" return CHAR;
-"double" return DOUBLE;
 "void" return VOID;
 "string" return STRING;
 "bool" return BOOL;
@@ -49,8 +48,14 @@
 "return" return RETURN;
 "repeat" return REPEAT;
 "until" return UNTIL;
-"true" return TRUE;
-"false" return FALSE;
+"true" {
+            yylval.bVal=1;
+            return BOOL_LITERAL;
+        };
+"false" {   
+            yylval.bVal=0;
+            return BOOL_LITERAL;
+        };
 
 "{" return LEFT_CURLY_BRACE;
 "}" return RIGHT_CURLY_BRACE;
@@ -69,6 +74,9 @@
 
 [a-zA-Z][a-zA-Z0-9]* {
     yylval.sVal=strdup(yytext); 
+    // yylval.iVal = *yytext-'a';
+
+
     return IDENTIFIER;
 }
 
@@ -76,6 +84,7 @@
     yylval.iVal=atoi(yytext);
     return DIGIT;
 }
+
 
 \-?[0-9]+\.[0-9]+ {
     yylval.fVal=atof(yytext);
@@ -93,7 +102,7 @@
 }
 
 \'[a-zA-Z0-9]\' {
-    yylval.cVal=yytext;
+    yylval.cVal=yytext[1];
     return CHAR_LITERAL;
 }
 

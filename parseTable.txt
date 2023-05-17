@@ -1,0 +1,2 @@
+Scope: 0, Identifier: x, Type: 1, Value: 3, isConst = 0
+Scope: 0, Identifier: y, Type: 1, Value: 3, isConst = 0

@@ -1,0 +1,2 @@
+ID: x, Value: 3
+MOV R0, x

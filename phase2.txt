@@ -1,0 +1,18 @@
+
+main()
+{
+    int x = 3;
+    int y = x;
+    
+}
+
+
+
+// if variable is already declared: 1- throw error for redeclaration
+//                                  2- overwrite the value of the variable for assignment
+
+// do the assignment with mathexprressions
+// handle identifier in intMathExpression
+// handle DIGIT in intMathExpression
+
+
