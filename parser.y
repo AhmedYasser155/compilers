@@ -28,6 +28,7 @@
 %type <iVal> intMathExpression
 %type <fVal> floatMathExpression
 %type <sVal> stringExpression
+%type <bVal> logicalExpression
 
 %%
 
@@ -215,9 +216,69 @@ noSemiColumnAssignVariableDeclaration :  INT IDENTIFIER ASSIGN DIGIT {
                                                                                       break;
                                                                                   }   
                                                                               } ;
-                                    | FLOAT IDENTIFIER ASSIGN floatMathExpression {printf("variableDeclaration with floatMathExpression \n");} ;
-                                    | STRING IDENTIFIER ASSIGN stringExpression {printf("variableDeclaration with stringExpression \n");} ;
-                                    | BOOL IDENTIFIER ASSIGN logicalExpression {printf("variableDeclaration with logicalExpression \n");} ;
+                                    | FLOAT IDENTIFIER ASSIGN floatMathExpression {
+                                                                                    printf("variableDeclaration with floatMathExpression \n");
+                                                                                    int ret = addVariable(scope, $2, 0, 2, 0, $4, '\0', "", 0);
+
+                                                                                    switch (ret){
+                                                                                      case 1:
+                                                                                        /* TODO: add the quad */
+                                                                                        break;
+                                                                                      case 2:                                                            
+                                                                                        exit(0);
+                                                                                        break;
+                                                                                      case 3:
+                                                                                        yyerror("Overflow in symbol table");
+                                                                                        exit(0);
+                                                                                        break;
+                                                                                      default:
+                                                                                        yyerror("Unknown error");
+                                                                                        exit(0);
+                                                                                        break;
+                                                                                    }   
+                                                                                  } ;
+                                    | STRING IDENTIFIER ASSIGN stringExpression {
+                                                                                  printf("variableDeclaration with stringExpression \n");
+                                                                                  int ret = addVariable(scope, $2, 0, 4, 0, 0.0, '\0', $4, 0);
+
+                                                                                  switch (ret){
+                                                                                    case 1:
+                                                                                      /* TODO: add the quad */
+                                                                                      break;
+                                                                                    case 2:                                                            
+                                                                                      exit(0);
+                                                                                      break;
+                                                                                    case 3:
+                                                                                      yyerror("Overflow in symbol table");
+                                                                                      exit(0);
+                                                                                      break;
+                                                                                    default:
+                                                                                      yyerror("Unknown error");
+                                                                                      exit(0);
+                                                                                      break;
+                                                                                  } 
+                                                                                } ;
+                                    | BOOL IDENTIFIER ASSIGN logicalExpression {
+                                                                                printf("variableDeclaration with logicalExpression \n");
+                                                                                int ret = addVariable(scope, $2, 0, 5, 0, 0.0, '\0', "", $4);
+
+                                                                                switch (ret){
+                                                                                  case 1:
+                                                                                    /* TODO: add the quad */
+                                                                                    break;
+                                                                                  case 2:                                                            
+                                                                                    exit(0);
+                                                                                    break;
+                                                                                  case 3:
+                                                                                    yyerror("Overflow in symbol table");
+                                                                                    exit(0);
+                                                                                    break;
+                                                                                  default:
+                                                                                    yyerror("Unknown error");
+                                                                                    exit(0);
+                                                                                    break;
+                                                                                }   
+                                                                              } ;
 
 
 nonAssignVariableDeclaration        :  noSemiColumnNonAssignVariableDeclaration ';' {printf("variableDeclaration with semiColun \n");} ;
@@ -438,10 +499,90 @@ noSemiColumnConstDeclaration        : CONST INT IDENTIFIER ASSIGN DIGIT {
                                                                                       break;
                                                                                   }   
                                                                                 } ;
-                                    | CONST INT IDENTIFIER ASSIGN intMathExpression {printf("ConstDeclaration with intMathExpression \n");} ;
-                                    | CONST FLOAT IDENTIFIER ASSIGN floatMathExpression {printf("ConstDeclaration with floatMathExpression \n");} ;
-                                    | CONST STRING IDENTIFIER ASSIGN stringExpression {printf("ConstDeclaration with stringExpression \n");} ;
-                                    | CONST BOOL IDENTIFIER ASSIGN logicalExpression {printf("ConstDeclaration with logicalExpression \n");} ;
+                                    | CONST INT IDENTIFIER ASSIGN intMathExpression {
+                                                                                      printf("ConstDeclaration with intMathExpression \n");
+                                                                                      int ret = addVariable(scope, $3, 1, 1, $5, 0.0, '\0', "", 0);
+
+                                                                                      switch (ret){
+                                                                                        case 1:
+                                                                                          /* TODO: add the quad */
+                                                                                          break;
+                                                                                        case 2:                                                            
+                                                                                          exit(0);
+                                                                                          break;
+                                                                                        case 3:
+                                                                                          yyerror("Overflow in symbol table");
+                                                                                          exit(0);
+                                                                                          break;
+                                                                                        default:
+                                                                                          yyerror("Unknown error");
+                                                                                          exit(0);
+                                                                                          break;
+                                                                                      }   
+                                                                                    } ;
+                                    | CONST FLOAT IDENTIFIER ASSIGN floatMathExpression {
+                                                                                          printf("ConstDeclaration with floatMathExpression \n");
+                                                                                          int ret = addVariable(scope, $3, 1, 2, 0, $5, '\0', "", 0);
+
+                                                                                          switch (ret){
+                                                                                            case 1:
+                                                                                              /* TODO: add the quad */
+                                                                                              break;
+                                                                                            case 2:                                                            
+                                                                                              exit(0);
+                                                                                              break;
+                                                                                            case 3:
+                                                                                              yyerror("Overflow in symbol table");
+                                                                                              exit(0);
+                                                                                              break;
+                                                                                            default:
+                                                                                              yyerror("Unknown error");
+                                                                                              exit(0);
+                                                                                              break;
+                                                                                          } 
+                                                                                        } ;
+                                    | CONST STRING IDENTIFIER ASSIGN stringExpression {
+                                                                                        printf("ConstDeclaration with stringExpression \n");
+                                                                                        int ret = addVariable(scope, $3, 1, 4, 0, 0.0, '\0', $5, 0);
+
+                                                                                        switch (ret){
+                                                                                          case 1:
+                                                                                            /* TODO: add the quad */
+                                                                                            break;
+                                                                                          case 2:                                                            
+                                                                                            exit(0);
+                                                                                            break;
+                                                                                          case 3:
+                                                                                            yyerror("Overflow in symbol table");
+                                                                                            exit(0);
+                                                                                            break;
+                                                                                          default:
+                                                                                            yyerror("Unknown error");
+                                                                                            exit(0);
+                                                                                            break;
+                                                                                        } 
+                                                                                      } ;
+                                    | CONST BOOL IDENTIFIER ASSIGN logicalExpression {
+                                                                                        printf("ConstDeclaration with logicalExpression \n");
+                                                                                        int ret = addVariable(scope, $3, 1, 5, 0, 0.0, '\0', "", $5);
+
+                                                                                        switch (ret){
+                                                                                          case 1:
+                                                                                            /* TODO: add the quad */
+                                                                                            break;
+                                                                                          case 2:                                                            
+                                                                                            exit(0);
+                                                                                            break;
+                                                                                          case 3:
+                                                                                            yyerror("Overflow in symbol table");
+                                                                                            exit(0);
+                                                                                            break;
+                                                                                          default:
+                                                                                            yyerror("Unknown error");
+                                                                                            exit(0);
+                                                                                            break;
+                                                                                        } 
+                                                                                      } ;
 
 assignmentStatement                 : IDENTIFIER ASSIGN expression ';' {printf("assignmentStatement \n");} ;
                               
@@ -450,35 +591,81 @@ intMathExpression                   :    IDENTIFIER  {
                                                         values val = getVariableValue(scope, $1);
                                                         $$ = val.intValue;
                                                       }
-                                    |    DIGIT  {
-                                                  $$ = $1;
-                                                }
+                                    |    DIGIT  { $$ = $1; }
                                     |   intMathExpression PLUS intMathExpression {
                                                                                     printf("intMathExpression PLUS intMathExpression \n");
                                                                                     $$ = $1 + $3;
                                                                                     addTwoInts($1, $3);
                                                                                   }
-                                    |   intMathExpression MINUS intMathExpression {printf("intMathExpression MINUS intMathExpression \n");}
-                                    |   intMathExpression MULTIPLY intMathExpression {printf("intMathExpression MULTIPLY intMathExpression \n");}
-                                    |   intMathExpression DIVIDE intMathExpression {printf("intMathExpression DIVIDE intMathExpression \n");}
-                                    |   intMathExpression MODULO intMathExpression {printf("intMathExpression MODULO intMathExpression \n");}
-                                    |   intMathExpression INCREMENT {printf("intMathExpression INCREMENT \n");}
-                                    |   intMathExpression DECREMENT {printf("intMathExpression DECREMENT \n");}
-                                    |   LEFT_PARENTHESIS intMathExpression RIGHT_PARENTHESIS {printf("LEFT_PARENTHESIS intMathExpression RIGHT_PARENTHESIS \n");}
+                                    |   intMathExpression MINUS intMathExpression {
+                                                                                    printf("intMathExpression MINUS intMathExpression \n");
+                                                                                    $$ = $1 - $3;
+                                                                                    subTwoFloats($1, $3);
+                                                                                  }
+                                    |   intMathExpression MULTIPLY intMathExpression {
+                                                                                      printf("intMathExpression MULTIPLY intMathExpression \n");
+                                                                                      $$ = $1 * $3;
+                                                                                      mulTwoFloats($1, $3);
+                                                                                      }
+                                    |   intMathExpression DIVIDE intMathExpression {
+                                                                                      printf("intMathExpression DIVIDE intMathExpression \n");
+                                                                                      $$ = $1 / $3;
+                                                                                      divTwoInts($1, $3);
+                                                                                    }
+                                    |   intMathExpression MODULO intMathExpression {
+                                                                                      printf("intMathExpression MODULO intMathExpression \n");
+                                                                                      $$ = $1 % $3;
+                                                                                      modTwoInts($1, $3);
+                                                                                    }
+                                    |   intMathExpression INCREMENT {
+                                                                      printf("intMathExpression INCREMENT \n");
+                                                                      $$ = $1 + 1;
+                                                                      addTwoInts($1, 1);   /* TODO: from add to INC*/
+                                                                    }
+                                    |   intMathExpression DECREMENT {
+                                                                      printf("intMathExpression DECREMENT \n");
+                                                                      $$ = $1 - 1;
+                                                                      subTwoInts($1, 1);   /* TODO: from add to INC*/  
+                                                                    }
+                                    |   LEFT_PARENTHESIS intMathExpression RIGHT_PARENTHESIS {
+                                                                                                printf("LEFT_PARENTHESIS intMathExpression RIGHT_PARENTHESIS \n");
+                                                                                                $$ = $2;
+                                                                                                /* TODO: ADD quad */
+                                                                                             }
+
+
+
                                     
 floatMathExpression                 :   IDENTIFIER  {
                                                       values val = getVariableValue(scope, $1);
                                                       $$ = val.floatValue;
                                                     }
-                                    |   FLOAT_LITERAL
-                                    |   floatMathExpression PLUS floatMathExpression {printf("floatMathExpression PLUS floatMathExpression \n");}
-                                    |   floatMathExpression MINUS floatMathExpression {printf("floatMathExpression MINUS floatMathExpression \n");}
-                                    |   floatMathExpression MULTIPLY floatMathExpression {printf("floatMathExpression MULTIPLY floatMathExpression \n");}
-                                    |   floatMathExpression DIVIDE floatMathExpression {printf("floatMathExpression DIVIDE floatMathExpression \n");}
-                                    |   floatMathExpression MODULO floatMathExpression {printf("floatMathExpression MODULO floatMathExpression \n");}
-                                    |   floatMathExpression INCREMENT {printf("floatMathExpression INCREMENT \n");}
-                                    |   floatMathExpression DECREMENT {printf("floatMathExpression DECREMENT \n");} 
-                                    |   LEFT_PARENTHESIS floatMathExpression RIGHT_PARENTHESIS {printf("LEFT_PARENTHESIS floatMathExpression RIGHT_PARENTHESIS \n");}
+                                    |   FLOAT_LITERAL { $$ = $1; }
+                                    |   floatMathExpression PLUS floatMathExpression {
+                                                                                        printf("floatMathExpression PLUS floatMathExpression \n");
+                                                                                        $$ = $1 + $3;
+                                                                                        addTwoFloats($1, $3);  
+                                                                                      }
+                                    |   floatMathExpression MINUS floatMathExpression {
+                                                                                        printf("floatMathExpression MINUS floatMathExpression \n");
+                                                                                        $$ = $1 - $3;
+                                                                                        subTwoFloats($1, $3);  
+                                                                                      }
+                                    |   floatMathExpression MULTIPLY floatMathExpression {
+                                                                                          printf("floatMathExpression MULTIPLY floatMathExpression \n");
+                                                                                          $$ = $1 * $3;
+                                                                                          mulTwoFloats($1, $3);
+                                                                                        }
+                                    |   floatMathExpression DIVIDE floatMathExpression {
+                                                                                        printf("floatMathExpression DIVIDE floatMathExpression \n");
+                                                                                        $$ = $1 / $3;
+                                                                                        divTwoFloats($1, $3);
+                                                                                      }
+                                    |   LEFT_PARENTHESIS floatMathExpression RIGHT_PARENTHESIS {
+                                                                                                printf("LEFT_PARENTHESIS floatMathExpression RIGHT_PARENTHESIS \n");
+                                                                                                $$ = $2;
+                                                                                                // TODO: ADD quad 
+                                                                                              }
                                 
 stringExpression                    :  IDENTIFIER  /* TODO: the type of the identifier should be string */
                                     |   STRING_LITERAL

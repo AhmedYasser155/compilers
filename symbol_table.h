@@ -281,7 +281,7 @@ void addTwoInts(int a, int b)
     // fprintf("adding %d and %d\n", a, b);
     fprintf(qFile, "MOV R%d, %d\n", registerNumber++, a);
     fprintf(qFile, "MOV R%d, %d\n", registerNumber, b);
-    fprintf(qFile, "ADD R%d, R%d\n", registerNumber - 1, registerNumber);
+    fprintf(qFile, "ADD R%d, R%d\n", registerNumber, registerNumber-1);
 
     fclose(qFile);
 }
@@ -292,10 +292,88 @@ void addTwoFloats(float a, float b)
     // fprintf(qFile, "adding %f and %f\n", a, b);
     fprintf(qFile, "MOV R%d, %f\n", registerNumber++, a);
     fprintf(qFile, "MOV R%d, %f\n", registerNumber, b);
-    fprintf(qFile, "ADD R%d, R%d\n", registerNumber - 1, registerNumber);
+    fprintf(qFile, "ADD R%d, R%d\n", registerNumber, registerNumber-1);
 
     fclose(qFile);
 }
+void subTwoInts(int a, int b)
+{
+    FILE* qFile = fopen("quads.txt", "a");
+
+    // fprintf(qFile, "subtracting %d and %d\n", a, b);
+    fprintf(qFile, "MOV R%d, %d\n", registerNumber++, a);
+    fprintf(qFile, "MOV R%d, %d\n", registerNumber, b);
+    fprintf(qFile, "SUB R%d, R%d\n", registerNumber, registerNumber-1);
+
+    fclose(qFile);
+}
+void subTwoFloats(float a, float b)
+{
+    FILE* qFile = fopen("quads.txt", "a");
+
+    // fprintf(qFile, "subtracting %f and %f\n", a, b);
+    fprintf(qFile, "MOV R%d, %f\n", registerNumber++, a);
+    fprintf(qFile, "MOV R%d, %f\n", registerNumber, b);
+    fprintf(qFile, "SUB R%d, R%d\n", registerNumber, registerNumber-1);
+
+    fclose(qFile);
+}
+void mulTwoInts(int a, int b)
+{
+    FILE* qFile = fopen("quads.txt", "a");
+
+    // fprintf(qFile, "multiplying %d and %d\n", a, b);
+    fprintf(qFile, "MOV R%d, %d\n", registerNumber++, a);
+    fprintf(qFile, "MOV R%d, %d\n", registerNumber, b);
+    fprintf(qFile, "MUL R%d, R%d\n", registerNumber, registerNumber-1);
+
+    fclose(qFile);
+}
+void mulTwoFloats(float a, float b)
+{
+    FILE* qFile = fopen("quads.txt", "a");
+
+    // fprintf(qFile, "multiplying %f and %f\n", a, b);
+    fprintf(qFile, "MOV R%d, %f\n", registerNumber++, a);
+    fprintf(qFile, "MOV R%d, %f\n", registerNumber, b);
+    fprintf(qFile, "MUL R%d, R%d\n", registerNumber, registerNumber-1);
+
+    fclose(qFile);
+}
+void divTwoInts(int a, int b)
+{
+    FILE* qFile = fopen("quads.txt", "a");
+
+    // fprintf(qFile, "dividing %d and %d\n", a, b);
+    fprintf(qFile, "MOV R%d, %d\n", registerNumber++, a);
+    fprintf(qFile, "MOV R%d, %d\n", registerNumber, b);
+    fprintf(qFile, "DIV R%d, R%d\n", registerNumber, registerNumber-1);
+
+    fclose(qFile);
+}
+void divTwoFloats(float a, float b)
+{
+    FILE* qFile = fopen("quads.txt", "a");
+
+    // fprintf(qFile, "dividing %f and %f\n", a, b);
+    fprintf(qFile, "MOV R%d, %f\n", registerNumber++, a);
+    fprintf(qFile, "MOV R%d, %f\n", registerNumber, b);
+    fprintf(qFile, "DIV R%d, R%d\n", registerNumber, registerNumber-1);
+
+    fclose(qFile);
+}
+void modTwoInts(int a, int b)
+{
+    FILE* qFile = fopen("quads.txt", "a");
+
+    // fprintf(qFile, "modding %d and %d\n", a, b);
+    fprintf(qFile, "MOV R%d, %d\n", registerNumber++, a);
+    fprintf(qFile, "MOV R%d, %d\n", registerNumber, b);
+    fprintf(qFile, "MOD R%d, R%d\n", registerNumber, registerNumber-1);
+
+    fclose(qFile);
+}
+
 
 
 

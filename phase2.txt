@@ -1,8 +1,44 @@
 
 main()
 {
-    int x = 3;
-    int y = x;
+    int x;
+    float a = 5.5;
+    string y;
+    bool w;
+    char z;
+
+
+//    int z = 5;
+//    int x = 5;
+    char c = 'a';
+//    float a = 5.5;
+    string s = "hello";
+    bool b = true;
+//    bool w = false;
+
+
+    const int q = 5;
+//    const int q = 5;
+//    const float w = 5.5;
+    const char e = 'a';
+    const string r = "hello";
+    const bool t = true;
+
+    int a1 = x + 5;
+    int a2 = x - 5;
+    int a3 = x * 5;
+    int a4 = x / 5;
+    int a5 = x % 5;
+    int a6 = x++;
+    int a7 = x--;
+    int a8 = (x + 5) * 5/q;
+
+    float b1 = a + 5.5;
+    float b2 = a - 5.5;
+    float b3 = a * 5.5;
+    float b4 = a / 5.5;
+    float b8 = (a + 5.5) * 5.5/0.4;
+
     
 }
 
