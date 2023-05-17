@@ -667,10 +667,25 @@ floatMathExpression                 :   IDENTIFIER  {
                                                                                                 // TODO: ADD quad 
                                                                                               }
                                 
-stringExpression                    :  IDENTIFIER  /* TODO: the type of the identifier should be string */
-                                    |   STRING_LITERAL
-                                    |   stringExpression PLUS stringExpression {printf("stringExpression PLUS stringExpression \n");}
-                                    |   LEFT_PARENTHESIS stringExpression RIGHT_PARENTHESIS {printf("LEFT_PARENTHESIS stringExpression RIGHT_PARENTHESIS \n");}
+stringExpression                    :  IDENTIFIER  {
+                                                      values val = getVariableValue(scope, $1);
+                                                      $$ = val.stringValue;
+                                                    }
+                                    |   STRING_LITERAL { $$ = $1; }
+                                    |   stringExpression PLUS stringExpression {
+                                                                                printf("stringExpression PLUS stringExpression \n");
+                                                                                char* str1 = $1;
+                                                                                char* str2 = $3;
+                                                                                strcat(str1, str2);
+                                                                                $$ = str1;
+                                                                                
+                                                                                // TODO: ADD quad
+                                                                              }
+                                    |   LEFT_PARENTHESIS stringExpression RIGHT_PARENTHESIS {
+                                                                                              printf("LEFT_PARENTHESIS stringExpression RIGHT_PARENTHESIS \n");
+                                                                                              $$ = $2;
+                                                                                              // TODO: ADD quad  
+                                                                                            }
 
 
 

@@ -39,7 +39,8 @@ main()
     float b4 = a / 5.5;
     float b8 = (a + 5.5) * 5.5/0.4;
 
-    
+    string s1 = y + "hello";
+    string s2 = (y + "hello");
 }
 
 
