@@ -74,9 +74,6 @@ values                          :  DIGIT
 expression                      : intMathExpression
                                 | floatMathExpression
                                 | stringExpression
-                                | STRING_LITERAL
-                                | CHAR_LITERAL
-                                /*| BOOL_LITERAL*/
                                 | logicalExpression
 
 variableDeclarationStatement    :  assignVariableDeclaration
@@ -90,28 +87,7 @@ assignVariableDeclaration           :  noSemiColumnAssignVariableDeclaration ';'
 
 
 
-noSemiColumnAssignVariableDeclaration :  INT IDENTIFIER ASSIGN DIGIT {   
-                                                                        printf("variableDeclaration with int \n");
-                                                                        int ret = addVariable(scope, $2, 0, 1, $4, 0.0, '\0', "", 0);
-                                                                        
-                                                                        switch (ret){
-                                                                          case 1:
-                                                                            allocateIntValReg($2, $4);
-                                                                            break;
-                                                                          case 2:                                                            
-                                                                            exit(0);
-                                                                            break;
-                                                                          case 3:
-                                                                            yyerror("Overflow in symbol table");
-                                                                            exit(0);
-                                                                            break;
-                                                                          default:
-                                                                            yyerror("Unknown error");
-                                                                            exit(0);
-                                                                            break;
-                                                                        }    
-                                                                      } ;
-                                    | CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
+noSemiColumnAssignVariableDeclaration :  CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
                                                                             printf("variableDeclaration with char \n");
                                                                             int ret = addVariable(scope, $2, 0, 3, 0, 0.0, $4, "", 0);
                                                                             
@@ -125,76 +101,13 @@ noSemiColumnAssignVariableDeclaration :  INT IDENTIFIER ASSIGN DIGIT {
                                                                               case 3:
                                                                                 yyerror("Overflow in symbol table");
                                                                                 exit(0);
-                                                                                break;
+                                                                                break;  
                                                                               default:
                                                                                 yyerror("Unknown error");
                                                                                 exit(0);
                                                                                 break;
                                                                             }   
                                                                           } ;
-                                    | FLOAT IDENTIFIER ASSIGN FLOAT_LITERAL {
-                                                                              printf("variableDeclaration with float \n");
-                                                                              int ret = addVariable(scope, $2, 0, 2, 0, $4, '\0', "", 0);
-                                                                              
-                                                                              switch (ret){
-                                                                                case 1:
-                                                                                  allocateFloatValReg($2, $4);
-                                                                                  break;
-                                                                                case 2:                                                            
-                                                                                  exit(0);
-                                                                                  break;
-                                                                                case 3:
-                                                                                  yyerror("Overflow in symbol table");
-                                                                                  exit(0);
-                                                                                  break;
-                                                                                default:
-                                                                                  yyerror("Unknown error");
-                                                                                  exit(0);
-                                                                                  break;
-                                                                              }   
-                                                                            } ;
-                                    | STRING IDENTIFIER ASSIGN STRING_LITERAL {
-                                                                                printf("variableDeclaration with string \n");
-                                                                                int ret = addVariable(scope, $2, 0, 4, 0, 0.0, '\0', $4, 0);
-                                                                                
-                                                                                switch (ret){
-                                                                                  case 1:
-                                                                                    allocateStringValReg($2, $4);
-                                                                                    break;
-                                                                                  case 2:                                                            
-                                                                                    exit(0);
-                                                                                    break;
-                                                                                  case 3:
-                                                                                    yyerror("Overflow in symbol table");
-                                                                                    exit(0);
-                                                                                    break;
-                                                                                  default:
-                                                                                    yyerror("Unknown error");
-                                                                                    exit(0);
-                                                                                    break;
-                                                                                }   
-                                                                              } ;
-                                    | BOOL IDENTIFIER ASSIGN BOOL_LITERAL {
-                                                                        printf("variableDeclaration with bool \n");
-                                                                        int ret = addVariable(scope, $2, 0, 5, 0, 0.0, '\0', "", $4);
-                                                                        
-                                                                        switch (ret){
-                                                                          case 1:
-                                                                            allocateBoolValReg($2, $4);
-                                                                            break;
-                                                                          case 2:                                                            
-                                                                            exit(0);
-                                                                            break;
-                                                                          case 3:
-                                                                            yyerror("Overflow in symbol table");
-                                                                            exit(0);
-                                                                            break;
-                                                                          default:
-                                                                            yyerror("Unknown error");
-                                                                            exit(0);
-                                                                            break;
-                                                                        }   
-                                                                      } ;
                                     | INT IDENTIFIER ASSIGN intMathExpression {
                                                                                 printf("variableDeclaration with intMathExpression \n");
                                                                                 int ret = addVariable(scope, $2, 0, 1, $4, 0.0, '\0', "", 0);
@@ -392,28 +305,7 @@ noSemiColumnNonAssignVariableDeclaration : INT IDENTIFIER {
 
 constDeclarationStatement           : noSemiColumnConstDeclaration ';' {printf("ConstDeclaration with int \n");} ;
 
-noSemiColumnConstDeclaration        : CONST INT IDENTIFIER ASSIGN DIGIT {
-                                                                          printf("ConstDeclaration with int \n");
-                                                                          int ret = addVariable(scope, $3, 1, 1, $5, 0.0, '\0', "", 0);
-                                                                          
-                                                                          switch (ret){
-                                                                            case 1:
-                                                                              allocateIntValReg($3, $5);
-                                                                              break;
-                                                                            case 2:                                                            
-                                                                              exit(0);
-                                                                              break;
-                                                                            case 3:
-                                                                              yyerror("Overflow in symbol table");
-                                                                              exit(0);
-                                                                              break;
-                                                                            default:
-                                                                              yyerror("Unknown error");
-                                                                              exit(0);
-                                                                              break;
-                                                                          }  
-                                                                        } ;
-                                    | CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
+noSemiColumnConstDeclaration        : CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
                                                                                   printf("ConstDeclaration with char \n");
                                                                                   int ret = addVariable(scope, $3, 1, 3, 0, 0.0, $5, "", 0);
                                                                                   
@@ -433,71 +325,6 @@ noSemiColumnConstDeclaration        : CONST INT IDENTIFIER ASSIGN DIGIT {
                                                                                       exit(0);
                                                                                       break;
                                                                                   }  
-                                                                                } ;
-                                    | CONST FLOAT IDENTIFIER ASSIGN FLOAT_LITERAL {
-                                                                                    printf("ConstDeclaration with float \n");
-                                                                                    int ret = addVariable(scope, $3, 1, 2, 0, $5, '\0', "", 0);
-                                                                                    allocateFloatValReg($3, $5); 
-
-                                                                                    switch (ret){
-                                                                                      case 1:
-                                                                                        allocateFloatValReg($3, $5);
-                                                                                        break;
-                                                                                      case 2:                                                            
-                                                                                        exit(0);
-                                                                                        break;
-                                                                                      case 3:
-                                                                                        yyerror("Overflow in symbol table");
-                                                                                        exit(0);
-                                                                                        break;
-                                                                                      default:
-                                                                                        yyerror("Unknown error");
-                                                                                        exit(0);
-                                                                                        break;
-                                                                                    }   
-                                                                                  } ;
-                                    | CONST STRING IDENTIFIER ASSIGN STRING_LITERAL {
-                                                                                      printf("ConstDeclaration with string \n");
-                                                                                      int ret =  addVariable(scope, $3, 1, 4, 0, 0.0, '\0', $5, 0);
-                                                                                      allocateStringValReg($3, $5); 
-
-                                                                                      switch (ret){
-                                                                                        case 1:
-                                                                                          allocateStringValReg($3, $5);
-                                                                                          break;
-                                                                                        case 2:                                                            
-                                                                                          exit(0);
-                                                                                          break;
-                                                                                        case 3:
-                                                                                          yyerror("Overflow in symbol table");
-                                                                                          exit(0);
-                                                                                          break;
-                                                                                        default:
-                                                                                          yyerror("Unknown error");
-                                                                                          exit(0);
-                                                                                          break;
-                                                                                      }    
-                                                                                    } ;
-                                    | CONST BOOL IDENTIFIER ASSIGN BOOL_LITERAL {
-                                                                                  printf("ConstDeclaration with bool \n");
-                                                                                  int ret = addVariable(scope, $3, 1, 5, 0, 0.0, '\0', "", $5);
-
-                                                                                  switch (ret){
-                                                                                    case 1:
-                                                                                      allocateBoolValReg($3, $5);
-                                                                                      break;
-                                                                                    case 2:                                                            
-                                                                                      exit(0);
-                                                                                      break;
-                                                                                    case 3:
-                                                                                      yyerror("Overflow in symbol table");
-                                                                                      exit(0);
-                                                                                      break;
-                                                                                    default:
-                                                                                      yyerror("Unknown error");
-                                                                                      exit(0);
-                                                                                      break;
-                                                                                  }   
                                                                                 } ;
                                     | CONST INT IDENTIFIER ASSIGN intMathExpression {
                                                                                       printf("ConstDeclaration with intMathExpression \n");
@@ -667,11 +494,11 @@ floatMathExpression                 :   IDENTIFIER  {
                                                                                                 // TODO: ADD quad 
                                                                                               }
                                 
-stringExpression                    :  IDENTIFIER  {
+stringExpression                    :   STRING_LITERAL { $$ = $1; }
+                                        |IDENTIFIER  {
                                                       values val = getVariableValue(scope, $1);
                                                       $$ = val.stringValue;
                                                     }
-                                    |   STRING_LITERAL { $$ = $1; }
                                     |   stringExpression PLUS stringExpression {
                                                                                 printf("stringExpression PLUS stringExpression \n");
                                                                                 char* str1 = $1;
@@ -684,12 +511,14 @@ stringExpression                    :  IDENTIFIER  {
                                     |   LEFT_PARENTHESIS stringExpression RIGHT_PARENTHESIS {
                                                                                               printf("LEFT_PARENTHESIS stringExpression RIGHT_PARENTHESIS \n");
                                                                                               $$ = $2;
+                                                                                              printf("5raaa %s \n",$2);
                                                                                               // TODO: ADD quad  
                                                                                             }
 
 
 
-logicalExpression                   :  BOOL_LITERAL
+logicalExpression                   :   IDENTIFIER{}
+                                    |   BOOL_LITERAL
                                     |   intMathExpression GREATER intMathExpression {printf("Logical: intMathExpression GREATER intMathExpression \n");}
                                     |   intMathExpression LESS intMathExpression {printf("Logical: intMathExpression LESS intMathExpression \n");}
                                     |   intMathExpression GREATER_EQUAL intMathExpression {printf("Logical: intMathExpression GREATER_EQUAL intMathExpression \n");}
