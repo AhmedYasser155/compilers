@@ -46,8 +46,24 @@ string    y = "false";
 
     bool c1 = true;
     bool c2 = false;
-    bool c3 = c1;
-    bool c3 = c2;
+    bool c3 = (5 + 3) > (5 - 2);
+    bool c4 = 5 < 3;
+    bool c5 = 5 >= 3;
+    bool c6 = 5 <= 3;
+    bool c7 = 5 == 3;
+    bool c8 = 5 != 3;
+
+    bool c9 = 5.5 == 3.5;
+    bool c10 = 5.5 != 3.5;
+    bool c11 = 5.5 >= 3.5;
+    bool c12 = 5.5 <= 3.5;
+    bool c13 = 5.5 > 3.5;
+    bool c14 = 5.5 < 3.5;
+
+    bool c15 = c1 == c2;    
+
+//    bool c15 = (5.5 == 3);
+    bool c16 = c1 && c2;
 }
 
 

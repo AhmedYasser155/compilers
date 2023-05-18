@@ -122,14 +122,17 @@ int  addVariable(int scope, const char* identifier, bool isConst, int type, int 
 
 // Function to get the type of a variable from the symbol table
 int getVariableType(int scope, char* identifier) {
-    VariableEntry* entry = &symbolTable[scope][0];
 
-    // Iterate through the variables in the scope
-    for (int i = 0; i < MAX_VARIABLES; i++) {
-        if (strcmp(entry->identifier, "") == 0) {
-            return entry->type; // Return the type of the variable
+    for (int i = 0; i <= scope; i++) {
+        VariableEntry* entry = &symbolTable[scope][0];
+        // Iterate through the variables in the scope
+        for (int j = 0; j < MAX_VARIABLES; j++) {
+
+            if (strcmp(entry->identifier, identifier) == 0) {
+                return 1; // Variable found
+            }
+            entry++;
         }
-        entry++;
     }
 
     return -1; // Variable not found
