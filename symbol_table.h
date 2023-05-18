@@ -374,10 +374,45 @@ void modTwoInts(int a, int b)
     fclose(qFile);
 }
 
+//Function that checks for the conditions
+void consitionsQuad(char* symbol, int firstComparater, int secondComparater)
+{
+    if(symbol == ">=")
+    {
+        printf("CMP T,Value1: %d,Value2: %d\n", firstComparater, secondComparater);      
+        printf("JNeg T,end \n");
+    }
 
+    else if(symbol == "<=")
+    {
+        printf("CMP T,Value1: %d,Value2: %d\n", firstComparater, secondComparater);      
+        printf("JPos T,end \n");
+    }
 
+    else if(symbol == ">")
+    {
+        printf("CMP T,Value1: %d,Value2: %d\n", firstComparater, secondComparater);      
+        printf("JZ T,end \n");
+    }
 
+    else if(symbol == "<")
+    {
+        printf("CMP T,Value1: %d,Value2: %d\n", firstComparater, secondComparater);      
+        printf("JNZ T,end \n");
+    }
 
+    else if(symbol == "==")
+    {
+        printf("CMP T,Value1: %d,Value2: %d\n", firstComparater, secondComparater);      
+        printf("JE T,end \n");
+    }
+
+    else if(symbol == "!=")
+    {
+        printf("CMP T,Value1: %d,Value2: %d\n", firstComparater, secondComparater);      
+        printf("JNE T,end \n");
+    }
+}
 
 
 
