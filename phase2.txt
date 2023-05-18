@@ -3,7 +3,7 @@ main()
 {
     int x;
     float a = 5.5;
-    string y;
+    string jnk;
     bool w;
     char z;
 
@@ -14,7 +14,7 @@ main()
 //    float a = 5.5;
     string s = "hello";
     bool b = true;
-//    bool w = false;
+string    y = "false";
 
 
     const int q = 5;
@@ -39,8 +39,10 @@ main()
     float b4 = a / 5.5;
     float b8 = (a + 5.5) * 5.5/0.4;
 
-    string s1 = y + "hello";
-    string s2 = (y + "hello");
+    string s1 =  "hello";
+    string s2 = y;
+    string s3 = y + "hello";
+    string s4 = ("hello");
 }
 
 
