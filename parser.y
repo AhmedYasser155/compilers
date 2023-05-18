@@ -537,7 +537,7 @@ logicalExpression                   :   IDENTIFIER  {
                                                       /*TODO: NOT WORKING*/
                                                     }
                                     |   BOOL_LITERAL { $$ = $1; }
-                                    |   intMathExpression GREATER intMathExpression { $$ = $1 > $3; // TODO: ADD quad printf("Logical: intMathExpression GREATER intMathExpression \n");}
+                                    |   intMathExpression GREATER intMathExpression { $$ = $1 > $3; /* TODO: ADD quad*/ printf("Logical: intMathExpression GREATER intMathExpression \n");}
                                     |   intMathExpression LESS intMathExpression { $$ = $1 < $3; /* TODO: ADD quad*/ printf("Logical: intMathExpression LESS intMathExpression \n"); }
                                     |   intMathExpression GREATER_EQUAL intMathExpression { $$ = $1 >= $3; /* TODO: ADD quad*/ printf("Logical: intMathExpression GREATER_EQUAL intMathExpression \n"); }
                                     |   intMathExpression LESS_EQUAL intMathExpression { $$ = $1 <= $3; /* TODO: ADD quad*/ printf("Logical: intMathExpression LESS_EQUAL intMathExpression \n"); }
