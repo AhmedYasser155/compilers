@@ -47,6 +47,8 @@ VariableEntry createDefaultVariableEntry() {
 }
 
 int registerNumber = 0;
+int labelNumber = 0;
+int firstIfLabel = -1;
 
 // Array of hashes representing the symbol table
 VariableEntry symbolTable[MAX_SCOPES][MAX_VARIABLES];
@@ -138,6 +140,31 @@ int getVariableType(int scope, char* identifier) {
     return -1; // Variable not found
 }
 
+// update the value of a variable assumes that the variable exists, the type is correct
+int updateVariable(int scope, const char* identifier, int intValue, float floatValue, char charValue, const char* stringValue, int boolValue) {
+    // printf("Updating variable %s\n", identifier);
+    for (int i = 0; i <= scope; i++) {
+        VariableEntry* entry = &symbolTable[scope][0];
+        // Iterate through the variables in the scope
+        for (int j = 0; j < MAX_VARIABLES; j++) {
+
+            if (strcmp(entry->identifier, identifier) == 0) {
+                // printf("Variable found\n");
+                entry->intValue = intValue;
+                entry->floatValue = floatValue;
+                entry->charValue = charValue;
+                strncpy(entry->stringValue, stringValue, MAX_STRING_LENGTH - 1);
+                entry->stringValue[MAX_STRING_LENGTH - 1] = '\0';  // Manually null-terminate the string
+                entry->boolValue = boolValue;
+                return 1; // Variable found
+            }
+            entry++;
+        }
+    }
+
+    return -1; // Variable not found
+}
+
 
 typedef struct {
     int intValue;
@@ -145,6 +172,7 @@ typedef struct {
     char charValue;
     char* stringValue;
     int boolValue;
+    int isConst;
 } values;
 
 values getVariableValue(int scope, char* identifier) {
@@ -160,6 +188,7 @@ values getVariableValue(int scope, char* identifier) {
                 val.charValue = entry->charValue;
                 val.stringValue = entry->stringValue;
                 val.boolValue = entry->boolValue;
+                val.isConst = entry->isConst;
                 return val; // Return the type of the variable
             }
             entry++;
@@ -172,6 +201,7 @@ values getVariableValue(int scope, char* identifier) {
     val.charValue = '\0';
     val.stringValue = "";
     val.boolValue = 0;
+    val.isConst = 0;
     return val; // Variable not found
 }
 
@@ -385,6 +415,7 @@ void modTwoInts(int a, int b)
 //Function that checks for the conditions
 void consitionsQuad(char* symbol, int firstComparater, int secondComparater)
 {
+    FILE* qFile = fopen("quads.txt", "a");
     if(symbol == ">=")
     {
         printf("CMP T,Value1: %d,Value2: %d\n", firstComparater, secondComparater);      
@@ -420,12 +451,73 @@ void consitionsQuad(char* symbol, int firstComparater, int secondComparater)
         printf("CMP T,Value1: %d,Value2: %d\n", firstComparater, secondComparater);      
         printf("JNE T,end \n");
     }
+    fclose(qFile);
 }
 
+///////////////////////////////////////////
+/////////////////////IF////////////////////
+///////////////////////////////////////////
+// Function to allocate a Label
+void allocateLabel()
+{   
+    FILE* qFile = fopen("quads.txt", "a");
 
+    fprintf(qFile, "LABEL L%d\n", labelNumber);
 
+    fclose(qFile);
+}
 
+void ifStatementBegin()
+{
+    allocateLabel();
+    FILE* qFile = fopen("quads.txt", "a");
+    if (firstIfLabel == -1)
+    {
+        fprintf(qFile, "JMP L%d\n", labelNumber);
+        firstIfLabel = labelNumber;
+    }
+    else
+    {
+        fprintf(qFile, "JMP L%d\n", labelNumber);
+    }
+    fclose(qFile);
+}
 
+void ifStatementEnd()
+{   
+    FILE* qFile = fopen("quads.txt", "a");
+    fprintf(qFile, "END L%d\n", labelNumber);
+    labelNumber++;
+    fclose(qFile);
+}
+
+void ifStatementElseBegin()
+{
+    if (firstIfLabel == -1)
+    {   
+        FILE* qFile = fopen("quads.txt", "a");
+        fprintf(qFile, "No if condition exists\n");
+        fclose(qFile);
+        exit(EXIT_FAILURE);
+    }
+
+    else
+    {
+        FILE* qFile = fopen("quads.txt", "a");
+        fprintf(qFile, "JMP END%d\n", firstIfLabel);
+        fprintf(qFile, "LABEL L%d\n", labelNumber);
+        fclose(qFile);
+    }
+}
+
+void ifStatementElseEnd()
+{   
+    FILE* qFile = fopen("quads.txt", "a");
+    fprintf(qFile, "END L%d\n", labelNumber);
+    labelNumber++;
+    firstIfLabel = -1;
+    fclose(qFile);
+}
 
 
 

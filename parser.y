@@ -411,7 +411,33 @@ noSemiColumnConstDeclaration        : CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL 
                                                                                         } 
                                                                                       } ;
 
-assignmentStatement                 : IDENTIFIER ASSIGN expression ';' {printf("assignmentStatement \n");} ;
+assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
+                                                                                printf("assignmentStatement \n");
+                                                                                int typeVar = getVariableType(scope, $1);
+                                                                                if (typeVar != 1){
+                                                                                  yyerror("Type mismatch");
+                                                                                  exit(0);
+                                                                                }
+                                                                                else{
+                                                                                  values val = getVariableValue(scope, $1);
+                                                                                  if (val.isConst == 1){
+                                                                                    yyerror("Cannot assign to a constant");
+                                                                                    exit(0);
+                                                                                  }
+                                                                                  else{
+                                                                                      int update = updateVariable(scope, $1, $3, 0.0, '\0', "", 0);
+                                                                                      if (update == -1){
+                                                                                        yyerror("Variable not found");
+                                                                                        exit(0);
+                                                                                      }
+                                                                                  }
+                                                                                }
+
+                                                                              } ;
+                                    | IDENTIFIER ASSIGN floatMathExpression ';' {printf("assignmentStatement \n");} ;
+                                    | IDENTIFIER ASSIGN stringExpression ';' {printf("assignmentStatement \n");} ;
+                                    | IDENTIFIER ASSIGN logicalExpression ';' {printf("assignmentStatement \n");} ;
+                                    | IDENTIFIER ASSIGN CHAR_LITERAL ';' {printf("assignmentStatement \n");} ;
                               
 
 intMathExpression                   :    IDENTIFIER  {
@@ -558,9 +584,16 @@ logicalExpression                   :   IDENTIFIER  {
                                     |   NOT logicalExpression { $$ = !$2; /* TODO: ADD quad*/ printf("NOT logicalExpression \n");}
 
 
-ifStatement                         :   IF LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printf("ifStatement \n");} 
-                                    |   IF LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE ELSE LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printf("if-else-Statement \n");}
-                                    |   /* ifelse expression?? */ 
+ifStatement                           : IF {ifStatementBegin();} LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS 
+                                        LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE { scope-=1; ifStatementEnd(); printf("ifStatement \n");} 
+                                      | IF {ifStatementBegin();} LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS 
+                                        LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE {scope-=1; ifStatementEnd();} 
+                                        ELSE {ifStatementElseBegin();} LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE { scope-=1; ifStatementElseEnd(); printf("if-else-Statement \n");}
+                                    
+                                    /* TODO: ifelse expression??*/
+    
+
+
 
 whileStatement  : WHILE LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printf("whileStatement \n");}
 

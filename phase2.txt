@@ -64,6 +64,22 @@ string    y = "false";
 
 //    bool c15 = (5.5 == 3);
     bool c16 = c1 && c2;
+
+    if (5>3) {
+        if (true) {
+            int yyy = 5;
+        }
+        int xxx = 5;
+    } 
+
+    //if (5>3) {    
+    //    int fff = 5;
+    //} else {
+    //    int eee = 5;
+    //}
+
+    x = 5;
+
 }
 
 
