@@ -517,8 +517,13 @@ stringExpression                    :   STRING_LITERAL { $$ = $1; }
 
 
 
-logicalExpression                   :   IDENTIFIER{}
-                                    |   BOOL_LITERAL
+logicalExpression                   :   IDENTIFIER  {
+                                                      printf("logicalExpression \n");
+                                                      values val = getVariableValue(scope, $1);
+                                                      printf("VALUE: %d \n", val.boolValue);
+                                                      $$ = val.boolValue;
+                                                    }
+                                    |   BOOL_LITERAL { $$ = $1; }
                                     |   intMathExpression GREATER intMathExpression {printf("Logical: intMathExpression GREATER intMathExpression \n");}
                                     |   intMathExpression LESS intMathExpression {printf("Logical: intMathExpression LESS intMathExpression \n");}
                                     |   intMathExpression GREATER_EQUAL intMathExpression {printf("Logical: intMathExpression GREATER_EQUAL intMathExpression \n");}

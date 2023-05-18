@@ -43,6 +43,11 @@ string    y = "false";
     string s2 = y;
     string s3 = y + "hello";
     string s4 = ("hello");
+
+    bool c1 = true;
+    bool c2 = false;
+    bool c3 = c1;
+    bool c3 = c2;
 }
 
 
