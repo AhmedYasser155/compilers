@@ -2,7 +2,7 @@
 main()
 {
     int x;
-    float a = 5.5;
+    float a ;
     string jnk;
     bool w;
     char z;
@@ -79,6 +79,10 @@ string    y = "false";
     //}
 
     x = 5;
+    a=2.5;
+    jnk="sdaa";
+    z='s';
+    w=true;
 
 }
 

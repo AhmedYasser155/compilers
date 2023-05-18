@@ -131,7 +131,7 @@ int getVariableType(int scope, char* identifier) {
         for (int j = 0; j < MAX_VARIABLES; j++) {
 
             if (strcmp(entry->identifier, identifier) == 0) {
-                return 1; // Variable found
+                return entry->type; // Variable found
             }
             entry++;
         }

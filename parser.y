@@ -415,7 +415,8 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                                 printf("assignmentStatement \n");
                                                                                 int typeVar = getVariableType(scope, $1);
                                                                                 if (typeVar != 1){
-                                                                                  yyerror("Type mismatch");
+                                                                                  printf("type is %d \n",typeVar);
+                                                                                  yyerror("Type mismatch in int");
                                                                                   exit(0);
                                                                                 }
                                                                                 else{
@@ -434,10 +435,100 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                                 }
 
                                                                               } ;
-                                    | IDENTIFIER ASSIGN floatMathExpression ';' {printf("assignmentStatement \n");} ;
-                                    | IDENTIFIER ASSIGN stringExpression ';' {printf("assignmentStatement \n");} ;
-                                    | IDENTIFIER ASSIGN logicalExpression ';' {printf("assignmentStatement \n");} ;
-                                    | IDENTIFIER ASSIGN CHAR_LITERAL ';' {printf("assignmentStatement \n");} ;
+                                    | IDENTIFIER ASSIGN floatMathExpression ';' {
+                                       printf("assignmentStatement \n");
+                                                                                int typeVar = getVariableType(scope, $1);
+                                                                                if (typeVar != 2){
+                                                                                  printf("type is %d \n",typeVar);
+                                                                                  yyerror("Type mismatch in float ");
+                                                                                  exit(0);
+                                                                                }
+                                                                                else{
+                                                                                  values val = getVariableValue(scope, $1);
+                                                                                  if (val.isConst == 1){
+                                                                                    yyerror("Cannot assign to a constant");
+                                                                                    exit(0);
+                                                                                  }
+                                                                                  else{
+                                                                                      int update = updateVariable(scope, $1, 0, $3, '\0', "", 0);
+                                                                                      if (update == -1){
+                                                                                        yyerror("Variable not found");
+                                                                                        exit(0);
+                                                                                      }
+                                                                                  }
+                                                                                }
+                                                                                printf("assignmentStatement \n");
+                                                                               } ;
+                                    | IDENTIFIER ASSIGN stringExpression ';' {
+                                                                                printf("assignmentStatement \n");
+                                                                                int typeVar = getVariableType(scope, $1);
+                                                                                if (typeVar != 4){
+                                                                                  printf("type is %d \n",typeVar);
+                                                                                  yyerror("Type mismatch");
+                                                                                  exit(0);
+                                                                                }
+                                                                                else{
+                                                                                  values val = getVariableValue(scope, $1);
+                                                                                  if (val.isConst == 1){
+                                                                                    yyerror("Cannot assign to a constant");
+                                                                                    exit(0);
+                                                                                  }
+                                                                                  else{
+                                                                                      int update = updateVariable(scope, $1, 0, 0.0, '\0', $3, 0);
+                                                                                      if (update == -1){
+                                                                                        yyerror("Variable not found");
+                                                                                        exit(0);
+                                                                                      }
+                                                                                  }
+                                                                                }
+                                                                              } ;
+                                    | IDENTIFIER ASSIGN logicalExpression ';' {
+                                                                                printf("assignmentStatement \n");
+                                                                                int typeVar = getVariableType(scope, $1);
+                                                                                if (typeVar != 5){
+                                                                                  printf("type is %d \n",typeVar);
+                                                                                  yyerror("Type mismatch");
+                                                                                  exit(0);
+                                                                                }
+                                                                                else{
+                                                                                  values val = getVariableValue(scope, $1);
+                                                                                  if (val.isConst == 1){
+                                                                                    yyerror("Cannot assign to a constant");
+                                                                                    exit(0);
+                                                                                  }
+                                                                                  else{
+                                                                                      int update = updateVariable(scope, $1, 0, 0.0, '\0', "", $3);
+                                                                                      if (update == -1){
+                                                                                        yyerror("Variable not found");
+                                                                                        exit(0);
+                                                                                      }
+                                                                                  }
+                                                                                }
+                                                                              } ;
+                                    | IDENTIFIER ASSIGN CHAR_LITERAL ';' {
+                                                                             printf("assignmentStatement \n");
+                                                                            int typeVar = getVariableType(scope, $1);
+                                                                            if (typeVar != 3){
+                                                                              printf("type is %d \n",typeVar);
+                                                                              yyerror("Type mismatch");
+                                                                              exit(0);
+                                                                            }
+                                                                            else{
+                                                                              values val = getVariableValue(scope, $1);
+                                                                              if (val.isConst == 1){
+                                                                                yyerror("Cannot assign to a constant");
+                                                                                exit(0);
+                                                                              }
+                                                                              else{
+                                                                                  int update = updateVariable(scope, $1, 0, 0.0, $3, "", 0);
+                                                                                  if (update == -1){
+                                                                                    yyerror("Variable not found");
+                                                                                    exit(0);
+                                                                                  }
+                                                                              }
+                                                                            }
+                                                                            printf("assignmentStatement \n");
+                                                                            } ;
                               
 
 intMathExpression                   :    IDENTIFIER  {
@@ -529,7 +620,6 @@ stringExpression                    :   STRING_LITERAL {
                                             result[strlen(result) - 1] = '\0';
                                         }
                                         $$ = result;
-                                        printf("value of string %s \n",$$); 
 
                                           }
                                         |IDENTIFIER  {
