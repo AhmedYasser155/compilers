@@ -494,7 +494,17 @@ floatMathExpression                 :   IDENTIFIER  {
                                                                                                 // TODO: ADD quad 
                                                                                               }
                                 
-stringExpression                    :   STRING_LITERAL { $$ = $1; }
+stringExpression                    :   STRING_LITERAL {
+                                        char* result = NULL;
+                                        if ($1[0] == '"' && $1[strlen($1) - 1] == '"') {
+                                            // Remove the quotes
+                                            result = $1 + 1;
+                                            result[strlen(result) - 1] = '\0';
+                                        }
+                                        $$ = result;
+                                        printf("value of string %s \n",$$); 
+
+                                          }
                                         |IDENTIFIER  {
                                                       values val = getVariableValue(scope, $1);
                                                       $$ = val.stringValue;
@@ -511,7 +521,7 @@ stringExpression                    :   STRING_LITERAL { $$ = $1; }
                                     |   LEFT_PARENTHESIS stringExpression RIGHT_PARENTHESIS {
                                                                                               printf("LEFT_PARENTHESIS stringExpression RIGHT_PARENTHESIS \n");
                                                                                               $$ = $2;
-                                                                                              printf("5raaa %s \n",$2);
+                                                                                              printf("after parantheses %s \n",$2);
                                                                                               // TODO: ADD quad  
                                                                                             }
 
