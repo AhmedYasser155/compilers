@@ -315,6 +315,7 @@ int registerNumber = 0;
 int labelNumber = 0;
 int firstIfLabel = -1;
 int labelEntries = 0;
+int conditionNumber = 0;
 
 void createLabel(char* name)
 {
@@ -525,6 +526,130 @@ void divTwoFloats()
     fclose(qFile);
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
+void allocateStringReg(char* value)
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MOV R%d, %s\n\n", registerNumber++, value);
+    fclose(qFile);
+}
+void addTwoStrings()
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "SADD R%d, R%d, R%d\n\n",registerNumber, registerNumber-2, registerNumber-1);
+    registerNumber++;
+    fclose(qFile);
+}
+////////////////////////////////////////////////////////////////////////////////////////
+void allocateBoolReg(int value)
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MOV R%d, %d\n\n", registerNumber++, value);
+    fclose(qFile);
+}
+void orQuad()
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "OR R%d, R%d, R%d\n\n", registerNumber, registerNumber-1, registerNumber-2);
+    registerNumber++;
+    fclose(qFile);
+}
+void andQuad()
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "AND R%d, R%d, R%d\n\n", registerNumber, registerNumber-1, registerNumber-2);
+    registerNumber++;
+    fclose(qFile);
+}
+void notQuad()
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "NOT R%d, R%d\n\n", registerNumber, registerNumber-1);
+    registerNumber++;
+    fclose(qFile);
+}
+void greaterThanQuad()
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "CMP R%d, R%d\n", registerNumber-2, registerNumber-1);
+    fprintf(qFile, "MOV R%d, %d \n",registerNumber, 1);
+    fprintf(qFile, "JG S%d\n", conditionNumber);
+    fprintf(qFile, "NS%d: MOV R%d, %d\n", conditionNumber, registerNumber, 0);
+    fprintf(qFile, "S%d: \n\n", conditionNumber);
+
+    conditionNumber++;
+    registerNumber++;
+    fclose(qFile);
+}
+void lessThanQuad()
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "CMP R%d, R%d\n", registerNumber-2, registerNumber-1);
+    fprintf(qFile, "MOV R%d, %d \n",registerNumber, 1);
+    fprintf(qFile, "JL S%d\n", conditionNumber);
+    fprintf(qFile, "NS%d: MOV R%d, %d\n", conditionNumber, registerNumber, 0);
+    fprintf(qFile, "S%d: \n\n", conditionNumber);
+
+    conditionNumber++;
+    registerNumber++;
+    fclose(qFile);
+}
+void greaterThanEqualQuad()
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "CMP R%d, R%d\n", registerNumber-2, registerNumber-1);
+    fprintf(qFile, "MOV R%d, %d \n",registerNumber, 1);
+    fprintf(qFile, "JGE S%d\n", conditionNumber);
+    fprintf(qFile, "NS%d: MOV R%d, %d\n", conditionNumber, registerNumber, 0);
+    fprintf(qFile, "S%d: \n\n", conditionNumber);
+
+    conditionNumber++;
+    registerNumber++;
+    fclose(qFile);
+}
+void lessThanEqualQuad()
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "CMP R%d, R%d\n", registerNumber-2, registerNumber-1);
+    fprintf(qFile, "MOV R%d, %d \n",registerNumber, 1);
+    fprintf(qFile, "JLE S%d\n", conditionNumber);
+    fprintf(qFile, "NS%d: MOV R%d, %d\n", conditionNumber, registerNumber, 0);
+    fprintf(qFile, "S%d: \n\n", conditionNumber);
+
+    conditionNumber++;
+    registerNumber++;
+    fclose(qFile);
+}
+void equalEqualQuad()
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "CMP R%d, R%d\n", registerNumber-2, registerNumber-1);
+    fprintf(qFile, "MOV R%d, %d \n",registerNumber, 1);
+    fprintf(qFile, "JE S%d\n", conditionNumber);
+    fprintf(qFile, "NS%d: MOV R%d, %d\n", conditionNumber, registerNumber, 0);
+    fprintf(qFile, "S%d: \n\n", conditionNumber);
+
+    conditionNumber++;
+    registerNumber++;
+    fclose(qFile);
+}
+void notEqualQuad()
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "CMP R%d, R%d\n", registerNumber-2, registerNumber-1);
+    fprintf(qFile, "MOV R%d, %d \n",registerNumber, 1);
+    fprintf(qFile, "JNE S%d\n", conditionNumber);
+    fprintf(qFile, "NS%d: MOV R%d, %d\n", conditionNumber, registerNumber, 0);
+    fprintf(qFile, "S%d: \n\n", conditionNumber);
+
+    conditionNumber++;
+    registerNumber++;
+    fclose(qFile);
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////
 //Function that checks for the conditions
 void consitionsQuad(char* symbol, int firstComparater, int secondComparater)
 {

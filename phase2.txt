@@ -10,11 +10,37 @@ main()
 
     float a = 0.2;
     float bbb = (a + 5.5) * 5.5/0.4 + 5.5 * 5.5 - 5.5;
+    bbb = 5.1 + a;
+
+    string jjj = "hhhh";
+    jjj = "hello" + jjj;
+    jjj = "hello" + "hello";
+
+    bool w = true;
+    bool zz = false;
+    bool zzz = (5 + 3) > (5 - 2);
+    w = w || zz;
+    zzz = w && zz;
+    bool zzz1 = w && zz || w;
+    bool zzz2 = w && zz || w && zz;
+    w = !zzz;
+    bool w0 = 5 > 3;
+    bool w1 = 5 < 3;
+    bool w2 = 5 >= 3;
+    bool w3 = 5 <= 3;
+    bool w4 = 5 == 3;
+    bool w5 = 5 != 3;
+
+    bool w6 = 5.5 == 3.5;
+    bool w7 = 5.5 != 3.5;
+    bool w8 = 5.5 >= 3.5;
+    bool w9 = 5.5 <= 3.5;
+    bool w10 = 5.5 > 3.5;
+    bool w11 = 5.5 < 3.5;
+
+     
 
 
-
-    string jnk;
-    bool w;
     char z;
 
 
@@ -92,6 +118,7 @@ string    y = "false";
 
     x = 5;
     a=2.5;
+    string jnk;
     jnk="sdaa";
     z='s';
     w=true;
