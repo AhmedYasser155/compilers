@@ -7,6 +7,8 @@
     int scope = 0;
 %}
 
+%debug
+
 //Tokens Definition
 %union {
   int iVal;
@@ -26,6 +28,9 @@
 %token <bVal> BOOL_LITERAL
 
 %type <iVal> intMathExpression
+%type <iVal> intMathTerm
+%type <iVal> intMathFactor
+%type <iVal> intMathPrimary
 %type <fVal> floatMathExpression
 %type <sVal> stringExpression
 %type <bVal> logicalExpression
@@ -548,76 +553,52 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                               }
                                                                             }
                                                                             printf("assignmentStatement \n");
-                                                                            } ;
+                                                                            };
                               
 
-intMathExpression                   :    IDENTIFIER  {
-                                                        values val = getVariableValue(scope, $1);
-                                                        $$ = val.intValue;
-                                                        allocateLastReg();
+intMathExpression : intMathExpression PLUS intMathTerm {
+                                                        printf("intMathExpression PLUS intMathExpression \n");
+                                                        $$ = $1 + $3; addTwoInts();
                                                       }
-                                    |    DIGIT  { $$ = $1; allocateDigitReg($1); }
-                                    |   intMathExpression PLUS intMathExpression {
-                                                                                    printf("intMathExpression PLUS intMathExpression \n");
-                                                                                    $$ = $1 + $3;
-                                                                                    addTwoInts();
-                                                                                  }
-                                    |   intMathExpression MINUS intMathExpression {
-                                                                                    printf("intMathExpression MINUS intMathExpression \n");
-                                                                                    $$ = $1 - $3;
-                                                                                    subTwoInts();
-                                                                                  }
-                                    |   intMathExpression MULTIPLY intMathExpression {
-                                                                                      printf("intMathExpression MULTIPLY intMathExpression \n");
-                                                                                      $$ = $1 * $3;
-                                                                                      mulTwoInts();
-                                                                                      }
-                                    |   intMathExpression DIVIDE intMathExpression {
-                                                                                      printf("intMathExpression DIVIDE intMathExpression \n");
-                                                                                      $$ = $1 / $3;
-                                                                                      divTwoInts();
-                                                                                    }
-                                    |   intMathExpression MODULO intMathExpression {
-                                                                                      printf("intMathExpression MODULO intMathExpression \n");
-                                                                                      $$ = $1 % $3;
-                                                                                      modTwoInts($1, $3);
-                                                                                    }
-                                    |   intMathExpression INCREMENT {
-                                                                      printf("intMathExpression INCREMENT \n");
-                                                                      $$ = $1 + 1;
-                                                                      addTwoInts($1, 1);   /* TODO: from add to INC*/
-                                                                    }
-                                    |   intMathExpression DECREMENT {
-                                                                      printf("intMathExpression DECREMENT \n");
-                                                                      $$ = $1 - 1;
-                                                                      subTwoInts($1, 1);   /* TODO: from add to INC*/  
-                                                                    }
-                                    |   LEFT_PARENTHESIS intMathExpression RIGHT_PARENTHESIS {
-                                                                                                printf("LEFT_PARENTHESIS intMathExpression RIGHT_PARENTHESIS \n");
-                                                                                                $$ = $2;
-                                                                                                /* TODO: ADD quad */
-                                                                                             }
+                  | intMathExpression MINUS intMathTerm {
+                                                          printf("intMathExpression MINUS intMathExpression \n");
+                                                          $$ = $1 - $3; subTwoInts();
+                                                        }
+                  | intMathTerm;
 
-/*intMathExpression : intMathExpression PLUS intMathTerm
-                  | intMathExpression MINUS intMathTerm
-                  | intMathTerm
-                  ;
-
-intMathTerm : intMathTerm MULTIPLY intMathFactor
-            | intMathTerm DIVIDE intMathFactor
-            | intMathTerm MODULO intMathFactor
-            | intMathFactor
-            ;
+intMathTerm : intMathTerm MULTIPLY intMathFactor {
+                                                    printf("intMathExpression MULTIPLY intMathExpression \n");
+                                                    $$ = $1 * $3; mulTwoInts();
+                                                 }
+            | intMathTerm DIVIDE intMathFactor {
+                                                  printf("intMathExpression DIVIDE intMathExpression \n");
+                                                  $$ = $1 / $3; divTwoInts();
+                                                }
+            | intMathTerm MODULO intMathFactor {
+                                                  printf("intMathExpression MODULO intMathExpression \n");
+                                                  $$ = $1 % $3; modTwoInts($1, $3);
+                                               }
+            | intMathFactor;
 
 intMathFactor : intMathPrimary
-              | intMathFactor INCREMENT
-              | intMathFactor DECREMENT
-              ;
+              | intMathFactor INCREMENT {
+                                          printf("intMathExpression INCREMENT \n");
+                                          $$ = $1 + 1; addTwoInts($1, 1);   /* TODO: from add to INC*/
+                                        }
+              | intMathFactor DECREMENT {
+                                          printf("intMathExpression DECREMENT \n");
+                                          $$ = $1 - 1;  subTwoInts($1, 1);   /* TODO: from add to INC*/  
+                                        };
 
-intMathPrimary : IDENTIFIER
-               | DIGIT
-               | LEFT_PARENTHESIS intMathExpression RIGHT_PARENTHESIS
-               ;*/
+intMathPrimary : IDENTIFIER {
+                              values val = getVariableValue(scope, $1);
+                              $$ = val.intValue; allocateIdentifierReg(val.reg);
+                            }
+               | DIGIT { $$ = $1; allocateDigitReg($1); }
+               | LEFT_PARENTHESIS intMathExpression RIGHT_PARENTHESIS {
+                                                                        printf("LEFT_PARENTHESIS intMathExpression RIGHT_PARENTHESIS \n");
+                                                                        $$ = $2; /* TODO: ADD quad */
+                                                                      };
 
 
 

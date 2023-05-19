@@ -253,7 +253,7 @@ void printTable(char* text, int scope) {
         for (int j = 0; j < MAX_VARIABLES; j++) {
             VariableEntry* entry = &symbolTable[scope][j];
             if (strcmp(entry->identifier, "") != 0) {
-                fprintf(file, "Scope: %d, Identifier: %s, Type: %d, Value: ", scope, entry->identifier, entry->type);
+                fprintf(file, "Scope: %d, Identifier: %s, Type: %d, Reg: %d, Value: ", scope, entry->identifier, entry->type, entry->reg);
                 switch (entry->type) {// int: 1, float: 2, char: 3, string: 4, bool: 5
                     case 1:
                         fprintf(file, "%d", entry->intValue);
@@ -414,6 +414,12 @@ void allocateDigitReg(int value)
     fprintf(qFile, "MOV R%d, %d\n\n", registerNumber++, value);
     fclose(qFile);
 }
+void allocateIdentifierReg(int reg)
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MOV R%d, R%d\n\n", registerNumber++, reg);
+    fclose(qFile);
+}
 void allocateLastReg(){
     FILE* qFile = fopen("finalQuads.txt", "a");
     fprintf(qFile, "MOV R%d, R%d\n\n", registerNumber, registerNumber-1);
@@ -422,27 +428,41 @@ void allocateLastReg(){
 }
 void addTwoInts()
 {
-
     FILE* qFile = fopen("finalQuads.txt", "a");
-    fprintf(qFile, "ADD R%d, R%d\n\n", registerNumber-1, registerNumber-2);
+    fprintf(qFile, "ADD R%d, R%d, R%d\n\n",registerNumber, registerNumber-2, registerNumber-1);
+    registerNumber++;
     fclose(qFile);
 }
 void subTwoInts()
 {
     FILE* qFile = fopen("finalQuads.txt", "a");
-    fprintf(qFile, "SUB R%d, R%d\n\n", registerNumber-1, registerNumber-2);
+    fprintf(qFile, "SUB R%d, R%d, R%d\n\n",registerNumber, registerNumber-2, registerNumber-1);
+    registerNumber++;
     fclose(qFile);
 }
 
 void mulTwoInts(){
     FILE* qFile = fopen("finalQuads.txt", "a");
-    fprintf(qFile, "MUL R%d, R%d\n\n", registerNumber-1, registerNumber-2);
+    fprintf(qFile, "MUL R%d, R%d, R%d\n\n",registerNumber, registerNumber-2, registerNumber-1);
+    registerNumber++;
+    fclose(qFile);
+}
+void divTwoInts(){
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "DIV R%d, R%d, R%d\n\n",registerNumber, registerNumber-2, registerNumber-1);
+    registerNumber++;
     fclose(qFile);
 }
 
-void divTwoInts(){
-    FILE* qFile = fopen("finalQuads.txt", "a");
-    fprintf(qFile, "DIV R%d, R%d\n\n", registerNumber-1, registerNumber-2);
+///////////
+void modTwoInts(int a, int b)
+{
+    FILE* qFile = fopen("quads.txt", "a");
+
+    fprintf(qFile, "MOV R%d, %d\n", registerNumber, a);
+    fprintf(qFile, "MOV R%d, %d\n", registerNumber, b);
+    fprintf(qFile, "MOD R%d, R%d\n", registerNumber, registerNumber-1);
+
     fclose(qFile);
 }
 
@@ -489,17 +509,6 @@ void divTwoFloats(float a, float b)
     fprintf(qFile, "MOV R%d, %f\n", registerNumber, a);
     fprintf(qFile, "MOV R%d, %f\n", registerNumber, b);
     fprintf(qFile, "DIV R%d, R%d\n", registerNumber, registerNumber-1);
-
-    fclose(qFile);
-}
-void modTwoInts(int a, int b)
-{
-    FILE* qFile = fopen("quads.txt", "a");
-
-    // fprintf(qFile, "modding %d and %d\n", a, b);
-    fprintf(qFile, "MOV R%d, %d\n", registerNumber, a);
-    fprintf(qFile, "MOV R%d, %d\n", registerNumber, b);
-    fprintf(qFile, "MOD R%d, R%d\n", registerNumber, registerNumber-1);
 
     fclose(qFile);
 }

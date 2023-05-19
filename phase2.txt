@@ -4,7 +4,7 @@ main()
     int x;
 
     x = 5+8;
-    x = (x * 3) - 1 * 2 - 2 + 2 * 3;
+    x = (x + 3) - 1 * 2 - 4 / 2 + 5 * 6;
     int sss = x;
 
 
@@ -166,4 +166,5 @@ myFunction();
 
 // TODO: 
 // handle default values for variable declaration
+// Handle registers order
 

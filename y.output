@@ -1,0 +1,5012 @@
+Terminals unused in grammar
+
+    VOID
+    THEN
+    DO
+    LEFT_SQUARE_BRACKET
+    RIGHT_SQUARE_BRACKET
+    SCAN
+
+
+Rules useless in parser due to conflicts
+
+  103 $@3: %empty
+
+
+State 7 conflicts: 1 reduce/reduce
+State 9 conflicts: 1 shift/reduce
+State 10 conflicts: 1 shift/reduce
+State 23 conflicts: 18 shift/reduce
+State 67 conflicts: 20 reduce/reduce
+State 111 conflicts: 12 reduce/reduce
+State 116 conflicts: 2 shift/reduce
+State 206 conflicts: 4 shift/reduce
+State 207 conflicts: 4 shift/reduce
+State 208 conflicts: 4 shift/reduce
+State 209 conflicts: 4 shift/reduce
+State 216 conflicts: 1 shift/reduce
+State 217 conflicts: 2 shift/reduce
+State 218 conflicts: 2 shift/reduce
+State 266 conflicts: 9 reduce/reduce
+State 328 conflicts: 1 shift/reduce
+State 331 conflicts: 1 shift/reduce
+State 335 conflicts: 1 reduce/reduce
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: statement
+    2        | program statement
+
+    3 statement: blockStatements
+    4          | functionStatement
+    5          | main
+
+    6 blockStatements: blockStatement
+    7                | blockStatements blockStatement
+
+    8 blockStatement: variableDeclarationStatement
+    9               | constDeclarationStatement
+   10               | assignmentStatement
+   11               | ifStatement
+   12               | switchStatement
+   13               | whileStatement
+   14               | forStatement
+   15               | repeatStatement
+   16               | enumStatement
+   17               | returnStatement
+   18               | printStatement
+   19               | continueBreakStatement
+   20               | functionCallStatement
+   21               | comment
+
+   22 values: DIGIT
+   23       | FLOAT_LITERAL
+   24       | STRING_LITERAL
+   25       | CHAR_LITERAL
+   26       | BOOL_LITERAL
+
+   27 expression: intMathExpression
+   28           | floatMathExpression
+   29           | stringExpression
+   30           | logicalExpression
+
+   31 variableDeclarationStatement: assignVariableDeclaration
+   32                             | nonAssignVariableDeclaration
+
+   33 noSemiColumnVariableDeclarationStatement: noSemiColumnAssignVariableDeclaration
+   34                                         | noSemiColumnNonAssignVariableDeclaration
+
+   35 assignVariableDeclaration: noSemiColumnAssignVariableDeclaration ';'
+
+   36 noSemiColumnAssignVariableDeclaration: CHAR IDENTIFIER ASSIGN CHAR_LITERAL
+   37                                      | INT IDENTIFIER ASSIGN intMathExpression
+   38                                      | FLOAT IDENTIFIER ASSIGN floatMathExpression
+   39                                      | STRING IDENTIFIER ASSIGN stringExpression
+   40                                      | BOOL IDENTIFIER ASSIGN logicalExpression
+
+   41 nonAssignVariableDeclaration: noSemiColumnNonAssignVariableDeclaration ';'
+
+   42 noSemiColumnNonAssignVariableDeclaration: INT IDENTIFIER
+   43                                         | CHAR IDENTIFIER
+   44                                         | FLOAT IDENTIFIER
+   45                                         | STRING IDENTIFIER
+   46                                         | BOOL IDENTIFIER
+
+   47 constDeclarationStatement: noSemiColumnConstDeclaration ';'
+
+   48 noSemiColumnConstDeclaration: CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL
+   49                             | CONST INT IDENTIFIER ASSIGN intMathExpression
+   50                             | CONST FLOAT IDENTIFIER ASSIGN floatMathExpression
+   51                             | CONST STRING IDENTIFIER ASSIGN stringExpression
+   52                             | CONST BOOL IDENTIFIER ASSIGN logicalExpression
+
+   53 assignmentStatement: IDENTIFIER ASSIGN intMathExpression ';'
+   54                    | IDENTIFIER ASSIGN floatMathExpression ';'
+   55                    | IDENTIFIER ASSIGN stringExpression ';'
+   56                    | IDENTIFIER ASSIGN logicalExpression ';'
+   57                    | IDENTIFIER ASSIGN CHAR_LITERAL ';'
+
+   58 intMathExpression: intMathExpression PLUS intMathTerm
+   59                  | intMathExpression MINUS intMathTerm
+   60                  | intMathTerm
+
+   61 intMathTerm: intMathTerm MULTIPLY intMathFactor
+   62            | intMathTerm DIVIDE intMathFactor
+   63            | intMathTerm MODULO intMathFactor
+   64            | intMathFactor
+
+   65 intMathFactor: intMathPrimary
+   66              | intMathFactor INCREMENT
+   67              | intMathFactor DECREMENT
+
+   68 intMathPrimary: IDENTIFIER
+   69               | DIGIT
+   70               | LEFT_PARENTHESIS intMathExpression RIGHT_PARENTHESIS
+
+   71 floatMathExpression: IDENTIFIER
+   72                    | FLOAT_LITERAL
+   73                    | floatMathExpression PLUS floatMathExpression
+   74                    | floatMathExpression MINUS floatMathExpression
+   75                    | floatMathExpression MULTIPLY floatMathExpression
+   76                    | floatMathExpression DIVIDE floatMathExpression
+   77                    | LEFT_PARENTHESIS floatMathExpression RIGHT_PARENTHESIS
+
+   78 stringExpression: STRING_LITERAL
+   79                 | IDENTIFIER
+   80                 | stringExpression PLUS stringExpression
+   81                 | LEFT_PARENTHESIS stringExpression RIGHT_PARENTHESIS
+
+   82 logicalExpression: IDENTIFIER
+   83                  | BOOL_LITERAL
+   84                  | intMathExpression GREATER intMathExpression
+   85                  | intMathExpression LESS intMathExpression
+   86                  | intMathExpression GREATER_EQUAL intMathExpression
+   87                  | intMathExpression LESS_EQUAL intMathExpression
+   88                  | intMathExpression EQUAL intMathExpression
+   89                  | intMathExpression NOT_EQUAL intMathExpression
+   90                  | floatMathExpression GREATER floatMathExpression
+   91                  | floatMathExpression LESS floatMathExpression
+   92                  | floatMathExpression GREATER_EQUAL floatMathExpression
+   93                  | floatMathExpression LESS_EQUAL floatMathExpression
+   94                  | floatMathExpression EQUAL floatMathExpression
+   95                  | floatMathExpression NOT_EQUAL floatMathExpression
+   96                  | LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS
+   97                  | logicalExpression AND logicalExpression
+   98                  | logicalExpression OR logicalExpression
+   99                  | NOT logicalExpression
+
+  100 $@1: %empty
+
+  101 $@2: %empty
+
+  102 ifStatement: IF $@1 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@2 blockStatements RIGHT_CURLY_BRACE
+
+  103 $@3: %empty
+
+  104 $@4: %empty
+
+  105 $@5: %empty
+
+  106 $@6: %empty
+
+  107 $@7: %empty
+
+  108 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
+
+  109 $@8: %empty
+
+  110 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@8 blockStatements RIGHT_CURLY_BRACE
+
+  111 $@9: %empty
+
+  112 repeatStatement: REPEAT LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS
+
+  113 forAssignment: IDENTIFIER ASSIGN intMathExpression
+  114              | IDENTIFIER ASSIGN floatMathExpression
+  115              | IDENTIFIER ASSIGN stringExpression
+  116              | IDENTIFIER ASSIGN BOOL_LITERAL
+  117              | IDENTIFIER INCREMENT
+  118              | IDENTIFIER DECREMENT
+
+  119 forDeclaration: IDENTIFIER ASSIGN intMathExpression ';'
+  120               | IDENTIFIER ASSIGN floatMathExpression ';'
+  121               | IDENTIFIER ASSIGN stringExpression ';'
+  122               | IDENTIFIER ASSIGN BOOL_LITERAL ';'
+  123               | assignVariableDeclaration
+
+  124 $@10: %empty
+
+  125 forStatement: FOR LEFT_PARENTHESIS $@10 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+
+  126 $@11: %empty
+
+  127 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@11 caseStatement RIGHT_CURLY_BRACE
+
+  128 caseStatement: CASE values ':' blockStatements BREAK ';' caseStatement
+  129              | CASE values ':' blockStatements BREAK ';'
+  130              | DEFAULT ':' blockStatements BREAK ';'
+  131              | %empty
+
+  132 enumIdentifiers: IDENTIFIER ',' enumIdentifiers
+  133                | IDENTIFIER
+
+  134 $@12: %empty
+
+  135 enumStatement: ENUM IDENTIFIER LEFT_CURLY_BRACE $@12 enumIdentifiers RIGHT_CURLY_BRACE
+
+  136 $@13: %empty
+
+  137 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@13 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+
+  138 parameter: noSemiColumnVariableDeclarationStatement ',' parameter
+  139          | noSemiColumnVariableDeclarationStatement
+  140          | noSemiColumnConstDeclaration ',' parameter
+  141          | noSemiColumnConstDeclaration
+  142          | %empty
+
+  143 returnStatement: RETURN argument ';'
+  144                | RETURN ';'
+
+  145 continueBreakStatement: BREAK ';'
+  146                       | BREAK IDENTIFIER ';'
+  147                       | BREAK
+  148                       | CONTINUE ';'
+  149                       | CONTINUE IDENTIFIER ';'
+  150                       | CONTINUE
+
+  151 printStatement: PRINT LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
+  152               | PRINT LEFT_PARENTHESIS RIGHT_PARENTHESIS ';'
+
+  153 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
+  154                      | IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS ';'
+
+  155 argument: expression ',' argument
+  156         | expression
+
+  157 comment: COMMENT
+
+  158 $@14: %empty
+
+  159 $@15: %empty
+
+  160 main: MAIN $@14 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@15 blockStatements RIGHT_CURLY_BRACE
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    ',' (44) 132 138 140 155
+    ':' (58) 128 129 130
+    ';' (59) 35 41 47 53 54 55 56 57 119 120 121 122 125 128 129 130 143 144 145 146 148 149 151 152 153 154
+    error (256)
+    INT (258) 37 42 49
+    CHAR (259) 36 43 48
+    FLOAT (260) 38 44 50
+    STRING (261) 39 45 51
+    CONST (262) 48 49 50 51 52
+    BOOL (263) 40 46 52
+    VOID (264)
+    PLUS (265) 58 73 80
+    MINUS (266) 59 74
+    MULTIPLY (267) 61 75
+    DIVIDE (268) 62 76
+    MODULO (269) 63
+    INCREMENT (270) 66 117
+    DECREMENT (271) 67 118
+    GREATER (272) 84 90
+    LESS (273) 85 91
+    GREATER_EQUAL (274) 86 92
+    LESS_EQUAL (275) 87 93
+    EQUAL (276) 88 94
+    NOT_EQUAL (277) 89 95
+    AND (278) 97
+    OR (279) 98
+    NOT (280) 99
+    ASSIGN (281) 36 37 38 39 40 48 49 50 51 52 53 54 55 56 57 113 114 115 116 119 120 121 122
+    IF (282) 102 108
+    ELSE (283) 108
+    SWITCH (284) 127
+    CASE (285) 128 129
+    DEFAULT (286) 130
+    CONTINUE (287) 148 149 150
+    BREAK (288) 128 129 130 145 146 147
+    THEN (289)
+    WHILE (290) 110
+    DO (291)
+    FOR (292) 125
+    RETURN (293) 143 144
+    REPEAT (294) 112
+    UNTIL (295) 112
+    LEFT_CURLY_BRACE (296) 102 108 110 112 125 127 135 137 160
+    RIGHT_CURLY_BRACE (297) 102 108 110 112 125 127 135 137 160
+    LEFT_PARENTHESIS (298) 70 77 81 96 102 108 110 112 125 127 137 151 152 153 154 160
+    RIGHT_PARENTHESIS (299) 70 77 81 96 102 108 110 112 125 127 137 151 152 153 154 160
+    LEFT_SQUARE_BRACKET (300)
+    RIGHT_SQUARE_BRACKET (301)
+    ENUM (302) 135
+    FUNCTION (303) 137
+    MAIN (304) 160
+    PRINT (305) 151 152
+    SCAN (306)
+    COMMENT (307) 157
+    IDENTIFIER <sVal> (308) 36 37 38 39 40 42 43 44 45 46 48 49 50 51 52 53 54 55 56 57 68 71 79 82 113 114 115 116 117 118 119 120 121 122 127 132 133 135 137 146 149 153 154
+    DIGIT <iVal> (309) 22 69
+    FLOAT_LITERAL <fVal> (310) 23 72
+    STRING_LITERAL <sVal> (311) 24 78
+    CHAR_LITERAL <cVal> (312) 25 36 48 57
+    BOOL_LITERAL <bVal> (313) 26 83 116 122
+
+
+Nonterminals, with rules where they appear
+
+    $accept (62)
+        on left: 0
+    program (63)
+        on left: 1 2
+        on right: 0 2
+    statement (64)
+        on left: 3 4 5
+        on right: 1 2
+    blockStatements (65)
+        on left: 6 7
+        on right: 3 7 102 108 110 112 125 128 129 130 137 160
+    blockStatement (66)
+        on left: 8 9 10 11 12 13 14 15 16 17 18 19 20 21
+        on right: 6 7
+    values (67)
+        on left: 22 23 24 25 26
+        on right: 128 129
+    expression (68)
+        on left: 27 28 29 30
+        on right: 155 156
+    variableDeclarationStatement (69)
+        on left: 31 32
+        on right: 8
+    noSemiColumnVariableDeclarationStatement (70)
+        on left: 33 34
+        on right: 138 139
+    assignVariableDeclaration (71)
+        on left: 35
+        on right: 31 123
+    noSemiColumnAssignVariableDeclaration (72)
+        on left: 36 37 38 39 40
+        on right: 33 35
+    nonAssignVariableDeclaration (73)
+        on left: 41
+        on right: 32
+    noSemiColumnNonAssignVariableDeclaration (74)
+        on left: 42 43 44 45 46
+        on right: 34 41
+    constDeclarationStatement (75)
+        on left: 47
+        on right: 9
+    noSemiColumnConstDeclaration (76)
+        on left: 48 49 50 51 52
+        on right: 47 140 141
+    assignmentStatement (77)
+        on left: 53 54 55 56 57
+        on right: 10
+    intMathExpression <iVal> (78)
+        on left: 58 59 60
+        on right: 27 37 49 53 58 59 70 84 85 86 87 88 89 113 119
+    intMathTerm <iVal> (79)
+        on left: 61 62 63 64
+        on right: 58 59 60 61 62 63
+    intMathFactor <iVal> (80)
+        on left: 65 66 67
+        on right: 61 62 63 64 66 67
+    intMathPrimary <iVal> (81)
+        on left: 68 69 70
+        on right: 65
+    floatMathExpression <fVal> (82)
+        on left: 71 72 73 74 75 76 77
+        on right: 28 38 50 54 73 74 75 76 77 90 91 92 93 94 95 114 120
+    stringExpression <sVal> (83)
+        on left: 78 79 80 81
+        on right: 29 39 51 55 80 81 115 121
+    logicalExpression <bVal> (84)
+        on left: 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99
+        on right: 30 40 52 56 96 97 98 99 102 108 110 112 125
+    ifStatement (85)
+        on left: 102 108
+        on right: 11
+    $@1 (86)
+        on left: 100
+        on right: 102
+    $@2 (87)
+        on left: 101
+        on right: 102
+    $@3 (88)
+        on left: 103
+        on right: 108
+    $@4 (89)
+        on left: 104
+        on right: 108
+    $@5 (90)
+        on left: 105
+        on right: 108
+    $@6 (91)
+        on left: 106
+        on right: 108
+    $@7 (92)
+        on left: 107
+        on right: 108
+    whileStatement (93)
+        on left: 110
+        on right: 13
+    $@8 (94)
+        on left: 109
+        on right: 110
+    repeatStatement (95)
+        on left: 112
+        on right: 15
+    $@9 (96)
+        on left: 111
+        on right: 112
+    forAssignment (97)
+        on left: 113 114 115 116 117 118
+        on right: 125
+    forDeclaration (98)
+        on left: 119 120 121 122 123
+        on right: 125
+    forStatement (99)
+        on left: 125
+        on right: 14
+    $@10 (100)
+        on left: 124
+        on right: 125
+    switchStatement (101)
+        on left: 127
+        on right: 12
+    $@11 (102)
+        on left: 126
+        on right: 127
+    caseStatement (103)
+        on left: 128 129 130 131
+        on right: 127 128
+    enumIdentifiers (104)
+        on left: 132 133
+        on right: 132 135
+    enumStatement (105)
+        on left: 135
+        on right: 16
+    $@12 (106)
+        on left: 134
+        on right: 135
+    functionStatement (107)
+        on left: 137
+        on right: 4
+    $@13 (108)
+        on left: 136
+        on right: 137
+    parameter (109)
+        on left: 138 139 140 141 142
+        on right: 137 138 140
+    returnStatement (110)
+        on left: 143 144
+        on right: 17
+    continueBreakStatement (111)
+        on left: 145 146 147 148 149 150
+        on right: 19
+    printStatement (112)
+        on left: 151 152
+        on right: 18
+    functionCallStatement (113)
+        on left: 153 154
+        on right: 20
+    argument (114)
+        on left: 155 156
+        on right: 143 151 153 155
+    comment (115)
+        on left: 157
+        on right: 21
+    main (116)
+        on left: 160
+        on right: 5
+    $@14 (117)
+        on left: 158
+        on right: 160
+    $@15 (118)
+        on left: 159
+        on right: 160
+
+
+State 0
+
+    0 $accept: . program $end
+
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 10
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    FUNCTION    shift, and go to state 16
+    MAIN        shift, and go to state 17
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    program                                   go to state 21
+    statement                                 go to state 22
+    blockStatements                           go to state 23
+    blockStatement                            go to state 24
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    functionStatement                         go to state 39
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+    main                                      go to state 45
+
+
+State 1
+
+   37 noSemiColumnAssignVariableDeclaration: INT . IDENTIFIER ASSIGN intMathExpression
+   42 noSemiColumnNonAssignVariableDeclaration: INT . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 46
+
+
+State 2
+
+   36 noSemiColumnAssignVariableDeclaration: CHAR . IDENTIFIER ASSIGN CHAR_LITERAL
+   43 noSemiColumnNonAssignVariableDeclaration: CHAR . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 47
+
+
+State 3
+
+   38 noSemiColumnAssignVariableDeclaration: FLOAT . IDENTIFIER ASSIGN floatMathExpression
+   44 noSemiColumnNonAssignVariableDeclaration: FLOAT . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 48
+
+
+State 4
+
+   39 noSemiColumnAssignVariableDeclaration: STRING . IDENTIFIER ASSIGN stringExpression
+   45 noSemiColumnNonAssignVariableDeclaration: STRING . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 49
+
+
+State 5
+
+   48 noSemiColumnConstDeclaration: CONST . CHAR IDENTIFIER ASSIGN CHAR_LITERAL
+   49                             | CONST . INT IDENTIFIER ASSIGN intMathExpression
+   50                             | CONST . FLOAT IDENTIFIER ASSIGN floatMathExpression
+   51                             | CONST . STRING IDENTIFIER ASSIGN stringExpression
+   52                             | CONST . BOOL IDENTIFIER ASSIGN logicalExpression
+
+    INT     shift, and go to state 50
+    CHAR    shift, and go to state 51
+    FLOAT   shift, and go to state 52
+    STRING  shift, and go to state 53
+    BOOL    shift, and go to state 54
+
+
+State 6
+
+   40 noSemiColumnAssignVariableDeclaration: BOOL . IDENTIFIER ASSIGN logicalExpression
+   46 noSemiColumnNonAssignVariableDeclaration: BOOL . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 55
+
+
+State 7
+
+  102 ifStatement: IF . $@1 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@2 blockStatements RIGHT_CURLY_BRACE
+  108            | IF . $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
+
+    LEFT_PARENTHESIS  reduce using rule 100 ($@1)
+    LEFT_PARENTHESIS  [reduce using rule 103 ($@3)]
+    $default          reduce using rule 100 ($@1)
+
+    $@1  go to state 56
+    $@3  go to state 57
+
+
+State 8
+
+  127 switchStatement: SWITCH . LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@11 caseStatement RIGHT_CURLY_BRACE
+
+    LEFT_PARENTHESIS  shift, and go to state 58
+
+
+State 9
+
+  148 continueBreakStatement: CONTINUE . ';'
+  149                       | CONTINUE . IDENTIFIER ';'
+  150                       | CONTINUE .
+
+    IDENTIFIER  shift, and go to state 59
+    ';'         shift, and go to state 60
+
+    IDENTIFIER  [reduce using rule 150 (continueBreakStatement)]
+    $default    reduce using rule 150 (continueBreakStatement)
+
+
+State 10
+
+  145 continueBreakStatement: BREAK . ';'
+  146                       | BREAK . IDENTIFIER ';'
+  147                       | BREAK .
+
+    IDENTIFIER  shift, and go to state 61
+    ';'         shift, and go to state 62
+
+    IDENTIFIER  [reduce using rule 147 (continueBreakStatement)]
+    $default    reduce using rule 147 (continueBreakStatement)
+
+
+State 11
+
+  110 whileStatement: WHILE . LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@8 blockStatements RIGHT_CURLY_BRACE
+
+    LEFT_PARENTHESIS  shift, and go to state 63
+
+
+State 12
+
+  125 forStatement: FOR . LEFT_PARENTHESIS $@10 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+
+    LEFT_PARENTHESIS  shift, and go to state 64
+
+
+State 13
+
+  143 returnStatement: RETURN . argument ';'
+  144                | RETURN . ';'
+
+    NOT               shift, and go to state 65
+    LEFT_PARENTHESIS  shift, and go to state 66
+    IDENTIFIER        shift, and go to state 67
+    DIGIT             shift, and go to state 68
+    FLOAT_LITERAL     shift, and go to state 69
+    STRING_LITERAL    shift, and go to state 70
+    BOOL_LITERAL      shift, and go to state 71
+    ';'               shift, and go to state 72
+
+    expression           go to state 73
+    intMathExpression    go to state 74
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 78
+    stringExpression     go to state 79
+    logicalExpression    go to state 80
+    argument             go to state 81
+
+
+State 14
+
+  112 repeatStatement: REPEAT . LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS
+
+    LEFT_CURLY_BRACE  shift, and go to state 82
+
+
+State 15
+
+  135 enumStatement: ENUM . IDENTIFIER LEFT_CURLY_BRACE $@12 enumIdentifiers RIGHT_CURLY_BRACE
+
+    IDENTIFIER  shift, and go to state 83
+
+
+State 16
+
+  137 functionStatement: FUNCTION . IDENTIFIER LEFT_PARENTHESIS $@13 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+
+    IDENTIFIER  shift, and go to state 84
+
+
+State 17
+
+  160 main: MAIN . $@14 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@15 blockStatements RIGHT_CURLY_BRACE
+
+    $default  reduce using rule 158 ($@14)
+
+    $@14  go to state 85
+
+
+State 18
+
+  151 printStatement: PRINT . LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
+  152               | PRINT . LEFT_PARENTHESIS RIGHT_PARENTHESIS ';'
+
+    LEFT_PARENTHESIS  shift, and go to state 86
+
+
+State 19
+
+  157 comment: COMMENT .
+
+    $default  reduce using rule 157 (comment)
+
+
+State 20
+
+   53 assignmentStatement: IDENTIFIER . ASSIGN intMathExpression ';'
+   54                    | IDENTIFIER . ASSIGN floatMathExpression ';'
+   55                    | IDENTIFIER . ASSIGN stringExpression ';'
+   56                    | IDENTIFIER . ASSIGN logicalExpression ';'
+   57                    | IDENTIFIER . ASSIGN CHAR_LITERAL ';'
+  153 functionCallStatement: IDENTIFIER . LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
+  154                      | IDENTIFIER . LEFT_PARENTHESIS RIGHT_PARENTHESIS ';'
+
+    ASSIGN            shift, and go to state 87
+    LEFT_PARENTHESIS  shift, and go to state 88
+
+
+State 21
+
+    0 $accept: program . $end
+    2 program: program . statement
+
+    $end        shift, and go to state 89
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 10
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    FUNCTION    shift, and go to state 16
+    MAIN        shift, and go to state 17
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    statement                                 go to state 90
+    blockStatements                           go to state 23
+    blockStatement                            go to state 24
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    functionStatement                         go to state 39
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+    main                                      go to state 45
+
+
+State 22
+
+    1 program: statement .
+
+    $default  reduce using rule 1 (program)
+
+
+State 23
+
+    3 statement: blockStatements .
+    7 blockStatements: blockStatements . blockStatement
+
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 10
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    INT         [reduce using rule 3 (statement)]
+    CHAR        [reduce using rule 3 (statement)]
+    FLOAT       [reduce using rule 3 (statement)]
+    STRING      [reduce using rule 3 (statement)]
+    CONST       [reduce using rule 3 (statement)]
+    BOOL        [reduce using rule 3 (statement)]
+    IF          [reduce using rule 3 (statement)]
+    SWITCH      [reduce using rule 3 (statement)]
+    CONTINUE    [reduce using rule 3 (statement)]
+    BREAK       [reduce using rule 3 (statement)]
+    WHILE       [reduce using rule 3 (statement)]
+    FOR         [reduce using rule 3 (statement)]
+    RETURN      [reduce using rule 3 (statement)]
+    REPEAT      [reduce using rule 3 (statement)]
+    ENUM        [reduce using rule 3 (statement)]
+    PRINT       [reduce using rule 3 (statement)]
+    COMMENT     [reduce using rule 3 (statement)]
+    IDENTIFIER  [reduce using rule 3 (statement)]
+    $default    reduce using rule 3 (statement)
+
+    blockStatement                            go to state 91
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 24
+
+    6 blockStatements: blockStatement .
+
+    $default  reduce using rule 6 (blockStatements)
+
+
+State 25
+
+    8 blockStatement: variableDeclarationStatement .
+
+    $default  reduce using rule 8 (blockStatement)
+
+
+State 26
+
+   31 variableDeclarationStatement: assignVariableDeclaration .
+
+    $default  reduce using rule 31 (variableDeclarationStatement)
+
+
+State 27
+
+   35 assignVariableDeclaration: noSemiColumnAssignVariableDeclaration . ';'
+
+    ';'  shift, and go to state 92
+
+
+State 28
+
+   32 variableDeclarationStatement: nonAssignVariableDeclaration .
+
+    $default  reduce using rule 32 (variableDeclarationStatement)
+
+
+State 29
+
+   41 nonAssignVariableDeclaration: noSemiColumnNonAssignVariableDeclaration . ';'
+
+    ';'  shift, and go to state 93
+
+
+State 30
+
+    9 blockStatement: constDeclarationStatement .
+
+    $default  reduce using rule 9 (blockStatement)
+
+
+State 31
+
+   47 constDeclarationStatement: noSemiColumnConstDeclaration . ';'
+
+    ';'  shift, and go to state 94
+
+
+State 32
+
+   10 blockStatement: assignmentStatement .
+
+    $default  reduce using rule 10 (blockStatement)
+
+
+State 33
+
+   11 blockStatement: ifStatement .
+
+    $default  reduce using rule 11 (blockStatement)
+
+
+State 34
+
+   13 blockStatement: whileStatement .
+
+    $default  reduce using rule 13 (blockStatement)
+
+
+State 35
+
+   15 blockStatement: repeatStatement .
+
+    $default  reduce using rule 15 (blockStatement)
+
+
+State 36
+
+   14 blockStatement: forStatement .
+
+    $default  reduce using rule 14 (blockStatement)
+
+
+State 37
+
+   12 blockStatement: switchStatement .
+
+    $default  reduce using rule 12 (blockStatement)
+
+
+State 38
+
+   16 blockStatement: enumStatement .
+
+    $default  reduce using rule 16 (blockStatement)
+
+
+State 39
+
+    4 statement: functionStatement .
+
+    $default  reduce using rule 4 (statement)
+
+
+State 40
+
+   17 blockStatement: returnStatement .
+
+    $default  reduce using rule 17 (blockStatement)
+
+
+State 41
+
+   19 blockStatement: continueBreakStatement .
+
+    $default  reduce using rule 19 (blockStatement)
+
+
+State 42
+
+   18 blockStatement: printStatement .
+
+    $default  reduce using rule 18 (blockStatement)
+
+
+State 43
+
+   20 blockStatement: functionCallStatement .
+
+    $default  reduce using rule 20 (blockStatement)
+
+
+State 44
+
+   21 blockStatement: comment .
+
+    $default  reduce using rule 21 (blockStatement)
+
+
+State 45
+
+    5 statement: main .
+
+    $default  reduce using rule 5 (statement)
+
+
+State 46
+
+   37 noSemiColumnAssignVariableDeclaration: INT IDENTIFIER . ASSIGN intMathExpression
+   42 noSemiColumnNonAssignVariableDeclaration: INT IDENTIFIER .
+
+    ASSIGN  shift, and go to state 95
+
+    $default  reduce using rule 42 (noSemiColumnNonAssignVariableDeclaration)
+
+
+State 47
+
+   36 noSemiColumnAssignVariableDeclaration: CHAR IDENTIFIER . ASSIGN CHAR_LITERAL
+   43 noSemiColumnNonAssignVariableDeclaration: CHAR IDENTIFIER .
+
+    ASSIGN  shift, and go to state 96
+
+    $default  reduce using rule 43 (noSemiColumnNonAssignVariableDeclaration)
+
+
+State 48
+
+   38 noSemiColumnAssignVariableDeclaration: FLOAT IDENTIFIER . ASSIGN floatMathExpression
+   44 noSemiColumnNonAssignVariableDeclaration: FLOAT IDENTIFIER .
+
+    ASSIGN  shift, and go to state 97
+
+    $default  reduce using rule 44 (noSemiColumnNonAssignVariableDeclaration)
+
+
+State 49
+
+   39 noSemiColumnAssignVariableDeclaration: STRING IDENTIFIER . ASSIGN stringExpression
+   45 noSemiColumnNonAssignVariableDeclaration: STRING IDENTIFIER .
+
+    ASSIGN  shift, and go to state 98
+
+    $default  reduce using rule 45 (noSemiColumnNonAssignVariableDeclaration)
+
+
+State 50
+
+   49 noSemiColumnConstDeclaration: CONST INT . IDENTIFIER ASSIGN intMathExpression
+
+    IDENTIFIER  shift, and go to state 99
+
+
+State 51
+
+   48 noSemiColumnConstDeclaration: CONST CHAR . IDENTIFIER ASSIGN CHAR_LITERAL
+
+    IDENTIFIER  shift, and go to state 100
+
+
+State 52
+
+   50 noSemiColumnConstDeclaration: CONST FLOAT . IDENTIFIER ASSIGN floatMathExpression
+
+    IDENTIFIER  shift, and go to state 101
+
+
+State 53
+
+   51 noSemiColumnConstDeclaration: CONST STRING . IDENTIFIER ASSIGN stringExpression
+
+    IDENTIFIER  shift, and go to state 102
+
+
+State 54
+
+   52 noSemiColumnConstDeclaration: CONST BOOL . IDENTIFIER ASSIGN logicalExpression
+
+    IDENTIFIER  shift, and go to state 103
+
+
+State 55
+
+   40 noSemiColumnAssignVariableDeclaration: BOOL IDENTIFIER . ASSIGN logicalExpression
+   46 noSemiColumnNonAssignVariableDeclaration: BOOL IDENTIFIER .
+
+    ASSIGN  shift, and go to state 104
+
+    $default  reduce using rule 46 (noSemiColumnNonAssignVariableDeclaration)
+
+
+State 56
+
+  102 ifStatement: IF $@1 . LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@2 blockStatements RIGHT_CURLY_BRACE
+
+    LEFT_PARENTHESIS  shift, and go to state 105
+
+
+State 57
+
+  108 ifStatement: IF $@3 . LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
+
+    LEFT_PARENTHESIS  shift, and go to state 106
+
+
+State 58
+
+  127 switchStatement: SWITCH LEFT_PARENTHESIS . IDENTIFIER RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@11 caseStatement RIGHT_CURLY_BRACE
+
+    IDENTIFIER  shift, and go to state 107
+
+
+State 59
+
+  149 continueBreakStatement: CONTINUE IDENTIFIER . ';'
+
+    ';'  shift, and go to state 108
+
+
+State 60
+
+  148 continueBreakStatement: CONTINUE ';' .
+
+    $default  reduce using rule 148 (continueBreakStatement)
+
+
+State 61
+
+  146 continueBreakStatement: BREAK IDENTIFIER . ';'
+
+    ';'  shift, and go to state 109
+
+
+State 62
+
+  145 continueBreakStatement: BREAK ';' .
+
+    $default  reduce using rule 145 (continueBreakStatement)
+
+
+State 63
+
+  110 whileStatement: WHILE LEFT_PARENTHESIS . logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@8 blockStatements RIGHT_CURLY_BRACE
+
+    NOT               shift, and go to state 65
+    LEFT_PARENTHESIS  shift, and go to state 110
+    IDENTIFIER        shift, and go to state 111
+    DIGIT             shift, and go to state 68
+    FLOAT_LITERAL     shift, and go to state 69
+    BOOL_LITERAL      shift, and go to state 71
+
+    intMathExpression    go to state 112
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 113
+    logicalExpression    go to state 114
+
+
+State 64
+
+  125 forStatement: FOR LEFT_PARENTHESIS . $@10 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+
+    $default  reduce using rule 124 ($@10)
+
+    $@10  go to state 115
+
+
+State 65
+
+   99 logicalExpression: NOT . logicalExpression
+
+    NOT               shift, and go to state 65
+    LEFT_PARENTHESIS  shift, and go to state 110
+    IDENTIFIER        shift, and go to state 111
+    DIGIT             shift, and go to state 68
+    FLOAT_LITERAL     shift, and go to state 69
+    BOOL_LITERAL      shift, and go to state 71
+
+    intMathExpression    go to state 112
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 113
+    logicalExpression    go to state 116
+
+
+State 66
+
+   70 intMathPrimary: LEFT_PARENTHESIS . intMathExpression RIGHT_PARENTHESIS
+   77 floatMathExpression: LEFT_PARENTHESIS . floatMathExpression RIGHT_PARENTHESIS
+   81 stringExpression: LEFT_PARENTHESIS . stringExpression RIGHT_PARENTHESIS
+   96 logicalExpression: LEFT_PARENTHESIS . logicalExpression RIGHT_PARENTHESIS
+
+    NOT               shift, and go to state 65
+    LEFT_PARENTHESIS  shift, and go to state 66
+    IDENTIFIER        shift, and go to state 67
+    DIGIT             shift, and go to state 68
+    FLOAT_LITERAL     shift, and go to state 69
+    STRING_LITERAL    shift, and go to state 70
+    BOOL_LITERAL      shift, and go to state 71
+
+    intMathExpression    go to state 117
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 118
+    stringExpression     go to state 119
+    logicalExpression    go to state 120
+
+
+State 67
+
+   68 intMathPrimary: IDENTIFIER .
+   71 floatMathExpression: IDENTIFIER .
+   79 stringExpression: IDENTIFIER .
+   82 logicalExpression: IDENTIFIER .
+
+    PLUS               reduce using rule 68 (intMathPrimary)
+    PLUS               [reduce using rule 71 (floatMathExpression)]
+    PLUS               [reduce using rule 79 (stringExpression)]
+    MINUS              reduce using rule 68 (intMathPrimary)
+    MINUS              [reduce using rule 71 (floatMathExpression)]
+    MULTIPLY           reduce using rule 68 (intMathPrimary)
+    MULTIPLY           [reduce using rule 71 (floatMathExpression)]
+    DIVIDE             reduce using rule 68 (intMathPrimary)
+    DIVIDE             [reduce using rule 71 (floatMathExpression)]
+    GREATER            reduce using rule 68 (intMathPrimary)
+    GREATER            [reduce using rule 71 (floatMathExpression)]
+    LESS               reduce using rule 68 (intMathPrimary)
+    LESS               [reduce using rule 71 (floatMathExpression)]
+    GREATER_EQUAL      reduce using rule 68 (intMathPrimary)
+    GREATER_EQUAL      [reduce using rule 71 (floatMathExpression)]
+    LESS_EQUAL         reduce using rule 68 (intMathPrimary)
+    LESS_EQUAL         [reduce using rule 71 (floatMathExpression)]
+    EQUAL              reduce using rule 68 (intMathPrimary)
+    EQUAL              [reduce using rule 71 (floatMathExpression)]
+    NOT_EQUAL          reduce using rule 68 (intMathPrimary)
+    NOT_EQUAL          [reduce using rule 71 (floatMathExpression)]
+    AND                reduce using rule 82 (logicalExpression)
+    OR                 reduce using rule 82 (logicalExpression)
+    RIGHT_PARENTHESIS  reduce using rule 68 (intMathPrimary)
+    RIGHT_PARENTHESIS  [reduce using rule 71 (floatMathExpression)]
+    RIGHT_PARENTHESIS  [reduce using rule 79 (stringExpression)]
+    RIGHT_PARENTHESIS  [reduce using rule 82 (logicalExpression)]
+    ';'                reduce using rule 68 (intMathPrimary)
+    ';'                [reduce using rule 71 (floatMathExpression)]
+    ';'                [reduce using rule 79 (stringExpression)]
+    ';'                [reduce using rule 82 (logicalExpression)]
+    ','                reduce using rule 68 (intMathPrimary)
+    ','                [reduce using rule 71 (floatMathExpression)]
+    ','                [reduce using rule 79 (stringExpression)]
+    ','                [reduce using rule 82 (logicalExpression)]
+    $default           reduce using rule 68 (intMathPrimary)
+
+
+State 68
+
+   69 intMathPrimary: DIGIT .
+
+    $default  reduce using rule 69 (intMathPrimary)
+
+
+State 69
+
+   72 floatMathExpression: FLOAT_LITERAL .
+
+    $default  reduce using rule 72 (floatMathExpression)
+
+
+State 70
+
+   78 stringExpression: STRING_LITERAL .
+
+    $default  reduce using rule 78 (stringExpression)
+
+
+State 71
+
+   83 logicalExpression: BOOL_LITERAL .
+
+    $default  reduce using rule 83 (logicalExpression)
+
+
+State 72
+
+  144 returnStatement: RETURN ';' .
+
+    $default  reduce using rule 144 (returnStatement)
+
+
+State 73
+
+  155 argument: expression . ',' argument
+  156         | expression .
+
+    ','  shift, and go to state 121
+
+    $default  reduce using rule 156 (argument)
+
+
+State 74
+
+   27 expression: intMathExpression .
+   58 intMathExpression: intMathExpression . PLUS intMathTerm
+   59                  | intMathExpression . MINUS intMathTerm
+   84 logicalExpression: intMathExpression . GREATER intMathExpression
+   85                  | intMathExpression . LESS intMathExpression
+   86                  | intMathExpression . GREATER_EQUAL intMathExpression
+   87                  | intMathExpression . LESS_EQUAL intMathExpression
+   88                  | intMathExpression . EQUAL intMathExpression
+   89                  | intMathExpression . NOT_EQUAL intMathExpression
+
+    PLUS           shift, and go to state 122
+    MINUS          shift, and go to state 123
+    GREATER        shift, and go to state 124
+    LESS           shift, and go to state 125
+    GREATER_EQUAL  shift, and go to state 126
+    LESS_EQUAL     shift, and go to state 127
+    EQUAL          shift, and go to state 128
+    NOT_EQUAL      shift, and go to state 129
+
+    $default  reduce using rule 27 (expression)
+
+
+State 75
+
+   60 intMathExpression: intMathTerm .
+   61 intMathTerm: intMathTerm . MULTIPLY intMathFactor
+   62            | intMathTerm . DIVIDE intMathFactor
+   63            | intMathTerm . MODULO intMathFactor
+
+    MULTIPLY  shift, and go to state 130
+    DIVIDE    shift, and go to state 131
+    MODULO    shift, and go to state 132
+
+    $default  reduce using rule 60 (intMathExpression)
+
+
+State 76
+
+   64 intMathTerm: intMathFactor .
+   66 intMathFactor: intMathFactor . INCREMENT
+   67              | intMathFactor . DECREMENT
+
+    INCREMENT  shift, and go to state 133
+    DECREMENT  shift, and go to state 134
+
+    $default  reduce using rule 64 (intMathTerm)
+
+
+State 77
+
+   65 intMathFactor: intMathPrimary .
+
+    $default  reduce using rule 65 (intMathFactor)
+
+
+State 78
+
+   28 expression: floatMathExpression .
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   74                    | floatMathExpression . MINUS floatMathExpression
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+   90 logicalExpression: floatMathExpression . GREATER floatMathExpression
+   91                  | floatMathExpression . LESS floatMathExpression
+   92                  | floatMathExpression . GREATER_EQUAL floatMathExpression
+   93                  | floatMathExpression . LESS_EQUAL floatMathExpression
+   94                  | floatMathExpression . EQUAL floatMathExpression
+   95                  | floatMathExpression . NOT_EQUAL floatMathExpression
+
+    PLUS           shift, and go to state 135
+    MINUS          shift, and go to state 136
+    MULTIPLY       shift, and go to state 137
+    DIVIDE         shift, and go to state 138
+    GREATER        shift, and go to state 139
+    LESS           shift, and go to state 140
+    GREATER_EQUAL  shift, and go to state 141
+    LESS_EQUAL     shift, and go to state 142
+    EQUAL          shift, and go to state 143
+    NOT_EQUAL      shift, and go to state 144
+
+    $default  reduce using rule 28 (expression)
+
+
+State 79
+
+   29 expression: stringExpression .
+   80 stringExpression: stringExpression . PLUS stringExpression
+
+    PLUS  shift, and go to state 145
+
+    $default  reduce using rule 29 (expression)
+
+
+State 80
+
+   30 expression: logicalExpression .
+   97 logicalExpression: logicalExpression . AND logicalExpression
+   98                  | logicalExpression . OR logicalExpression
+
+    AND  shift, and go to state 146
+    OR   shift, and go to state 147
+
+    $default  reduce using rule 30 (expression)
+
+
+State 81
+
+  143 returnStatement: RETURN argument . ';'
+
+    ';'  shift, and go to state 148
+
+
+State 82
+
+  112 repeatStatement: REPEAT LEFT_CURLY_BRACE . $@9 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS
+
+    $default  reduce using rule 111 ($@9)
+
+    $@9  go to state 149
+
+
+State 83
+
+  135 enumStatement: ENUM IDENTIFIER . LEFT_CURLY_BRACE $@12 enumIdentifiers RIGHT_CURLY_BRACE
+
+    LEFT_CURLY_BRACE  shift, and go to state 150
+
+
+State 84
+
+  137 functionStatement: FUNCTION IDENTIFIER . LEFT_PARENTHESIS $@13 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+
+    LEFT_PARENTHESIS  shift, and go to state 151
+
+
+State 85
+
+  160 main: MAIN $@14 . LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@15 blockStatements RIGHT_CURLY_BRACE
+
+    LEFT_PARENTHESIS  shift, and go to state 152
+
+
+State 86
+
+  151 printStatement: PRINT LEFT_PARENTHESIS . argument RIGHT_PARENTHESIS ';'
+  152               | PRINT LEFT_PARENTHESIS . RIGHT_PARENTHESIS ';'
+
+    NOT                shift, and go to state 65
+    LEFT_PARENTHESIS   shift, and go to state 66
+    RIGHT_PARENTHESIS  shift, and go to state 153
+    IDENTIFIER         shift, and go to state 67
+    DIGIT              shift, and go to state 68
+    FLOAT_LITERAL      shift, and go to state 69
+    STRING_LITERAL     shift, and go to state 70
+    BOOL_LITERAL       shift, and go to state 71
+
+    expression           go to state 73
+    intMathExpression    go to state 74
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 78
+    stringExpression     go to state 79
+    logicalExpression    go to state 80
+    argument             go to state 154
+
+
+State 87
+
+   53 assignmentStatement: IDENTIFIER ASSIGN . intMathExpression ';'
+   54                    | IDENTIFIER ASSIGN . floatMathExpression ';'
+   55                    | IDENTIFIER ASSIGN . stringExpression ';'
+   56                    | IDENTIFIER ASSIGN . logicalExpression ';'
+   57                    | IDENTIFIER ASSIGN . CHAR_LITERAL ';'
+
+    NOT               shift, and go to state 65
+    LEFT_PARENTHESIS  shift, and go to state 66
+    IDENTIFIER        shift, and go to state 67
+    DIGIT             shift, and go to state 68
+    FLOAT_LITERAL     shift, and go to state 69
+    STRING_LITERAL    shift, and go to state 70
+    CHAR_LITERAL      shift, and go to state 155
+    BOOL_LITERAL      shift, and go to state 71
+
+    intMathExpression    go to state 156
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 157
+    stringExpression     go to state 158
+    logicalExpression    go to state 159
+
+
+State 88
+
+  153 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS . argument RIGHT_PARENTHESIS ';'
+  154                      | IDENTIFIER LEFT_PARENTHESIS . RIGHT_PARENTHESIS ';'
+
+    NOT                shift, and go to state 65
+    LEFT_PARENTHESIS   shift, and go to state 66
+    RIGHT_PARENTHESIS  shift, and go to state 160
+    IDENTIFIER         shift, and go to state 67
+    DIGIT              shift, and go to state 68
+    FLOAT_LITERAL      shift, and go to state 69
+    STRING_LITERAL     shift, and go to state 70
+    BOOL_LITERAL       shift, and go to state 71
+
+    expression           go to state 73
+    intMathExpression    go to state 74
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 78
+    stringExpression     go to state 79
+    logicalExpression    go to state 80
+    argument             go to state 161
+
+
+State 89
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+State 90
+
+    2 program: program statement .
+
+    $default  reduce using rule 2 (program)
+
+
+State 91
+
+    7 blockStatements: blockStatements blockStatement .
+
+    $default  reduce using rule 7 (blockStatements)
+
+
+State 92
+
+   35 assignVariableDeclaration: noSemiColumnAssignVariableDeclaration ';' .
+
+    $default  reduce using rule 35 (assignVariableDeclaration)
+
+
+State 93
+
+   41 nonAssignVariableDeclaration: noSemiColumnNonAssignVariableDeclaration ';' .
+
+    $default  reduce using rule 41 (nonAssignVariableDeclaration)
+
+
+State 94
+
+   47 constDeclarationStatement: noSemiColumnConstDeclaration ';' .
+
+    $default  reduce using rule 47 (constDeclarationStatement)
+
+
+State 95
+
+   37 noSemiColumnAssignVariableDeclaration: INT IDENTIFIER ASSIGN . intMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 162
+    IDENTIFIER        shift, and go to state 163
+    DIGIT             shift, and go to state 68
+
+    intMathExpression  go to state 164
+    intMathTerm        go to state 75
+    intMathFactor      go to state 76
+    intMathPrimary     go to state 77
+
+
+State 96
+
+   36 noSemiColumnAssignVariableDeclaration: CHAR IDENTIFIER ASSIGN . CHAR_LITERAL
+
+    CHAR_LITERAL  shift, and go to state 165
+
+
+State 97
+
+   38 noSemiColumnAssignVariableDeclaration: FLOAT IDENTIFIER ASSIGN . floatMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 166
+    IDENTIFIER        shift, and go to state 167
+    FLOAT_LITERAL     shift, and go to state 69
+
+    floatMathExpression  go to state 168
+
+
+State 98
+
+   39 noSemiColumnAssignVariableDeclaration: STRING IDENTIFIER ASSIGN . stringExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 169
+    IDENTIFIER        shift, and go to state 170
+    STRING_LITERAL    shift, and go to state 70
+
+    stringExpression  go to state 171
+
+
+State 99
+
+   49 noSemiColumnConstDeclaration: CONST INT IDENTIFIER . ASSIGN intMathExpression
+
+    ASSIGN  shift, and go to state 172
+
+
+State 100
+
+   48 noSemiColumnConstDeclaration: CONST CHAR IDENTIFIER . ASSIGN CHAR_LITERAL
+
+    ASSIGN  shift, and go to state 173
+
+
+State 101
+
+   50 noSemiColumnConstDeclaration: CONST FLOAT IDENTIFIER . ASSIGN floatMathExpression
+
+    ASSIGN  shift, and go to state 174
+
+
+State 102
+
+   51 noSemiColumnConstDeclaration: CONST STRING IDENTIFIER . ASSIGN stringExpression
+
+    ASSIGN  shift, and go to state 175
+
+
+State 103
+
+   52 noSemiColumnConstDeclaration: CONST BOOL IDENTIFIER . ASSIGN logicalExpression
+
+    ASSIGN  shift, and go to state 176
+
+
+State 104
+
+   40 noSemiColumnAssignVariableDeclaration: BOOL IDENTIFIER ASSIGN . logicalExpression
+
+    NOT               shift, and go to state 65
+    LEFT_PARENTHESIS  shift, and go to state 110
+    IDENTIFIER        shift, and go to state 111
+    DIGIT             shift, and go to state 68
+    FLOAT_LITERAL     shift, and go to state 69
+    BOOL_LITERAL      shift, and go to state 71
+
+    intMathExpression    go to state 112
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 113
+    logicalExpression    go to state 177
+
+
+State 105
+
+  102 ifStatement: IF $@1 LEFT_PARENTHESIS . logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@2 blockStatements RIGHT_CURLY_BRACE
+
+    NOT               shift, and go to state 65
+    LEFT_PARENTHESIS  shift, and go to state 110
+    IDENTIFIER        shift, and go to state 111
+    DIGIT             shift, and go to state 68
+    FLOAT_LITERAL     shift, and go to state 69
+    BOOL_LITERAL      shift, and go to state 71
+
+    intMathExpression    go to state 112
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 113
+    logicalExpression    go to state 178
+
+
+State 106
+
+  108 ifStatement: IF $@3 LEFT_PARENTHESIS . logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
+
+    NOT               shift, and go to state 65
+    LEFT_PARENTHESIS  shift, and go to state 110
+    IDENTIFIER        shift, and go to state 111
+    DIGIT             shift, and go to state 68
+    FLOAT_LITERAL     shift, and go to state 69
+    BOOL_LITERAL      shift, and go to state 71
+
+    intMathExpression    go to state 112
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 113
+    logicalExpression    go to state 179
+
+
+State 107
+
+  127 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER . RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@11 caseStatement RIGHT_CURLY_BRACE
+
+    RIGHT_PARENTHESIS  shift, and go to state 180
+
+
+State 108
+
+  149 continueBreakStatement: CONTINUE IDENTIFIER ';' .
+
+    $default  reduce using rule 149 (continueBreakStatement)
+
+
+State 109
+
+  146 continueBreakStatement: BREAK IDENTIFIER ';' .
+
+    $default  reduce using rule 146 (continueBreakStatement)
+
+
+State 110
+
+   70 intMathPrimary: LEFT_PARENTHESIS . intMathExpression RIGHT_PARENTHESIS
+   77 floatMathExpression: LEFT_PARENTHESIS . floatMathExpression RIGHT_PARENTHESIS
+   96 logicalExpression: LEFT_PARENTHESIS . logicalExpression RIGHT_PARENTHESIS
+
+    NOT               shift, and go to state 65
+    LEFT_PARENTHESIS  shift, and go to state 110
+    IDENTIFIER        shift, and go to state 111
+    DIGIT             shift, and go to state 68
+    FLOAT_LITERAL     shift, and go to state 69
+    BOOL_LITERAL      shift, and go to state 71
+
+    intMathExpression    go to state 117
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 118
+    logicalExpression    go to state 120
+
+
+State 111
+
+   68 intMathPrimary: IDENTIFIER .
+   71 floatMathExpression: IDENTIFIER .
+   82 logicalExpression: IDENTIFIER .
+
+    PLUS               reduce using rule 68 (intMathPrimary)
+    PLUS               [reduce using rule 71 (floatMathExpression)]
+    MINUS              reduce using rule 68 (intMathPrimary)
+    MINUS              [reduce using rule 71 (floatMathExpression)]
+    MULTIPLY           reduce using rule 68 (intMathPrimary)
+    MULTIPLY           [reduce using rule 71 (floatMathExpression)]
+    DIVIDE             reduce using rule 68 (intMathPrimary)
+    DIVIDE             [reduce using rule 71 (floatMathExpression)]
+    GREATER            reduce using rule 68 (intMathPrimary)
+    GREATER            [reduce using rule 71 (floatMathExpression)]
+    LESS               reduce using rule 68 (intMathPrimary)
+    LESS               [reduce using rule 71 (floatMathExpression)]
+    GREATER_EQUAL      reduce using rule 68 (intMathPrimary)
+    GREATER_EQUAL      [reduce using rule 71 (floatMathExpression)]
+    LESS_EQUAL         reduce using rule 68 (intMathPrimary)
+    LESS_EQUAL         [reduce using rule 71 (floatMathExpression)]
+    EQUAL              reduce using rule 68 (intMathPrimary)
+    EQUAL              [reduce using rule 71 (floatMathExpression)]
+    NOT_EQUAL          reduce using rule 68 (intMathPrimary)
+    NOT_EQUAL          [reduce using rule 71 (floatMathExpression)]
+    AND                reduce using rule 82 (logicalExpression)
+    OR                 reduce using rule 82 (logicalExpression)
+    RIGHT_PARENTHESIS  reduce using rule 68 (intMathPrimary)
+    RIGHT_PARENTHESIS  [reduce using rule 71 (floatMathExpression)]
+    RIGHT_PARENTHESIS  [reduce using rule 82 (logicalExpression)]
+    ';'                reduce using rule 82 (logicalExpression)
+    ','                reduce using rule 82 (logicalExpression)
+    $default           reduce using rule 68 (intMathPrimary)
+
+
+State 112
+
+   58 intMathExpression: intMathExpression . PLUS intMathTerm
+   59                  | intMathExpression . MINUS intMathTerm
+   84 logicalExpression: intMathExpression . GREATER intMathExpression
+   85                  | intMathExpression . LESS intMathExpression
+   86                  | intMathExpression . GREATER_EQUAL intMathExpression
+   87                  | intMathExpression . LESS_EQUAL intMathExpression
+   88                  | intMathExpression . EQUAL intMathExpression
+   89                  | intMathExpression . NOT_EQUAL intMathExpression
+
+    PLUS           shift, and go to state 122
+    MINUS          shift, and go to state 123
+    GREATER        shift, and go to state 124
+    LESS           shift, and go to state 125
+    GREATER_EQUAL  shift, and go to state 126
+    LESS_EQUAL     shift, and go to state 127
+    EQUAL          shift, and go to state 128
+    NOT_EQUAL      shift, and go to state 129
+
+
+State 113
+
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   74                    | floatMathExpression . MINUS floatMathExpression
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+   90 logicalExpression: floatMathExpression . GREATER floatMathExpression
+   91                  | floatMathExpression . LESS floatMathExpression
+   92                  | floatMathExpression . GREATER_EQUAL floatMathExpression
+   93                  | floatMathExpression . LESS_EQUAL floatMathExpression
+   94                  | floatMathExpression . EQUAL floatMathExpression
+   95                  | floatMathExpression . NOT_EQUAL floatMathExpression
+
+    PLUS           shift, and go to state 135
+    MINUS          shift, and go to state 136
+    MULTIPLY       shift, and go to state 137
+    DIVIDE         shift, and go to state 138
+    GREATER        shift, and go to state 139
+    LESS           shift, and go to state 140
+    GREATER_EQUAL  shift, and go to state 141
+    LESS_EQUAL     shift, and go to state 142
+    EQUAL          shift, and go to state 143
+    NOT_EQUAL      shift, and go to state 144
+
+
+State 114
+
+   97 logicalExpression: logicalExpression . AND logicalExpression
+   98                  | logicalExpression . OR logicalExpression
+  110 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression . RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@8 blockStatements RIGHT_CURLY_BRACE
+
+    AND                shift, and go to state 146
+    OR                 shift, and go to state 147
+    RIGHT_PARENTHESIS  shift, and go to state 181
+
+
+State 115
+
+  125 forStatement: FOR LEFT_PARENTHESIS $@10 . forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+
+    INT         shift, and go to state 182
+    CHAR        shift, and go to state 183
+    FLOAT       shift, and go to state 184
+    STRING      shift, and go to state 185
+    BOOL        shift, and go to state 186
+    IDENTIFIER  shift, and go to state 187
+
+    assignVariableDeclaration              go to state 188
+    noSemiColumnAssignVariableDeclaration  go to state 27
+    forDeclaration                         go to state 189
+
+
+State 116
+
+   97 logicalExpression: logicalExpression . AND logicalExpression
+   98                  | logicalExpression . OR logicalExpression
+   99                  | NOT logicalExpression .
+
+    AND  shift, and go to state 146
+    OR   shift, and go to state 147
+
+    AND       [reduce using rule 99 (logicalExpression)]
+    OR        [reduce using rule 99 (logicalExpression)]
+    $default  reduce using rule 99 (logicalExpression)
+
+
+State 117
+
+   58 intMathExpression: intMathExpression . PLUS intMathTerm
+   59                  | intMathExpression . MINUS intMathTerm
+   70 intMathPrimary: LEFT_PARENTHESIS intMathExpression . RIGHT_PARENTHESIS
+   84 logicalExpression: intMathExpression . GREATER intMathExpression
+   85                  | intMathExpression . LESS intMathExpression
+   86                  | intMathExpression . GREATER_EQUAL intMathExpression
+   87                  | intMathExpression . LESS_EQUAL intMathExpression
+   88                  | intMathExpression . EQUAL intMathExpression
+   89                  | intMathExpression . NOT_EQUAL intMathExpression
+
+    PLUS               shift, and go to state 122
+    MINUS              shift, and go to state 123
+    GREATER            shift, and go to state 124
+    LESS               shift, and go to state 125
+    GREATER_EQUAL      shift, and go to state 126
+    LESS_EQUAL         shift, and go to state 127
+    EQUAL              shift, and go to state 128
+    NOT_EQUAL          shift, and go to state 129
+    RIGHT_PARENTHESIS  shift, and go to state 190
+
+
+State 118
+
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   74                    | floatMathExpression . MINUS floatMathExpression
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+   77                    | LEFT_PARENTHESIS floatMathExpression . RIGHT_PARENTHESIS
+   90 logicalExpression: floatMathExpression . GREATER floatMathExpression
+   91                  | floatMathExpression . LESS floatMathExpression
+   92                  | floatMathExpression . GREATER_EQUAL floatMathExpression
+   93                  | floatMathExpression . LESS_EQUAL floatMathExpression
+   94                  | floatMathExpression . EQUAL floatMathExpression
+   95                  | floatMathExpression . NOT_EQUAL floatMathExpression
+
+    PLUS               shift, and go to state 135
+    MINUS              shift, and go to state 136
+    MULTIPLY           shift, and go to state 137
+    DIVIDE             shift, and go to state 138
+    GREATER            shift, and go to state 139
+    LESS               shift, and go to state 140
+    GREATER_EQUAL      shift, and go to state 141
+    LESS_EQUAL         shift, and go to state 142
+    EQUAL              shift, and go to state 143
+    NOT_EQUAL          shift, and go to state 144
+    RIGHT_PARENTHESIS  shift, and go to state 191
+
+
+State 119
+
+   80 stringExpression: stringExpression . PLUS stringExpression
+   81                 | LEFT_PARENTHESIS stringExpression . RIGHT_PARENTHESIS
+
+    PLUS               shift, and go to state 145
+    RIGHT_PARENTHESIS  shift, and go to state 192
+
+
+State 120
+
+   96 logicalExpression: LEFT_PARENTHESIS logicalExpression . RIGHT_PARENTHESIS
+   97                  | logicalExpression . AND logicalExpression
+   98                  | logicalExpression . OR logicalExpression
+
+    AND                shift, and go to state 146
+    OR                 shift, and go to state 147
+    RIGHT_PARENTHESIS  shift, and go to state 193
+
+
+State 121
+
+  155 argument: expression ',' . argument
+
+    NOT               shift, and go to state 65
+    LEFT_PARENTHESIS  shift, and go to state 66
+    IDENTIFIER        shift, and go to state 67
+    DIGIT             shift, and go to state 68
+    FLOAT_LITERAL     shift, and go to state 69
+    STRING_LITERAL    shift, and go to state 70
+    BOOL_LITERAL      shift, and go to state 71
+
+    expression           go to state 73
+    intMathExpression    go to state 74
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 78
+    stringExpression     go to state 79
+    logicalExpression    go to state 80
+    argument             go to state 194
+
+
+State 122
+
+   58 intMathExpression: intMathExpression PLUS . intMathTerm
+
+    LEFT_PARENTHESIS  shift, and go to state 162
+    IDENTIFIER        shift, and go to state 163
+    DIGIT             shift, and go to state 68
+
+    intMathTerm     go to state 195
+    intMathFactor   go to state 76
+    intMathPrimary  go to state 77
+
+
+State 123
+
+   59 intMathExpression: intMathExpression MINUS . intMathTerm
+
+    LEFT_PARENTHESIS  shift, and go to state 162
+    IDENTIFIER        shift, and go to state 163
+    DIGIT             shift, and go to state 68
+
+    intMathTerm     go to state 196
+    intMathFactor   go to state 76
+    intMathPrimary  go to state 77
+
+
+State 124
+
+   84 logicalExpression: intMathExpression GREATER . intMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 162
+    IDENTIFIER        shift, and go to state 163
+    DIGIT             shift, and go to state 68
+
+    intMathExpression  go to state 197
+    intMathTerm        go to state 75
+    intMathFactor      go to state 76
+    intMathPrimary     go to state 77
+
+
+State 125
+
+   85 logicalExpression: intMathExpression LESS . intMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 162
+    IDENTIFIER        shift, and go to state 163
+    DIGIT             shift, and go to state 68
+
+    intMathExpression  go to state 198
+    intMathTerm        go to state 75
+    intMathFactor      go to state 76
+    intMathPrimary     go to state 77
+
+
+State 126
+
+   86 logicalExpression: intMathExpression GREATER_EQUAL . intMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 162
+    IDENTIFIER        shift, and go to state 163
+    DIGIT             shift, and go to state 68
+
+    intMathExpression  go to state 199
+    intMathTerm        go to state 75
+    intMathFactor      go to state 76
+    intMathPrimary     go to state 77
+
+
+State 127
+
+   87 logicalExpression: intMathExpression LESS_EQUAL . intMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 162
+    IDENTIFIER        shift, and go to state 163
+    DIGIT             shift, and go to state 68
+
+    intMathExpression  go to state 200
+    intMathTerm        go to state 75
+    intMathFactor      go to state 76
+    intMathPrimary     go to state 77
+
+
+State 128
+
+   88 logicalExpression: intMathExpression EQUAL . intMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 162
+    IDENTIFIER        shift, and go to state 163
+    DIGIT             shift, and go to state 68
+
+    intMathExpression  go to state 201
+    intMathTerm        go to state 75
+    intMathFactor      go to state 76
+    intMathPrimary     go to state 77
+
+
+State 129
+
+   89 logicalExpression: intMathExpression NOT_EQUAL . intMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 162
+    IDENTIFIER        shift, and go to state 163
+    DIGIT             shift, and go to state 68
+
+    intMathExpression  go to state 202
+    intMathTerm        go to state 75
+    intMathFactor      go to state 76
+    intMathPrimary     go to state 77
+
+
+State 130
+
+   61 intMathTerm: intMathTerm MULTIPLY . intMathFactor
+
+    LEFT_PARENTHESIS  shift, and go to state 162
+    IDENTIFIER        shift, and go to state 163
+    DIGIT             shift, and go to state 68
+
+    intMathFactor   go to state 203
+    intMathPrimary  go to state 77
+
+
+State 131
+
+   62 intMathTerm: intMathTerm DIVIDE . intMathFactor
+
+    LEFT_PARENTHESIS  shift, and go to state 162
+    IDENTIFIER        shift, and go to state 163
+    DIGIT             shift, and go to state 68
+
+    intMathFactor   go to state 204
+    intMathPrimary  go to state 77
+
+
+State 132
+
+   63 intMathTerm: intMathTerm MODULO . intMathFactor
+
+    LEFT_PARENTHESIS  shift, and go to state 162
+    IDENTIFIER        shift, and go to state 163
+    DIGIT             shift, and go to state 68
+
+    intMathFactor   go to state 205
+    intMathPrimary  go to state 77
+
+
+State 133
+
+   66 intMathFactor: intMathFactor INCREMENT .
+
+    $default  reduce using rule 66 (intMathFactor)
+
+
+State 134
+
+   67 intMathFactor: intMathFactor DECREMENT .
+
+    $default  reduce using rule 67 (intMathFactor)
+
+
+State 135
+
+   73 floatMathExpression: floatMathExpression PLUS . floatMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 166
+    IDENTIFIER        shift, and go to state 167
+    FLOAT_LITERAL     shift, and go to state 69
+
+    floatMathExpression  go to state 206
+
+
+State 136
+
+   74 floatMathExpression: floatMathExpression MINUS . floatMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 166
+    IDENTIFIER        shift, and go to state 167
+    FLOAT_LITERAL     shift, and go to state 69
+
+    floatMathExpression  go to state 207
+
+
+State 137
+
+   75 floatMathExpression: floatMathExpression MULTIPLY . floatMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 166
+    IDENTIFIER        shift, and go to state 167
+    FLOAT_LITERAL     shift, and go to state 69
+
+    floatMathExpression  go to state 208
+
+
+State 138
+
+   76 floatMathExpression: floatMathExpression DIVIDE . floatMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 166
+    IDENTIFIER        shift, and go to state 167
+    FLOAT_LITERAL     shift, and go to state 69
+
+    floatMathExpression  go to state 209
+
+
+State 139
+
+   90 logicalExpression: floatMathExpression GREATER . floatMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 166
+    IDENTIFIER        shift, and go to state 167
+    FLOAT_LITERAL     shift, and go to state 69
+
+    floatMathExpression  go to state 210
+
+
+State 140
+
+   91 logicalExpression: floatMathExpression LESS . floatMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 166
+    IDENTIFIER        shift, and go to state 167
+    FLOAT_LITERAL     shift, and go to state 69
+
+    floatMathExpression  go to state 211
+
+
+State 141
+
+   92 logicalExpression: floatMathExpression GREATER_EQUAL . floatMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 166
+    IDENTIFIER        shift, and go to state 167
+    FLOAT_LITERAL     shift, and go to state 69
+
+    floatMathExpression  go to state 212
+
+
+State 142
+
+   93 logicalExpression: floatMathExpression LESS_EQUAL . floatMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 166
+    IDENTIFIER        shift, and go to state 167
+    FLOAT_LITERAL     shift, and go to state 69
+
+    floatMathExpression  go to state 213
+
+
+State 143
+
+   94 logicalExpression: floatMathExpression EQUAL . floatMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 166
+    IDENTIFIER        shift, and go to state 167
+    FLOAT_LITERAL     shift, and go to state 69
+
+    floatMathExpression  go to state 214
+
+
+State 144
+
+   95 logicalExpression: floatMathExpression NOT_EQUAL . floatMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 166
+    IDENTIFIER        shift, and go to state 167
+    FLOAT_LITERAL     shift, and go to state 69
+
+    floatMathExpression  go to state 215
+
+
+State 145
+
+   80 stringExpression: stringExpression PLUS . stringExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 169
+    IDENTIFIER        shift, and go to state 170
+    STRING_LITERAL    shift, and go to state 70
+
+    stringExpression  go to state 216
+
+
+State 146
+
+   97 logicalExpression: logicalExpression AND . logicalExpression
+
+    NOT               shift, and go to state 65
+    LEFT_PARENTHESIS  shift, and go to state 110
+    IDENTIFIER        shift, and go to state 111
+    DIGIT             shift, and go to state 68
+    FLOAT_LITERAL     shift, and go to state 69
+    BOOL_LITERAL      shift, and go to state 71
+
+    intMathExpression    go to state 112
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 113
+    logicalExpression    go to state 217
+
+
+State 147
+
+   98 logicalExpression: logicalExpression OR . logicalExpression
+
+    NOT               shift, and go to state 65
+    LEFT_PARENTHESIS  shift, and go to state 110
+    IDENTIFIER        shift, and go to state 111
+    DIGIT             shift, and go to state 68
+    FLOAT_LITERAL     shift, and go to state 69
+    BOOL_LITERAL      shift, and go to state 71
+
+    intMathExpression    go to state 112
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 113
+    logicalExpression    go to state 218
+
+
+State 148
+
+  143 returnStatement: RETURN argument ';' .
+
+    $default  reduce using rule 143 (returnStatement)
+
+
+State 149
+
+  112 repeatStatement: REPEAT LEFT_CURLY_BRACE $@9 . blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS
+
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 10
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    blockStatements                           go to state 219
+    blockStatement                            go to state 24
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 150
+
+  135 enumStatement: ENUM IDENTIFIER LEFT_CURLY_BRACE . $@12 enumIdentifiers RIGHT_CURLY_BRACE
+
+    $default  reduce using rule 134 ($@12)
+
+    $@12  go to state 220
+
+
+State 151
+
+  137 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS . $@13 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+
+    $default  reduce using rule 136 ($@13)
+
+    $@13  go to state 221
+
+
+State 152
+
+  160 main: MAIN $@14 LEFT_PARENTHESIS . RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@15 blockStatements RIGHT_CURLY_BRACE
+
+    RIGHT_PARENTHESIS  shift, and go to state 222
+
+
+State 153
+
+  152 printStatement: PRINT LEFT_PARENTHESIS RIGHT_PARENTHESIS . ';'
+
+    ';'  shift, and go to state 223
+
+
+State 154
+
+  151 printStatement: PRINT LEFT_PARENTHESIS argument . RIGHT_PARENTHESIS ';'
+
+    RIGHT_PARENTHESIS  shift, and go to state 224
+
+
+State 155
+
+   57 assignmentStatement: IDENTIFIER ASSIGN CHAR_LITERAL . ';'
+
+    ';'  shift, and go to state 225
+
+
+State 156
+
+   53 assignmentStatement: IDENTIFIER ASSIGN intMathExpression . ';'
+   58 intMathExpression: intMathExpression . PLUS intMathTerm
+   59                  | intMathExpression . MINUS intMathTerm
+   84 logicalExpression: intMathExpression . GREATER intMathExpression
+   85                  | intMathExpression . LESS intMathExpression
+   86                  | intMathExpression . GREATER_EQUAL intMathExpression
+   87                  | intMathExpression . LESS_EQUAL intMathExpression
+   88                  | intMathExpression . EQUAL intMathExpression
+   89                  | intMathExpression . NOT_EQUAL intMathExpression
+
+    PLUS           shift, and go to state 122
+    MINUS          shift, and go to state 123
+    GREATER        shift, and go to state 124
+    LESS           shift, and go to state 125
+    GREATER_EQUAL  shift, and go to state 126
+    LESS_EQUAL     shift, and go to state 127
+    EQUAL          shift, and go to state 128
+    NOT_EQUAL      shift, and go to state 129
+    ';'            shift, and go to state 226
+
+
+State 157
+
+   54 assignmentStatement: IDENTIFIER ASSIGN floatMathExpression . ';'
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   74                    | floatMathExpression . MINUS floatMathExpression
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+   90 logicalExpression: floatMathExpression . GREATER floatMathExpression
+   91                  | floatMathExpression . LESS floatMathExpression
+   92                  | floatMathExpression . GREATER_EQUAL floatMathExpression
+   93                  | floatMathExpression . LESS_EQUAL floatMathExpression
+   94                  | floatMathExpression . EQUAL floatMathExpression
+   95                  | floatMathExpression . NOT_EQUAL floatMathExpression
+
+    PLUS           shift, and go to state 135
+    MINUS          shift, and go to state 136
+    MULTIPLY       shift, and go to state 137
+    DIVIDE         shift, and go to state 138
+    GREATER        shift, and go to state 139
+    LESS           shift, and go to state 140
+    GREATER_EQUAL  shift, and go to state 141
+    LESS_EQUAL     shift, and go to state 142
+    EQUAL          shift, and go to state 143
+    NOT_EQUAL      shift, and go to state 144
+    ';'            shift, and go to state 227
+
+
+State 158
+
+   55 assignmentStatement: IDENTIFIER ASSIGN stringExpression . ';'
+   80 stringExpression: stringExpression . PLUS stringExpression
+
+    PLUS  shift, and go to state 145
+    ';'   shift, and go to state 228
+
+
+State 159
+
+   56 assignmentStatement: IDENTIFIER ASSIGN logicalExpression . ';'
+   97 logicalExpression: logicalExpression . AND logicalExpression
+   98                  | logicalExpression . OR logicalExpression
+
+    AND  shift, and go to state 146
+    OR   shift, and go to state 147
+    ';'  shift, and go to state 229
+
+
+State 160
+
+  154 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS . ';'
+
+    ';'  shift, and go to state 230
+
+
+State 161
+
+  153 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS argument . RIGHT_PARENTHESIS ';'
+
+    RIGHT_PARENTHESIS  shift, and go to state 231
+
+
+State 162
+
+   70 intMathPrimary: LEFT_PARENTHESIS . intMathExpression RIGHT_PARENTHESIS
+
+    LEFT_PARENTHESIS  shift, and go to state 162
+    IDENTIFIER        shift, and go to state 163
+    DIGIT             shift, and go to state 68
+
+    intMathExpression  go to state 232
+    intMathTerm        go to state 75
+    intMathFactor      go to state 76
+    intMathPrimary     go to state 77
+
+
+State 163
+
+   68 intMathPrimary: IDENTIFIER .
+
+    $default  reduce using rule 68 (intMathPrimary)
+
+
+State 164
+
+   37 noSemiColumnAssignVariableDeclaration: INT IDENTIFIER ASSIGN intMathExpression .
+   58 intMathExpression: intMathExpression . PLUS intMathTerm
+   59                  | intMathExpression . MINUS intMathTerm
+
+    PLUS   shift, and go to state 122
+    MINUS  shift, and go to state 123
+
+    $default  reduce using rule 37 (noSemiColumnAssignVariableDeclaration)
+
+
+State 165
+
+   36 noSemiColumnAssignVariableDeclaration: CHAR IDENTIFIER ASSIGN CHAR_LITERAL .
+
+    $default  reduce using rule 36 (noSemiColumnAssignVariableDeclaration)
+
+
+State 166
+
+   77 floatMathExpression: LEFT_PARENTHESIS . floatMathExpression RIGHT_PARENTHESIS
+
+    LEFT_PARENTHESIS  shift, and go to state 166
+    IDENTIFIER        shift, and go to state 167
+    FLOAT_LITERAL     shift, and go to state 69
+
+    floatMathExpression  go to state 233
+
+
+State 167
+
+   71 floatMathExpression: IDENTIFIER .
+
+    $default  reduce using rule 71 (floatMathExpression)
+
+
+State 168
+
+   38 noSemiColumnAssignVariableDeclaration: FLOAT IDENTIFIER ASSIGN floatMathExpression .
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   74                    | floatMathExpression . MINUS floatMathExpression
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+
+    PLUS      shift, and go to state 135
+    MINUS     shift, and go to state 136
+    MULTIPLY  shift, and go to state 137
+    DIVIDE    shift, and go to state 138
+
+    $default  reduce using rule 38 (noSemiColumnAssignVariableDeclaration)
+
+
+State 169
+
+   81 stringExpression: LEFT_PARENTHESIS . stringExpression RIGHT_PARENTHESIS
+
+    LEFT_PARENTHESIS  shift, and go to state 169
+    IDENTIFIER        shift, and go to state 170
+    STRING_LITERAL    shift, and go to state 70
+
+    stringExpression  go to state 119
+
+
+State 170
+
+   79 stringExpression: IDENTIFIER .
+
+    $default  reduce using rule 79 (stringExpression)
+
+
+State 171
+
+   39 noSemiColumnAssignVariableDeclaration: STRING IDENTIFIER ASSIGN stringExpression .
+   80 stringExpression: stringExpression . PLUS stringExpression
+
+    PLUS  shift, and go to state 145
+
+    $default  reduce using rule 39 (noSemiColumnAssignVariableDeclaration)
+
+
+State 172
+
+   49 noSemiColumnConstDeclaration: CONST INT IDENTIFIER ASSIGN . intMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 162
+    IDENTIFIER        shift, and go to state 163
+    DIGIT             shift, and go to state 68
+
+    intMathExpression  go to state 234
+    intMathTerm        go to state 75
+    intMathFactor      go to state 76
+    intMathPrimary     go to state 77
+
+
+State 173
+
+   48 noSemiColumnConstDeclaration: CONST CHAR IDENTIFIER ASSIGN . CHAR_LITERAL
+
+    CHAR_LITERAL  shift, and go to state 235
+
+
+State 174
+
+   50 noSemiColumnConstDeclaration: CONST FLOAT IDENTIFIER ASSIGN . floatMathExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 166
+    IDENTIFIER        shift, and go to state 167
+    FLOAT_LITERAL     shift, and go to state 69
+
+    floatMathExpression  go to state 236
+
+
+State 175
+
+   51 noSemiColumnConstDeclaration: CONST STRING IDENTIFIER ASSIGN . stringExpression
+
+    LEFT_PARENTHESIS  shift, and go to state 169
+    IDENTIFIER        shift, and go to state 170
+    STRING_LITERAL    shift, and go to state 70
+
+    stringExpression  go to state 237
+
+
+State 176
+
+   52 noSemiColumnConstDeclaration: CONST BOOL IDENTIFIER ASSIGN . logicalExpression
+
+    NOT               shift, and go to state 65
+    LEFT_PARENTHESIS  shift, and go to state 110
+    IDENTIFIER        shift, and go to state 111
+    DIGIT             shift, and go to state 68
+    FLOAT_LITERAL     shift, and go to state 69
+    BOOL_LITERAL      shift, and go to state 71
+
+    intMathExpression    go to state 112
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 113
+    logicalExpression    go to state 238
+
+
+State 177
+
+   40 noSemiColumnAssignVariableDeclaration: BOOL IDENTIFIER ASSIGN logicalExpression .
+   97 logicalExpression: logicalExpression . AND logicalExpression
+   98                  | logicalExpression . OR logicalExpression
+
+    AND  shift, and go to state 146
+    OR   shift, and go to state 147
+
+    $default  reduce using rule 40 (noSemiColumnAssignVariableDeclaration)
+
+
+State 178
+
+   97 logicalExpression: logicalExpression . AND logicalExpression
+   98                  | logicalExpression . OR logicalExpression
+  102 ifStatement: IF $@1 LEFT_PARENTHESIS logicalExpression . RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@2 blockStatements RIGHT_CURLY_BRACE
+
+    AND                shift, and go to state 146
+    OR                 shift, and go to state 147
+    RIGHT_PARENTHESIS  shift, and go to state 239
+
+
+State 179
+
+   97 logicalExpression: logicalExpression . AND logicalExpression
+   98                  | logicalExpression . OR logicalExpression
+  108 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression . RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
+
+    AND                shift, and go to state 146
+    OR                 shift, and go to state 147
+    RIGHT_PARENTHESIS  shift, and go to state 240
+
+
+State 180
+
+  127 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS . LEFT_CURLY_BRACE $@11 caseStatement RIGHT_CURLY_BRACE
+
+    LEFT_CURLY_BRACE  shift, and go to state 241
+
+
+State 181
+
+  110 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS . LEFT_CURLY_BRACE $@8 blockStatements RIGHT_CURLY_BRACE
+
+    LEFT_CURLY_BRACE  shift, and go to state 242
+
+
+State 182
+
+   37 noSemiColumnAssignVariableDeclaration: INT . IDENTIFIER ASSIGN intMathExpression
+
+    IDENTIFIER  shift, and go to state 243
+
+
+State 183
+
+   36 noSemiColumnAssignVariableDeclaration: CHAR . IDENTIFIER ASSIGN CHAR_LITERAL
+
+    IDENTIFIER  shift, and go to state 244
+
+
+State 184
+
+   38 noSemiColumnAssignVariableDeclaration: FLOAT . IDENTIFIER ASSIGN floatMathExpression
+
+    IDENTIFIER  shift, and go to state 245
+
+
+State 185
+
+   39 noSemiColumnAssignVariableDeclaration: STRING . IDENTIFIER ASSIGN stringExpression
+
+    IDENTIFIER  shift, and go to state 246
+
+
+State 186
+
+   40 noSemiColumnAssignVariableDeclaration: BOOL . IDENTIFIER ASSIGN logicalExpression
+
+    IDENTIFIER  shift, and go to state 247
+
+
+State 187
+
+  119 forDeclaration: IDENTIFIER . ASSIGN intMathExpression ';'
+  120               | IDENTIFIER . ASSIGN floatMathExpression ';'
+  121               | IDENTIFIER . ASSIGN stringExpression ';'
+  122               | IDENTIFIER . ASSIGN BOOL_LITERAL ';'
+
+    ASSIGN  shift, and go to state 248
+
+
+State 188
+
+  123 forDeclaration: assignVariableDeclaration .
+
+    $default  reduce using rule 123 (forDeclaration)
+
+
+State 189
+
+  125 forStatement: FOR LEFT_PARENTHESIS $@10 forDeclaration . logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+
+    NOT               shift, and go to state 65
+    LEFT_PARENTHESIS  shift, and go to state 110
+    IDENTIFIER        shift, and go to state 111
+    DIGIT             shift, and go to state 68
+    FLOAT_LITERAL     shift, and go to state 69
+    BOOL_LITERAL      shift, and go to state 71
+
+    intMathExpression    go to state 112
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 113
+    logicalExpression    go to state 249
+
+
+State 190
+
+   70 intMathPrimary: LEFT_PARENTHESIS intMathExpression RIGHT_PARENTHESIS .
+
+    $default  reduce using rule 70 (intMathPrimary)
+
+
+State 191
+
+   77 floatMathExpression: LEFT_PARENTHESIS floatMathExpression RIGHT_PARENTHESIS .
+
+    $default  reduce using rule 77 (floatMathExpression)
+
+
+State 192
+
+   81 stringExpression: LEFT_PARENTHESIS stringExpression RIGHT_PARENTHESIS .
+
+    $default  reduce using rule 81 (stringExpression)
+
+
+State 193
+
+   96 logicalExpression: LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS .
+
+    $default  reduce using rule 96 (logicalExpression)
+
+
+State 194
+
+  155 argument: expression ',' argument .
+
+    $default  reduce using rule 155 (argument)
+
+
+State 195
+
+   58 intMathExpression: intMathExpression PLUS intMathTerm .
+   61 intMathTerm: intMathTerm . MULTIPLY intMathFactor
+   62            | intMathTerm . DIVIDE intMathFactor
+   63            | intMathTerm . MODULO intMathFactor
+
+    MULTIPLY  shift, and go to state 130
+    DIVIDE    shift, and go to state 131
+    MODULO    shift, and go to state 132
+
+    $default  reduce using rule 58 (intMathExpression)
+
+
+State 196
+
+   59 intMathExpression: intMathExpression MINUS intMathTerm .
+   61 intMathTerm: intMathTerm . MULTIPLY intMathFactor
+   62            | intMathTerm . DIVIDE intMathFactor
+   63            | intMathTerm . MODULO intMathFactor
+
+    MULTIPLY  shift, and go to state 130
+    DIVIDE    shift, and go to state 131
+    MODULO    shift, and go to state 132
+
+    $default  reduce using rule 59 (intMathExpression)
+
+
+State 197
+
+   58 intMathExpression: intMathExpression . PLUS intMathTerm
+   59                  | intMathExpression . MINUS intMathTerm
+   84 logicalExpression: intMathExpression GREATER intMathExpression .
+
+    PLUS   shift, and go to state 122
+    MINUS  shift, and go to state 123
+
+    $default  reduce using rule 84 (logicalExpression)
+
+
+State 198
+
+   58 intMathExpression: intMathExpression . PLUS intMathTerm
+   59                  | intMathExpression . MINUS intMathTerm
+   85 logicalExpression: intMathExpression LESS intMathExpression .
+
+    PLUS   shift, and go to state 122
+    MINUS  shift, and go to state 123
+
+    $default  reduce using rule 85 (logicalExpression)
+
+
+State 199
+
+   58 intMathExpression: intMathExpression . PLUS intMathTerm
+   59                  | intMathExpression . MINUS intMathTerm
+   86 logicalExpression: intMathExpression GREATER_EQUAL intMathExpression .
+
+    PLUS   shift, and go to state 122
+    MINUS  shift, and go to state 123
+
+    $default  reduce using rule 86 (logicalExpression)
+
+
+State 200
+
+   58 intMathExpression: intMathExpression . PLUS intMathTerm
+   59                  | intMathExpression . MINUS intMathTerm
+   87 logicalExpression: intMathExpression LESS_EQUAL intMathExpression .
+
+    PLUS   shift, and go to state 122
+    MINUS  shift, and go to state 123
+
+    $default  reduce using rule 87 (logicalExpression)
+
+
+State 201
+
+   58 intMathExpression: intMathExpression . PLUS intMathTerm
+   59                  | intMathExpression . MINUS intMathTerm
+   88 logicalExpression: intMathExpression EQUAL intMathExpression .
+
+    PLUS   shift, and go to state 122
+    MINUS  shift, and go to state 123
+
+    $default  reduce using rule 88 (logicalExpression)
+
+
+State 202
+
+   58 intMathExpression: intMathExpression . PLUS intMathTerm
+   59                  | intMathExpression . MINUS intMathTerm
+   89 logicalExpression: intMathExpression NOT_EQUAL intMathExpression .
+
+    PLUS   shift, and go to state 122
+    MINUS  shift, and go to state 123
+
+    $default  reduce using rule 89 (logicalExpression)
+
+
+State 203
+
+   61 intMathTerm: intMathTerm MULTIPLY intMathFactor .
+   66 intMathFactor: intMathFactor . INCREMENT
+   67              | intMathFactor . DECREMENT
+
+    INCREMENT  shift, and go to state 133
+    DECREMENT  shift, and go to state 134
+
+    $default  reduce using rule 61 (intMathTerm)
+
+
+State 204
+
+   62 intMathTerm: intMathTerm DIVIDE intMathFactor .
+   66 intMathFactor: intMathFactor . INCREMENT
+   67              | intMathFactor . DECREMENT
+
+    INCREMENT  shift, and go to state 133
+    DECREMENT  shift, and go to state 134
+
+    $default  reduce using rule 62 (intMathTerm)
+
+
+State 205
+
+   63 intMathTerm: intMathTerm MODULO intMathFactor .
+   66 intMathFactor: intMathFactor . INCREMENT
+   67              | intMathFactor . DECREMENT
+
+    INCREMENT  shift, and go to state 133
+    DECREMENT  shift, and go to state 134
+
+    $default  reduce using rule 63 (intMathTerm)
+
+
+State 206
+
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   73                    | floatMathExpression PLUS floatMathExpression .
+   74                    | floatMathExpression . MINUS floatMathExpression
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+
+    PLUS      shift, and go to state 135
+    MINUS     shift, and go to state 136
+    MULTIPLY  shift, and go to state 137
+    DIVIDE    shift, and go to state 138
+
+    PLUS      [reduce using rule 73 (floatMathExpression)]
+    MINUS     [reduce using rule 73 (floatMathExpression)]
+    MULTIPLY  [reduce using rule 73 (floatMathExpression)]
+    DIVIDE    [reduce using rule 73 (floatMathExpression)]
+    $default  reduce using rule 73 (floatMathExpression)
+
+
+State 207
+
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   74                    | floatMathExpression . MINUS floatMathExpression
+   74                    | floatMathExpression MINUS floatMathExpression .
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+
+    PLUS      shift, and go to state 135
+    MINUS     shift, and go to state 136
+    MULTIPLY  shift, and go to state 137
+    DIVIDE    shift, and go to state 138
+
+    PLUS      [reduce using rule 74 (floatMathExpression)]
+    MINUS     [reduce using rule 74 (floatMathExpression)]
+    MULTIPLY  [reduce using rule 74 (floatMathExpression)]
+    DIVIDE    [reduce using rule 74 (floatMathExpression)]
+    $default  reduce using rule 74 (floatMathExpression)
+
+
+State 208
+
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   74                    | floatMathExpression . MINUS floatMathExpression
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   75                    | floatMathExpression MULTIPLY floatMathExpression .
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+
+    PLUS      shift, and go to state 135
+    MINUS     shift, and go to state 136
+    MULTIPLY  shift, and go to state 137
+    DIVIDE    shift, and go to state 138
+
+    PLUS      [reduce using rule 75 (floatMathExpression)]
+    MINUS     [reduce using rule 75 (floatMathExpression)]
+    MULTIPLY  [reduce using rule 75 (floatMathExpression)]
+    DIVIDE    [reduce using rule 75 (floatMathExpression)]
+    $default  reduce using rule 75 (floatMathExpression)
+
+
+State 209
+
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   74                    | floatMathExpression . MINUS floatMathExpression
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+   76                    | floatMathExpression DIVIDE floatMathExpression .
+
+    PLUS      shift, and go to state 135
+    MINUS     shift, and go to state 136
+    MULTIPLY  shift, and go to state 137
+    DIVIDE    shift, and go to state 138
+
+    PLUS      [reduce using rule 76 (floatMathExpression)]
+    MINUS     [reduce using rule 76 (floatMathExpression)]
+    MULTIPLY  [reduce using rule 76 (floatMathExpression)]
+    DIVIDE    [reduce using rule 76 (floatMathExpression)]
+    $default  reduce using rule 76 (floatMathExpression)
+
+
+State 210
+
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   74                    | floatMathExpression . MINUS floatMathExpression
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+   90 logicalExpression: floatMathExpression GREATER floatMathExpression .
+
+    PLUS      shift, and go to state 135
+    MINUS     shift, and go to state 136
+    MULTIPLY  shift, and go to state 137
+    DIVIDE    shift, and go to state 138
+
+    $default  reduce using rule 90 (logicalExpression)
+
+
+State 211
+
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   74                    | floatMathExpression . MINUS floatMathExpression
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+   91 logicalExpression: floatMathExpression LESS floatMathExpression .
+
+    PLUS      shift, and go to state 135
+    MINUS     shift, and go to state 136
+    MULTIPLY  shift, and go to state 137
+    DIVIDE    shift, and go to state 138
+
+    $default  reduce using rule 91 (logicalExpression)
+
+
+State 212
+
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   74                    | floatMathExpression . MINUS floatMathExpression
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+   92 logicalExpression: floatMathExpression GREATER_EQUAL floatMathExpression .
+
+    PLUS      shift, and go to state 135
+    MINUS     shift, and go to state 136
+    MULTIPLY  shift, and go to state 137
+    DIVIDE    shift, and go to state 138
+
+    $default  reduce using rule 92 (logicalExpression)
+
+
+State 213
+
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   74                    | floatMathExpression . MINUS floatMathExpression
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+   93 logicalExpression: floatMathExpression LESS_EQUAL floatMathExpression .
+
+    PLUS      shift, and go to state 135
+    MINUS     shift, and go to state 136
+    MULTIPLY  shift, and go to state 137
+    DIVIDE    shift, and go to state 138
+
+    $default  reduce using rule 93 (logicalExpression)
+
+
+State 214
+
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   74                    | floatMathExpression . MINUS floatMathExpression
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+   94 logicalExpression: floatMathExpression EQUAL floatMathExpression .
+
+    PLUS      shift, and go to state 135
+    MINUS     shift, and go to state 136
+    MULTIPLY  shift, and go to state 137
+    DIVIDE    shift, and go to state 138
+
+    $default  reduce using rule 94 (logicalExpression)
+
+
+State 215
+
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   74                    | floatMathExpression . MINUS floatMathExpression
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+   95 logicalExpression: floatMathExpression NOT_EQUAL floatMathExpression .
+
+    PLUS      shift, and go to state 135
+    MINUS     shift, and go to state 136
+    MULTIPLY  shift, and go to state 137
+    DIVIDE    shift, and go to state 138
+
+    $default  reduce using rule 95 (logicalExpression)
+
+
+State 216
+
+   80 stringExpression: stringExpression . PLUS stringExpression
+   80                 | stringExpression PLUS stringExpression .
+
+    PLUS  shift, and go to state 145
+
+    PLUS      [reduce using rule 80 (stringExpression)]
+    $default  reduce using rule 80 (stringExpression)
+
+
+State 217
+
+   97 logicalExpression: logicalExpression . AND logicalExpression
+   97                  | logicalExpression AND logicalExpression .
+   98                  | logicalExpression . OR logicalExpression
+
+    AND  shift, and go to state 146
+    OR   shift, and go to state 147
+
+    AND       [reduce using rule 97 (logicalExpression)]
+    OR        [reduce using rule 97 (logicalExpression)]
+    $default  reduce using rule 97 (logicalExpression)
+
+
+State 218
+
+   97 logicalExpression: logicalExpression . AND logicalExpression
+   98                  | logicalExpression . OR logicalExpression
+   98                  | logicalExpression OR logicalExpression .
+
+    AND  shift, and go to state 146
+    OR   shift, and go to state 147
+
+    AND       [reduce using rule 98 (logicalExpression)]
+    OR        [reduce using rule 98 (logicalExpression)]
+    $default  reduce using rule 98 (logicalExpression)
+
+
+State 219
+
+    7 blockStatements: blockStatements . blockStatement
+  112 repeatStatement: REPEAT LEFT_CURLY_BRACE $@9 blockStatements . RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS
+
+    INT                shift, and go to state 1
+    CHAR               shift, and go to state 2
+    FLOAT              shift, and go to state 3
+    STRING             shift, and go to state 4
+    CONST              shift, and go to state 5
+    BOOL               shift, and go to state 6
+    IF                 shift, and go to state 7
+    SWITCH             shift, and go to state 8
+    CONTINUE           shift, and go to state 9
+    BREAK              shift, and go to state 10
+    WHILE              shift, and go to state 11
+    FOR                shift, and go to state 12
+    RETURN             shift, and go to state 13
+    REPEAT             shift, and go to state 14
+    RIGHT_CURLY_BRACE  shift, and go to state 250
+    ENUM               shift, and go to state 15
+    PRINT              shift, and go to state 18
+    COMMENT            shift, and go to state 19
+    IDENTIFIER         shift, and go to state 20
+
+    blockStatement                            go to state 91
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 220
+
+  135 enumStatement: ENUM IDENTIFIER LEFT_CURLY_BRACE $@12 . enumIdentifiers RIGHT_CURLY_BRACE
+
+    IDENTIFIER  shift, and go to state 251
+
+    enumIdentifiers  go to state 252
+
+
+State 221
+
+  137 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@13 . parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+
+    INT     shift, and go to state 1
+    CHAR    shift, and go to state 2
+    FLOAT   shift, and go to state 3
+    STRING  shift, and go to state 4
+    CONST   shift, and go to state 5
+    BOOL    shift, and go to state 6
+
+    $default  reduce using rule 142 (parameter)
+
+    noSemiColumnVariableDeclarationStatement  go to state 253
+    noSemiColumnAssignVariableDeclaration     go to state 254
+    noSemiColumnNonAssignVariableDeclaration  go to state 255
+    noSemiColumnConstDeclaration              go to state 256
+    parameter                                 go to state 257
+
+
+State 222
+
+  160 main: MAIN $@14 LEFT_PARENTHESIS RIGHT_PARENTHESIS . LEFT_CURLY_BRACE $@15 blockStatements RIGHT_CURLY_BRACE
+
+    LEFT_CURLY_BRACE  shift, and go to state 258
+
+
+State 223
+
+  152 printStatement: PRINT LEFT_PARENTHESIS RIGHT_PARENTHESIS ';' .
+
+    $default  reduce using rule 152 (printStatement)
+
+
+State 224
+
+  151 printStatement: PRINT LEFT_PARENTHESIS argument RIGHT_PARENTHESIS . ';'
+
+    ';'  shift, and go to state 259
+
+
+State 225
+
+   57 assignmentStatement: IDENTIFIER ASSIGN CHAR_LITERAL ';' .
+
+    $default  reduce using rule 57 (assignmentStatement)
+
+
+State 226
+
+   53 assignmentStatement: IDENTIFIER ASSIGN intMathExpression ';' .
+
+    $default  reduce using rule 53 (assignmentStatement)
+
+
+State 227
+
+   54 assignmentStatement: IDENTIFIER ASSIGN floatMathExpression ';' .
+
+    $default  reduce using rule 54 (assignmentStatement)
+
+
+State 228
+
+   55 assignmentStatement: IDENTIFIER ASSIGN stringExpression ';' .
+
+    $default  reduce using rule 55 (assignmentStatement)
+
+
+State 229
+
+   56 assignmentStatement: IDENTIFIER ASSIGN logicalExpression ';' .
+
+    $default  reduce using rule 56 (assignmentStatement)
+
+
+State 230
+
+  154 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS ';' .
+
+    $default  reduce using rule 154 (functionCallStatement)
+
+
+State 231
+
+  153 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS argument RIGHT_PARENTHESIS . ';'
+
+    ';'  shift, and go to state 260
+
+
+State 232
+
+   58 intMathExpression: intMathExpression . PLUS intMathTerm
+   59                  | intMathExpression . MINUS intMathTerm
+   70 intMathPrimary: LEFT_PARENTHESIS intMathExpression . RIGHT_PARENTHESIS
+
+    PLUS               shift, and go to state 122
+    MINUS              shift, and go to state 123
+    RIGHT_PARENTHESIS  shift, and go to state 190
+
+
+State 233
+
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   74                    | floatMathExpression . MINUS floatMathExpression
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+   77                    | LEFT_PARENTHESIS floatMathExpression . RIGHT_PARENTHESIS
+
+    PLUS               shift, and go to state 135
+    MINUS              shift, and go to state 136
+    MULTIPLY           shift, and go to state 137
+    DIVIDE             shift, and go to state 138
+    RIGHT_PARENTHESIS  shift, and go to state 191
+
+
+State 234
+
+   49 noSemiColumnConstDeclaration: CONST INT IDENTIFIER ASSIGN intMathExpression .
+   58 intMathExpression: intMathExpression . PLUS intMathTerm
+   59                  | intMathExpression . MINUS intMathTerm
+
+    PLUS   shift, and go to state 122
+    MINUS  shift, and go to state 123
+
+    $default  reduce using rule 49 (noSemiColumnConstDeclaration)
+
+
+State 235
+
+   48 noSemiColumnConstDeclaration: CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL .
+
+    $default  reduce using rule 48 (noSemiColumnConstDeclaration)
+
+
+State 236
+
+   50 noSemiColumnConstDeclaration: CONST FLOAT IDENTIFIER ASSIGN floatMathExpression .
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   74                    | floatMathExpression . MINUS floatMathExpression
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+
+    PLUS      shift, and go to state 135
+    MINUS     shift, and go to state 136
+    MULTIPLY  shift, and go to state 137
+    DIVIDE    shift, and go to state 138
+
+    $default  reduce using rule 50 (noSemiColumnConstDeclaration)
+
+
+State 237
+
+   51 noSemiColumnConstDeclaration: CONST STRING IDENTIFIER ASSIGN stringExpression .
+   80 stringExpression: stringExpression . PLUS stringExpression
+
+    PLUS  shift, and go to state 145
+
+    $default  reduce using rule 51 (noSemiColumnConstDeclaration)
+
+
+State 238
+
+   52 noSemiColumnConstDeclaration: CONST BOOL IDENTIFIER ASSIGN logicalExpression .
+   97 logicalExpression: logicalExpression . AND logicalExpression
+   98                  | logicalExpression . OR logicalExpression
+
+    AND  shift, and go to state 146
+    OR   shift, and go to state 147
+
+    $default  reduce using rule 52 (noSemiColumnConstDeclaration)
+
+
+State 239
+
+  102 ifStatement: IF $@1 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS . LEFT_CURLY_BRACE $@2 blockStatements RIGHT_CURLY_BRACE
+
+    LEFT_CURLY_BRACE  shift, and go to state 261
+
+
+State 240
+
+  108 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS . LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
+
+    LEFT_CURLY_BRACE  shift, and go to state 262
+
+
+State 241
+
+  127 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS LEFT_CURLY_BRACE . $@11 caseStatement RIGHT_CURLY_BRACE
+
+    $default  reduce using rule 126 ($@11)
+
+    $@11  go to state 263
+
+
+State 242
+
+  110 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE . $@8 blockStatements RIGHT_CURLY_BRACE
+
+    $default  reduce using rule 109 ($@8)
+
+    $@8  go to state 264
+
+
+State 243
+
+   37 noSemiColumnAssignVariableDeclaration: INT IDENTIFIER . ASSIGN intMathExpression
+
+    ASSIGN  shift, and go to state 95
+
+
+State 244
+
+   36 noSemiColumnAssignVariableDeclaration: CHAR IDENTIFIER . ASSIGN CHAR_LITERAL
+
+    ASSIGN  shift, and go to state 96
+
+
+State 245
+
+   38 noSemiColumnAssignVariableDeclaration: FLOAT IDENTIFIER . ASSIGN floatMathExpression
+
+    ASSIGN  shift, and go to state 97
+
+
+State 246
+
+   39 noSemiColumnAssignVariableDeclaration: STRING IDENTIFIER . ASSIGN stringExpression
+
+    ASSIGN  shift, and go to state 98
+
+
+State 247
+
+   40 noSemiColumnAssignVariableDeclaration: BOOL IDENTIFIER . ASSIGN logicalExpression
+
+    ASSIGN  shift, and go to state 104
+
+
+State 248
+
+  119 forDeclaration: IDENTIFIER ASSIGN . intMathExpression ';'
+  120               | IDENTIFIER ASSIGN . floatMathExpression ';'
+  121               | IDENTIFIER ASSIGN . stringExpression ';'
+  122               | IDENTIFIER ASSIGN . BOOL_LITERAL ';'
+
+    LEFT_PARENTHESIS  shift, and go to state 265
+    IDENTIFIER        shift, and go to state 266
+    DIGIT             shift, and go to state 68
+    FLOAT_LITERAL     shift, and go to state 69
+    STRING_LITERAL    shift, and go to state 70
+    BOOL_LITERAL      shift, and go to state 267
+
+    intMathExpression    go to state 268
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 269
+    stringExpression     go to state 270
+
+
+State 249
+
+   97 logicalExpression: logicalExpression . AND logicalExpression
+   98                  | logicalExpression . OR logicalExpression
+  125 forStatement: FOR LEFT_PARENTHESIS $@10 forDeclaration logicalExpression . ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+
+    AND  shift, and go to state 146
+    OR   shift, and go to state 147
+    ';'  shift, and go to state 271
+
+
+State 250
+
+  112 repeatStatement: REPEAT LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE . UNTIL LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS
+
+    UNTIL  shift, and go to state 272
+
+
+State 251
+
+  132 enumIdentifiers: IDENTIFIER . ',' enumIdentifiers
+  133                | IDENTIFIER .
+
+    ','  shift, and go to state 273
+
+    $default  reduce using rule 133 (enumIdentifiers)
+
+
+State 252
+
+  135 enumStatement: ENUM IDENTIFIER LEFT_CURLY_BRACE $@12 enumIdentifiers . RIGHT_CURLY_BRACE
+
+    RIGHT_CURLY_BRACE  shift, and go to state 274
+
+
+State 253
+
+  138 parameter: noSemiColumnVariableDeclarationStatement . ',' parameter
+  139          | noSemiColumnVariableDeclarationStatement .
+
+    ','  shift, and go to state 275
+
+    $default  reduce using rule 139 (parameter)
+
+
+State 254
+
+   33 noSemiColumnVariableDeclarationStatement: noSemiColumnAssignVariableDeclaration .
+
+    $default  reduce using rule 33 (noSemiColumnVariableDeclarationStatement)
+
+
+State 255
+
+   34 noSemiColumnVariableDeclarationStatement: noSemiColumnNonAssignVariableDeclaration .
+
+    $default  reduce using rule 34 (noSemiColumnVariableDeclarationStatement)
+
+
+State 256
+
+  140 parameter: noSemiColumnConstDeclaration . ',' parameter
+  141          | noSemiColumnConstDeclaration .
+
+    ','  shift, and go to state 276
+
+    $default  reduce using rule 141 (parameter)
+
+
+State 257
+
+  137 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@13 parameter . RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+
+    RIGHT_PARENTHESIS  shift, and go to state 277
+
+
+State 258
+
+  160 main: MAIN $@14 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE . $@15 blockStatements RIGHT_CURLY_BRACE
+
+    $default  reduce using rule 159 ($@15)
+
+    $@15  go to state 278
+
+
+State 259
+
+  151 printStatement: PRINT LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';' .
+
+    $default  reduce using rule 151 (printStatement)
+
+
+State 260
+
+  153 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';' .
+
+    $default  reduce using rule 153 (functionCallStatement)
+
+
+State 261
+
+  102 ifStatement: IF $@1 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE . $@2 blockStatements RIGHT_CURLY_BRACE
+
+    $default  reduce using rule 101 ($@2)
+
+    $@2  go to state 279
+
+
+State 262
+
+  108 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE . $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
+
+    $default  reduce using rule 104 ($@4)
+
+    $@4  go to state 280
+
+
+State 263
+
+  127 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@11 . caseStatement RIGHT_CURLY_BRACE
+
+    CASE     shift, and go to state 281
+    DEFAULT  shift, and go to state 282
+
+    $default  reduce using rule 131 (caseStatement)
+
+    caseStatement  go to state 283
+
+
+State 264
+
+  110 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@8 . blockStatements RIGHT_CURLY_BRACE
+
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 10
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    blockStatements                           go to state 284
+    blockStatement                            go to state 24
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 265
+
+   70 intMathPrimary: LEFT_PARENTHESIS . intMathExpression RIGHT_PARENTHESIS
+   77 floatMathExpression: LEFT_PARENTHESIS . floatMathExpression RIGHT_PARENTHESIS
+   81 stringExpression: LEFT_PARENTHESIS . stringExpression RIGHT_PARENTHESIS
+
+    LEFT_PARENTHESIS  shift, and go to state 265
+    IDENTIFIER        shift, and go to state 266
+    DIGIT             shift, and go to state 68
+    FLOAT_LITERAL     shift, and go to state 69
+    STRING_LITERAL    shift, and go to state 70
+
+    intMathExpression    go to state 232
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 233
+    stringExpression     go to state 119
+
+
+State 266
+
+   68 intMathPrimary: IDENTIFIER .
+   71 floatMathExpression: IDENTIFIER .
+   79 stringExpression: IDENTIFIER .
+
+    PLUS               reduce using rule 68 (intMathPrimary)
+    PLUS               [reduce using rule 71 (floatMathExpression)]
+    PLUS               [reduce using rule 79 (stringExpression)]
+    MINUS              reduce using rule 68 (intMathPrimary)
+    MINUS              [reduce using rule 71 (floatMathExpression)]
+    MULTIPLY           reduce using rule 68 (intMathPrimary)
+    MULTIPLY           [reduce using rule 71 (floatMathExpression)]
+    DIVIDE             reduce using rule 68 (intMathPrimary)
+    DIVIDE             [reduce using rule 71 (floatMathExpression)]
+    RIGHT_PARENTHESIS  reduce using rule 68 (intMathPrimary)
+    RIGHT_PARENTHESIS  [reduce using rule 71 (floatMathExpression)]
+    RIGHT_PARENTHESIS  [reduce using rule 79 (stringExpression)]
+    ';'                reduce using rule 68 (intMathPrimary)
+    ';'                [reduce using rule 71 (floatMathExpression)]
+    ';'                [reduce using rule 79 (stringExpression)]
+    $default           reduce using rule 68 (intMathPrimary)
+
+
+State 267
+
+  122 forDeclaration: IDENTIFIER ASSIGN BOOL_LITERAL . ';'
+
+    ';'  shift, and go to state 285
+
+
+State 268
+
+   58 intMathExpression: intMathExpression . PLUS intMathTerm
+   59                  | intMathExpression . MINUS intMathTerm
+  119 forDeclaration: IDENTIFIER ASSIGN intMathExpression . ';'
+
+    PLUS   shift, and go to state 122
+    MINUS  shift, and go to state 123
+    ';'    shift, and go to state 286
+
+
+State 269
+
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   74                    | floatMathExpression . MINUS floatMathExpression
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+  120 forDeclaration: IDENTIFIER ASSIGN floatMathExpression . ';'
+
+    PLUS      shift, and go to state 135
+    MINUS     shift, and go to state 136
+    MULTIPLY  shift, and go to state 137
+    DIVIDE    shift, and go to state 138
+    ';'       shift, and go to state 287
+
+
+State 270
+
+   80 stringExpression: stringExpression . PLUS stringExpression
+  121 forDeclaration: IDENTIFIER ASSIGN stringExpression . ';'
+
+    PLUS  shift, and go to state 145
+    ';'   shift, and go to state 288
+
+
+State 271
+
+  125 forStatement: FOR LEFT_PARENTHESIS $@10 forDeclaration logicalExpression ';' . forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+
+    IDENTIFIER  shift, and go to state 289
+
+    forAssignment  go to state 290
+
+
+State 272
+
+  112 repeatStatement: REPEAT LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE UNTIL . LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS
+
+    LEFT_PARENTHESIS  shift, and go to state 291
+
+
+State 273
+
+  132 enumIdentifiers: IDENTIFIER ',' . enumIdentifiers
+
+    IDENTIFIER  shift, and go to state 251
+
+    enumIdentifiers  go to state 292
+
+
+State 274
+
+  135 enumStatement: ENUM IDENTIFIER LEFT_CURLY_BRACE $@12 enumIdentifiers RIGHT_CURLY_BRACE .
+
+    $default  reduce using rule 135 (enumStatement)
+
+
+State 275
+
+  138 parameter: noSemiColumnVariableDeclarationStatement ',' . parameter
+
+    INT     shift, and go to state 1
+    CHAR    shift, and go to state 2
+    FLOAT   shift, and go to state 3
+    STRING  shift, and go to state 4
+    CONST   shift, and go to state 5
+    BOOL    shift, and go to state 6
+
+    $default  reduce using rule 142 (parameter)
+
+    noSemiColumnVariableDeclarationStatement  go to state 253
+    noSemiColumnAssignVariableDeclaration     go to state 254
+    noSemiColumnNonAssignVariableDeclaration  go to state 255
+    noSemiColumnConstDeclaration              go to state 256
+    parameter                                 go to state 293
+
+
+State 276
+
+  140 parameter: noSemiColumnConstDeclaration ',' . parameter
+
+    INT     shift, and go to state 1
+    CHAR    shift, and go to state 2
+    FLOAT   shift, and go to state 3
+    STRING  shift, and go to state 4
+    CONST   shift, and go to state 5
+    BOOL    shift, and go to state 6
+
+    $default  reduce using rule 142 (parameter)
+
+    noSemiColumnVariableDeclarationStatement  go to state 253
+    noSemiColumnAssignVariableDeclaration     go to state 254
+    noSemiColumnNonAssignVariableDeclaration  go to state 255
+    noSemiColumnConstDeclaration              go to state 256
+    parameter                                 go to state 294
+
+
+State 277
+
+  137 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@13 parameter RIGHT_PARENTHESIS . LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+
+    LEFT_CURLY_BRACE  shift, and go to state 295
+
+
+State 278
+
+  160 main: MAIN $@14 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@15 . blockStatements RIGHT_CURLY_BRACE
+
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 10
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    blockStatements                           go to state 296
+    blockStatement                            go to state 24
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 279
+
+  102 ifStatement: IF $@1 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@2 . blockStatements RIGHT_CURLY_BRACE
+
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 10
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    blockStatements                           go to state 297
+    blockStatement                            go to state 24
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 280
+
+  108 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 . blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
+
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 10
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    blockStatements                           go to state 298
+    blockStatement                            go to state 24
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 281
+
+  128 caseStatement: CASE . values ':' blockStatements BREAK ';' caseStatement
+  129              | CASE . values ':' blockStatements BREAK ';'
+
+    DIGIT           shift, and go to state 299
+    FLOAT_LITERAL   shift, and go to state 300
+    STRING_LITERAL  shift, and go to state 301
+    CHAR_LITERAL    shift, and go to state 302
+    BOOL_LITERAL    shift, and go to state 303
+
+    values  go to state 304
+
+
+State 282
+
+  130 caseStatement: DEFAULT . ':' blockStatements BREAK ';'
+
+    ':'  shift, and go to state 305
+
+
+State 283
+
+  127 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@11 caseStatement . RIGHT_CURLY_BRACE
+
+    RIGHT_CURLY_BRACE  shift, and go to state 306
+
+
+State 284
+
+    7 blockStatements: blockStatements . blockStatement
+  110 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@8 blockStatements . RIGHT_CURLY_BRACE
+
+    INT                shift, and go to state 1
+    CHAR               shift, and go to state 2
+    FLOAT              shift, and go to state 3
+    STRING             shift, and go to state 4
+    CONST              shift, and go to state 5
+    BOOL               shift, and go to state 6
+    IF                 shift, and go to state 7
+    SWITCH             shift, and go to state 8
+    CONTINUE           shift, and go to state 9
+    BREAK              shift, and go to state 10
+    WHILE              shift, and go to state 11
+    FOR                shift, and go to state 12
+    RETURN             shift, and go to state 13
+    REPEAT             shift, and go to state 14
+    RIGHT_CURLY_BRACE  shift, and go to state 307
+    ENUM               shift, and go to state 15
+    PRINT              shift, and go to state 18
+    COMMENT            shift, and go to state 19
+    IDENTIFIER         shift, and go to state 20
+
+    blockStatement                            go to state 91
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 285
+
+  122 forDeclaration: IDENTIFIER ASSIGN BOOL_LITERAL ';' .
+
+    $default  reduce using rule 122 (forDeclaration)
+
+
+State 286
+
+  119 forDeclaration: IDENTIFIER ASSIGN intMathExpression ';' .
+
+    $default  reduce using rule 119 (forDeclaration)
+
+
+State 287
+
+  120 forDeclaration: IDENTIFIER ASSIGN floatMathExpression ';' .
+
+    $default  reduce using rule 120 (forDeclaration)
+
+
+State 288
+
+  121 forDeclaration: IDENTIFIER ASSIGN stringExpression ';' .
+
+    $default  reduce using rule 121 (forDeclaration)
+
+
+State 289
+
+  113 forAssignment: IDENTIFIER . ASSIGN intMathExpression
+  114              | IDENTIFIER . ASSIGN floatMathExpression
+  115              | IDENTIFIER . ASSIGN stringExpression
+  116              | IDENTIFIER . ASSIGN BOOL_LITERAL
+  117              | IDENTIFIER . INCREMENT
+  118              | IDENTIFIER . DECREMENT
+
+    INCREMENT  shift, and go to state 308
+    DECREMENT  shift, and go to state 309
+    ASSIGN     shift, and go to state 310
+
+
+State 290
+
+  125 forStatement: FOR LEFT_PARENTHESIS $@10 forDeclaration logicalExpression ';' forAssignment . RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+
+    RIGHT_PARENTHESIS  shift, and go to state 311
+
+
+State 291
+
+  112 repeatStatement: REPEAT LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS . logicalExpression RIGHT_PARENTHESIS
+
+    NOT               shift, and go to state 65
+    LEFT_PARENTHESIS  shift, and go to state 110
+    IDENTIFIER        shift, and go to state 111
+    DIGIT             shift, and go to state 68
+    FLOAT_LITERAL     shift, and go to state 69
+    BOOL_LITERAL      shift, and go to state 71
+
+    intMathExpression    go to state 112
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 113
+    logicalExpression    go to state 312
+
+
+State 292
+
+  132 enumIdentifiers: IDENTIFIER ',' enumIdentifiers .
+
+    $default  reduce using rule 132 (enumIdentifiers)
+
+
+State 293
+
+  138 parameter: noSemiColumnVariableDeclarationStatement ',' parameter .
+
+    $default  reduce using rule 138 (parameter)
+
+
+State 294
+
+  140 parameter: noSemiColumnConstDeclaration ',' parameter .
+
+    $default  reduce using rule 140 (parameter)
+
+
+State 295
+
+  137 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@13 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE . blockStatements RIGHT_CURLY_BRACE
+
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 10
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    blockStatements                           go to state 313
+    blockStatement                            go to state 24
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 296
+
+    7 blockStatements: blockStatements . blockStatement
+  160 main: MAIN $@14 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@15 blockStatements . RIGHT_CURLY_BRACE
+
+    INT                shift, and go to state 1
+    CHAR               shift, and go to state 2
+    FLOAT              shift, and go to state 3
+    STRING             shift, and go to state 4
+    CONST              shift, and go to state 5
+    BOOL               shift, and go to state 6
+    IF                 shift, and go to state 7
+    SWITCH             shift, and go to state 8
+    CONTINUE           shift, and go to state 9
+    BREAK              shift, and go to state 10
+    WHILE              shift, and go to state 11
+    FOR                shift, and go to state 12
+    RETURN             shift, and go to state 13
+    REPEAT             shift, and go to state 14
+    RIGHT_CURLY_BRACE  shift, and go to state 314
+    ENUM               shift, and go to state 15
+    PRINT              shift, and go to state 18
+    COMMENT            shift, and go to state 19
+    IDENTIFIER         shift, and go to state 20
+
+    blockStatement                            go to state 91
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 297
+
+    7 blockStatements: blockStatements . blockStatement
+  102 ifStatement: IF $@1 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@2 blockStatements . RIGHT_CURLY_BRACE
+
+    INT                shift, and go to state 1
+    CHAR               shift, and go to state 2
+    FLOAT              shift, and go to state 3
+    STRING             shift, and go to state 4
+    CONST              shift, and go to state 5
+    BOOL               shift, and go to state 6
+    IF                 shift, and go to state 7
+    SWITCH             shift, and go to state 8
+    CONTINUE           shift, and go to state 9
+    BREAK              shift, and go to state 10
+    WHILE              shift, and go to state 11
+    FOR                shift, and go to state 12
+    RETURN             shift, and go to state 13
+    REPEAT             shift, and go to state 14
+    RIGHT_CURLY_BRACE  shift, and go to state 315
+    ENUM               shift, and go to state 15
+    PRINT              shift, and go to state 18
+    COMMENT            shift, and go to state 19
+    IDENTIFIER         shift, and go to state 20
+
+    blockStatement                            go to state 91
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 298
+
+    7 blockStatements: blockStatements . blockStatement
+  108 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements . RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
+
+    INT                shift, and go to state 1
+    CHAR               shift, and go to state 2
+    FLOAT              shift, and go to state 3
+    STRING             shift, and go to state 4
+    CONST              shift, and go to state 5
+    BOOL               shift, and go to state 6
+    IF                 shift, and go to state 7
+    SWITCH             shift, and go to state 8
+    CONTINUE           shift, and go to state 9
+    BREAK              shift, and go to state 10
+    WHILE              shift, and go to state 11
+    FOR                shift, and go to state 12
+    RETURN             shift, and go to state 13
+    REPEAT             shift, and go to state 14
+    RIGHT_CURLY_BRACE  shift, and go to state 316
+    ENUM               shift, and go to state 15
+    PRINT              shift, and go to state 18
+    COMMENT            shift, and go to state 19
+    IDENTIFIER         shift, and go to state 20
+
+    blockStatement                            go to state 91
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 299
+
+   22 values: DIGIT .
+
+    $default  reduce using rule 22 (values)
+
+
+State 300
+
+   23 values: FLOAT_LITERAL .
+
+    $default  reduce using rule 23 (values)
+
+
+State 301
+
+   24 values: STRING_LITERAL .
+
+    $default  reduce using rule 24 (values)
+
+
+State 302
+
+   25 values: CHAR_LITERAL .
+
+    $default  reduce using rule 25 (values)
+
+
+State 303
+
+   26 values: BOOL_LITERAL .
+
+    $default  reduce using rule 26 (values)
+
+
+State 304
+
+  128 caseStatement: CASE values . ':' blockStatements BREAK ';' caseStatement
+  129              | CASE values . ':' blockStatements BREAK ';'
+
+    ':'  shift, and go to state 317
+
+
+State 305
+
+  130 caseStatement: DEFAULT ':' . blockStatements BREAK ';'
+
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 10
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    blockStatements                           go to state 318
+    blockStatement                            go to state 24
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 306
+
+  127 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@11 caseStatement RIGHT_CURLY_BRACE .
+
+    $default  reduce using rule 127 (switchStatement)
+
+
+State 307
+
+  110 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@8 blockStatements RIGHT_CURLY_BRACE .
+
+    $default  reduce using rule 110 (whileStatement)
+
+
+State 308
+
+  117 forAssignment: IDENTIFIER INCREMENT .
+
+    $default  reduce using rule 117 (forAssignment)
+
+
+State 309
+
+  118 forAssignment: IDENTIFIER DECREMENT .
+
+    $default  reduce using rule 118 (forAssignment)
+
+
+State 310
+
+  113 forAssignment: IDENTIFIER ASSIGN . intMathExpression
+  114              | IDENTIFIER ASSIGN . floatMathExpression
+  115              | IDENTIFIER ASSIGN . stringExpression
+  116              | IDENTIFIER ASSIGN . BOOL_LITERAL
+
+    LEFT_PARENTHESIS  shift, and go to state 265
+    IDENTIFIER        shift, and go to state 266
+    DIGIT             shift, and go to state 68
+    FLOAT_LITERAL     shift, and go to state 69
+    STRING_LITERAL    shift, and go to state 70
+    BOOL_LITERAL      shift, and go to state 319
+
+    intMathExpression    go to state 320
+    intMathTerm          go to state 75
+    intMathFactor        go to state 76
+    intMathPrimary       go to state 77
+    floatMathExpression  go to state 321
+    stringExpression     go to state 322
+
+
+State 311
+
+  125 forStatement: FOR LEFT_PARENTHESIS $@10 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS . LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+
+    LEFT_CURLY_BRACE  shift, and go to state 323
+
+
+State 312
+
+   97 logicalExpression: logicalExpression . AND logicalExpression
+   98                  | logicalExpression . OR logicalExpression
+  112 repeatStatement: REPEAT LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression . RIGHT_PARENTHESIS
+
+    AND                shift, and go to state 146
+    OR                 shift, and go to state 147
+    RIGHT_PARENTHESIS  shift, and go to state 324
+
+
+State 313
+
+    7 blockStatements: blockStatements . blockStatement
+  137 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@13 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements . RIGHT_CURLY_BRACE
+
+    INT                shift, and go to state 1
+    CHAR               shift, and go to state 2
+    FLOAT              shift, and go to state 3
+    STRING             shift, and go to state 4
+    CONST              shift, and go to state 5
+    BOOL               shift, and go to state 6
+    IF                 shift, and go to state 7
+    SWITCH             shift, and go to state 8
+    CONTINUE           shift, and go to state 9
+    BREAK              shift, and go to state 10
+    WHILE              shift, and go to state 11
+    FOR                shift, and go to state 12
+    RETURN             shift, and go to state 13
+    REPEAT             shift, and go to state 14
+    RIGHT_CURLY_BRACE  shift, and go to state 325
+    ENUM               shift, and go to state 15
+    PRINT              shift, and go to state 18
+    COMMENT            shift, and go to state 19
+    IDENTIFIER         shift, and go to state 20
+
+    blockStatement                            go to state 91
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 314
+
+  160 main: MAIN $@14 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@15 blockStatements RIGHT_CURLY_BRACE .
+
+    $default  reduce using rule 160 (main)
+
+
+State 315
+
+  102 ifStatement: IF $@1 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@2 blockStatements RIGHT_CURLY_BRACE .
+
+    $default  reduce using rule 102 (ifStatement)
+
+
+State 316
+
+  108 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE . $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
+
+    $default  reduce using rule 105 ($@5)
+
+    $@5  go to state 326
+
+
+State 317
+
+  128 caseStatement: CASE values ':' . blockStatements BREAK ';' caseStatement
+  129              | CASE values ':' . blockStatements BREAK ';'
+
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 10
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    blockStatements                           go to state 327
+    blockStatement                            go to state 24
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 318
+
+    7 blockStatements: blockStatements . blockStatement
+  130 caseStatement: DEFAULT ':' blockStatements . BREAK ';'
+
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 328
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    blockStatement                            go to state 91
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 319
+
+  116 forAssignment: IDENTIFIER ASSIGN BOOL_LITERAL .
+
+    $default  reduce using rule 116 (forAssignment)
+
+
+State 320
+
+   58 intMathExpression: intMathExpression . PLUS intMathTerm
+   59                  | intMathExpression . MINUS intMathTerm
+  113 forAssignment: IDENTIFIER ASSIGN intMathExpression .
+
+    PLUS   shift, and go to state 122
+    MINUS  shift, and go to state 123
+
+    $default  reduce using rule 113 (forAssignment)
+
+
+State 321
+
+   73 floatMathExpression: floatMathExpression . PLUS floatMathExpression
+   74                    | floatMathExpression . MINUS floatMathExpression
+   75                    | floatMathExpression . MULTIPLY floatMathExpression
+   76                    | floatMathExpression . DIVIDE floatMathExpression
+  114 forAssignment: IDENTIFIER ASSIGN floatMathExpression .
+
+    PLUS      shift, and go to state 135
+    MINUS     shift, and go to state 136
+    MULTIPLY  shift, and go to state 137
+    DIVIDE    shift, and go to state 138
+
+    $default  reduce using rule 114 (forAssignment)
+
+
+State 322
+
+   80 stringExpression: stringExpression . PLUS stringExpression
+  115 forAssignment: IDENTIFIER ASSIGN stringExpression .
+
+    PLUS  shift, and go to state 145
+
+    $default  reduce using rule 115 (forAssignment)
+
+
+State 323
+
+  125 forStatement: FOR LEFT_PARENTHESIS $@10 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE . blockStatements RIGHT_CURLY_BRACE
+
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 10
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    blockStatements                           go to state 329
+    blockStatement                            go to state 24
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 324
+
+  112 repeatStatement: REPEAT LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS .
+
+    $default  reduce using rule 112 (repeatStatement)
+
+
+State 325
+
+  137 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@13 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE .
+
+    $default  reduce using rule 137 (functionStatement)
+
+
+State 326
+
+  108 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 . ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
+
+    ELSE  shift, and go to state 330
+
+
+State 327
+
+    7 blockStatements: blockStatements . blockStatement
+  128 caseStatement: CASE values ':' blockStatements . BREAK ';' caseStatement
+  129              | CASE values ':' blockStatements . BREAK ';'
+
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 331
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    blockStatement                            go to state 91
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 328
+
+  130 caseStatement: DEFAULT ':' blockStatements BREAK . ';'
+  145 continueBreakStatement: BREAK . ';'
+  146                       | BREAK . IDENTIFIER ';'
+  147                       | BREAK .
+
+    IDENTIFIER  shift, and go to state 61
+    ';'         shift, and go to state 332
+
+    IDENTIFIER  [reduce using rule 147 (continueBreakStatement)]
+    $default    reduce using rule 147 (continueBreakStatement)
+
+
+State 329
+
+    7 blockStatements: blockStatements . blockStatement
+  125 forStatement: FOR LEFT_PARENTHESIS $@10 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements . RIGHT_CURLY_BRACE
+
+    INT                shift, and go to state 1
+    CHAR               shift, and go to state 2
+    FLOAT              shift, and go to state 3
+    STRING             shift, and go to state 4
+    CONST              shift, and go to state 5
+    BOOL               shift, and go to state 6
+    IF                 shift, and go to state 7
+    SWITCH             shift, and go to state 8
+    CONTINUE           shift, and go to state 9
+    BREAK              shift, and go to state 10
+    WHILE              shift, and go to state 11
+    FOR                shift, and go to state 12
+    RETURN             shift, and go to state 13
+    REPEAT             shift, and go to state 14
+    RIGHT_CURLY_BRACE  shift, and go to state 333
+    ENUM               shift, and go to state 15
+    PRINT              shift, and go to state 18
+    COMMENT            shift, and go to state 19
+    IDENTIFIER         shift, and go to state 20
+
+    blockStatement                            go to state 91
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 330
+
+  108 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE . $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
+
+    $default  reduce using rule 106 ($@6)
+
+    $@6  go to state 334
+
+
+State 331
+
+  128 caseStatement: CASE values ':' blockStatements BREAK . ';' caseStatement
+  129              | CASE values ':' blockStatements BREAK . ';'
+  145 continueBreakStatement: BREAK . ';'
+  146                       | BREAK . IDENTIFIER ';'
+  147                       | BREAK .
+
+    IDENTIFIER  shift, and go to state 61
+    ';'         shift, and go to state 335
+
+    IDENTIFIER  [reduce using rule 147 (continueBreakStatement)]
+    $default    reduce using rule 147 (continueBreakStatement)
+
+
+State 332
+
+  130 caseStatement: DEFAULT ':' blockStatements BREAK ';' .
+  145 continueBreakStatement: BREAK ';' .
+
+    RIGHT_CURLY_BRACE  reduce using rule 130 (caseStatement)
+    $default           reduce using rule 145 (continueBreakStatement)
+
+
+State 333
+
+  125 forStatement: FOR LEFT_PARENTHESIS $@10 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE .
+
+    $default  reduce using rule 125 (forStatement)
+
+
+State 334
+
+  108 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 . LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
+
+    LEFT_CURLY_BRACE  shift, and go to state 336
+
+
+State 335
+
+  128 caseStatement: CASE values ':' blockStatements BREAK ';' . caseStatement
+  129              | CASE values ':' blockStatements BREAK ';' .
+  145 continueBreakStatement: BREAK ';' .
+
+    CASE     shift, and go to state 281
+    DEFAULT  shift, and go to state 282
+
+    RIGHT_CURLY_BRACE  reduce using rule 129 (caseStatement)
+    RIGHT_CURLY_BRACE  [reduce using rule 131 (caseStatement)]
+    $default           reduce using rule 145 (continueBreakStatement)
+
+    caseStatement  go to state 337
+
+
+State 336
+
+  108 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE . $@7 blockStatements RIGHT_CURLY_BRACE
+
+    $default  reduce using rule 107 ($@7)
+
+    $@7  go to state 338
+
+
+State 337
+
+  128 caseStatement: CASE values ':' blockStatements BREAK ';' caseStatement .
+
+    $default  reduce using rule 128 (caseStatement)
+
+
+State 338
+
+  108 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 . blockStatements RIGHT_CURLY_BRACE
+
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 10
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    blockStatements                           go to state 339
+    blockStatement                            go to state 24
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 339
+
+    7 blockStatements: blockStatements . blockStatement
+  108 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements . RIGHT_CURLY_BRACE
+
+    INT                shift, and go to state 1
+    CHAR               shift, and go to state 2
+    FLOAT              shift, and go to state 3
+    STRING             shift, and go to state 4
+    CONST              shift, and go to state 5
+    BOOL               shift, and go to state 6
+    IF                 shift, and go to state 7
+    SWITCH             shift, and go to state 8
+    CONTINUE           shift, and go to state 9
+    BREAK              shift, and go to state 10
+    WHILE              shift, and go to state 11
+    FOR                shift, and go to state 12
+    RETURN             shift, and go to state 13
+    REPEAT             shift, and go to state 14
+    RIGHT_CURLY_BRACE  shift, and go to state 340
+    ENUM               shift, and go to state 15
+    PRINT              shift, and go to state 18
+    COMMENT            shift, and go to state 19
+    IDENTIFIER         shift, and go to state 20
+
+    blockStatement                            go to state 91
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    ifStatement                               go to state 33
+    whileStatement                            go to state 34
+    repeatStatement                           go to state 35
+    forStatement                              go to state 36
+    switchStatement                           go to state 37
+    enumStatement                             go to state 38
+    returnStatement                           go to state 40
+    continueBreakStatement                    go to state 41
+    printStatement                            go to state 42
+    functionCallStatement                     go to state 43
+    comment                                   go to state 44
+
+
+State 340
+
+  108 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE .
+
+    $default  reduce using rule 108 (ifStatement)
