@@ -21,9 +21,8 @@ State 69 conflicts: 20 reduce/reduce
 State 120 conflicts: 12 reduce/reduce
 State 227 conflicts: 1 shift/reduce
 State 277 conflicts: 9 reduce/reduce
-State 339 conflicts: 1 shift/reduce
-State 342 conflicts: 1 shift/reduce
-State 346 conflicts: 1 reduce/reduce
+State 346 conflicts: 1 shift/reduce
+State 352 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -187,89 +186,98 @@ Grammar
 
   118 $@8: %empty
 
-  119 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@8 blockStatements RIGHT_CURLY_BRACE
+  119 $@9: %empty
 
-  120 $@9: %empty
+  120 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression $@8 RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE
 
-  121 repeatStatement: REPEAT LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS
+  121 $@10: %empty
 
-  122 forAssignment: IDENTIFIER ASSIGN intMathExpression
-  123              | IDENTIFIER ASSIGN floatMathExpression
-  124              | IDENTIFIER ASSIGN stringExpression
-  125              | IDENTIFIER ASSIGN BOOL_LITERAL
-  126              | IDENTIFIER INCREMENT
-  127              | IDENTIFIER DECREMENT
+  122 $@11: %empty
 
-  128 forDeclaration: IDENTIFIER ASSIGN intMathExpression ';'
-  129               | IDENTIFIER ASSIGN floatMathExpression ';'
-  130               | IDENTIFIER ASSIGN stringExpression ';'
-  131               | IDENTIFIER ASSIGN BOOL_LITERAL ';'
-  132               | assignVariableDeclaration
+  123 repeatStatement: REPEAT LEFT_CURLY_BRACE $@10 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression $@11 RIGHT_PARENTHESIS
 
-  133 $@10: %empty
+  124 forAssignment: IDENTIFIER ASSIGN intMathExpression
+  125              | IDENTIFIER ASSIGN floatMathExpression
+  126              | IDENTIFIER ASSIGN stringExpression
+  127              | IDENTIFIER ASSIGN BOOL_LITERAL
+  128              | IDENTIFIER INCREMENT
+  129              | IDENTIFIER DECREMENT
 
-  134 forStatement: FOR LEFT_PARENTHESIS $@10 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+  130 forDeclaration: IDENTIFIER ASSIGN intMathExpression ';'
+  131               | IDENTIFIER ASSIGN floatMathExpression ';'
+  132               | IDENTIFIER ASSIGN stringExpression ';'
+  133               | IDENTIFIER ASSIGN BOOL_LITERAL ';'
+  134               | assignVariableDeclaration
 
-  135 $@11: %empty
+  135 $@12: %empty
 
-  136 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@11 caseStatement RIGHT_CURLY_BRACE
+  136 forStatement: FOR LEFT_PARENTHESIS $@12 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
-  137 caseStatement: CASE values ':' blockStatements BREAK ';' caseStatement
-  138              | CASE values ':' blockStatements BREAK ';'
-  139              | DEFAULT ':' blockStatements BREAK ';'
-  140              | %empty
+  137 $@13: %empty
 
-  141 enumIdentifiers: IDENTIFIER ',' enumIdentifiers
-  142                | IDENTIFIER
+  138 $@14: %empty
 
-  143 $@12: %empty
+  139 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER $@13 RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@14 caseList RIGHT_CURLY_BRACE
 
-  144 enumStatement: ENUM IDENTIFIER LEFT_CURLY_BRACE $@12 enumIdentifiers RIGHT_CURLY_BRACE
+  140 caseList: caseStatement caseList
+  141         | DEFAULT ':' blockStatements BREAK ';'
+  142         | %empty
 
-  145 $@13: %empty
+  143 $@15: %empty
 
-  146 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@13 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+  144 caseStatement: CASE values $@15 ':' blockStatements BREAK ';'
 
-  147 parameter: noSemiColumnVariableDeclarationStatement ',' parameter
-  148          | noSemiColumnVariableDeclarationStatement
-  149          | noSemiColumnConstDeclaration ',' parameter
-  150          | noSemiColumnConstDeclaration
-  151          | %empty
+  145 enumIdentifiers: IDENTIFIER ',' enumIdentifiers
+  146                | IDENTIFIER
 
-  152 returnStatement: RETURN argument ';'
-  153                | RETURN ';'
+  147 $@16: %empty
 
-  154 continueBreakStatement: BREAK ';'
-  155                       | BREAK IDENTIFIER ';'
-  156                       | BREAK
-  157                       | CONTINUE ';'
-  158                       | CONTINUE IDENTIFIER ';'
-  159                       | CONTINUE
+  148 enumStatement: ENUM IDENTIFIER LEFT_CURLY_BRACE $@16 enumIdentifiers RIGHT_CURLY_BRACE
 
-  160 printStatement: PRINT LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
-  161               | PRINT LEFT_PARENTHESIS RIGHT_PARENTHESIS ';'
+  149 $@17: %empty
 
-  162 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
-  163                      | IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS ';'
+  150 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@17 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
-  164 argument: expression ',' argument
-  165         | expression
+  151 parameter: noSemiColumnVariableDeclarationStatement ',' parameter
+  152          | noSemiColumnVariableDeclarationStatement
+  153          | noSemiColumnConstDeclaration ',' parameter
+  154          | noSemiColumnConstDeclaration
+  155          | %empty
 
-  166 comment: COMMENT
+  156 returnStatement: RETURN argument ';'
+  157                | RETURN ';'
 
-  167 $@14: %empty
+  158 continueBreakStatement: BREAK ';'
+  159                       | BREAK IDENTIFIER ';'
+  160                       | BREAK
+  161                       | CONTINUE ';'
+  162                       | CONTINUE IDENTIFIER ';'
+  163                       | CONTINUE
 
-  168 $@15: %empty
+  164 printStatement: PRINT LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
+  165               | PRINT LEFT_PARENTHESIS RIGHT_PARENTHESIS ';'
 
-  169 main: MAIN $@14 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@15 blockStatements RIGHT_CURLY_BRACE
+  166 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
+  167                      | IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS ';'
+
+  168 argument: expression ',' argument
+  169         | expression
+
+  170 comment: COMMENT
+
+  171 $@18: %empty
+
+  172 $@19: %empty
+
+  173 main: MAIN $@18 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@19 blockStatements RIGHT_CURLY_BRACE
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
-    ',' (44) 141 147 149 164
-    ':' (58) 137 138 139
-    ';' (59) 37 43 49 55 56 57 58 59 60 61 128 129 130 131 134 137 138 139 152 153 154 155 157 158 160 161 162 163
+    ',' (44) 145 151 153 168
+    ':' (58) 141 144
+    ';' (59) 37 43 49 55 56 57 58 59 60 61 130 131 132 133 136 141 144 156 157 158 159 161 162 164 165 166 167
     error (256)
     INT (258) 39 44 51
     CHAR (259) 38 45 50
@@ -283,8 +291,8 @@ Terminals, with rules where they appear
     MULTIPLY (267) 65 78
     DIVIDE (268) 66 79
     MODULO (269) 67
-    INCREMENT (270) 60 70 126
-    DECREMENT (271) 61 71 127
+    INCREMENT (270) 60 70 128
+    DECREMENT (271) 61 71 129
     GREATER (272) 94 100
     LESS (273) 95 101
     GREATER_EQUAL (274) 96 102
@@ -294,39 +302,39 @@ Terminals, with rules where they appear
     AND (278) 91
     OR (279) 89
     NOT (280) 93
-    ASSIGN (281) 38 39 40 41 42 50 51 52 53 54 55 56 57 58 59 122 123 124 125 128 129 130 131
+    ASSIGN (281) 38 39 40 41 42 50 51 52 53 54 55 56 57 58 59 124 125 126 127 130 131 132 133
     IF (282) 111 117
     ELSE (283) 117
-    SWITCH (284) 136
-    CASE (285) 137 138
-    DEFAULT (286) 139
-    CONTINUE (287) 157 158 159
-    BREAK (288) 137 138 139 154 155 156
+    SWITCH (284) 139
+    CASE (285) 144
+    DEFAULT (286) 141
+    CONTINUE (287) 161 162 163
+    BREAK (288) 141 144 158 159 160
     THEN (289)
-    WHILE (290) 119
+    WHILE (290) 120
     DO (291)
-    FOR (292) 134
-    RETURN (293) 152 153
-    REPEAT (294) 121
-    UNTIL (295) 121
-    LEFT_CURLY_BRACE (296) 111 117 119 121 134 136 144 146 169
-    RIGHT_CURLY_BRACE (297) 111 117 119 121 134 136 144 146 169
-    LEFT_PARENTHESIS (298) 74 83 87 106 111 117 119 121 134 136 146 160 161 162 163 169
-    RIGHT_PARENTHESIS (299) 74 83 87 106 111 117 119 121 134 136 146 160 161 162 163 169
+    FOR (292) 136
+    RETURN (293) 156 157
+    REPEAT (294) 123
+    UNTIL (295) 123
+    LEFT_CURLY_BRACE (296) 111 117 120 123 136 139 148 150 173
+    RIGHT_CURLY_BRACE (297) 111 117 120 123 136 139 148 150 173
+    LEFT_PARENTHESIS (298) 74 83 87 106 111 117 120 123 136 139 150 164 165 166 167 173
+    RIGHT_PARENTHESIS (299) 74 83 87 106 111 117 120 123 136 139 150 164 165 166 167 173
     LEFT_SQUARE_BRACKET (300)
     RIGHT_SQUARE_BRACKET (301)
-    ENUM (302) 144
-    FUNCTION (303) 146
-    MAIN (304) 169
-    PRINT (305) 160 161
+    ENUM (302) 148
+    FUNCTION (303) 150
+    MAIN (304) 173
+    PRINT (305) 164 165
     SCAN (306)
-    COMMENT (307) 166
-    IDENTIFIER <sVal> (308) 38 39 40 41 42 44 45 46 47 48 50 51 52 53 54 55 56 57 58 59 60 61 70 71 72 81 85 108 122 123 124 125 126 127 128 129 130 131 136 141 142 144 146 155 158 162 163
+    COMMENT (307) 170
+    IDENTIFIER <sVal> (308) 38 39 40 41 42 44 45 46 47 48 50 51 52 53 54 55 56 57 58 59 60 61 70 71 72 81 85 108 124 125 126 127 128 129 130 131 132 133 139 145 146 148 150 159 162 166 167
     DIGIT <iVal> (309) 24 73
     FLOAT_LITERAL <fVal> (310) 25 82
     STRING_LITERAL <sVal> (311) 26 84
     CHAR_LITERAL <cVal> (312) 27 38 50 59
-    BOOL_LITERAL <bVal> (313) 28 107 125 131
+    BOOL_LITERAL <bVal> (313) 28 107 127 133
 
 
 Nonterminals, with rules where they appear
@@ -341,25 +349,25 @@ Nonterminals, with rules where they appear
         on right: 1 2
     blockStatements (65)
         on left: 6 7
-        on right: 3 7 111 117 119 121 134 137 138 139 146 169
+        on right: 3 7 111 117 120 123 136 141 144 150 173
     blockStatement (66)
         on left: 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
         on right: 6 7
-    values (67)
+    values <values> (67)
         on left: 24 25 26 27 28
-        on right: 137 138
+        on right: 144
     expression (68)
         on left: 29 30 31 32
-        on right: 164 165
+        on right: 168 169
     variableDeclarationStatement (69)
         on left: 33 34
         on right: 8
     noSemiColumnVariableDeclarationStatement (70)
         on left: 35 36
-        on right: 147 148
+        on right: 151 152
     assignVariableDeclaration (71)
         on left: 37
-        on right: 33 132
+        on right: 33 134
     noSemiColumnAssignVariableDeclaration (72)
         on left: 38 39 40 41 42
         on right: 35 37
@@ -374,7 +382,7 @@ Nonterminals, with rules where they appear
         on right: 9
     noSemiColumnConstDeclaration (76)
         on left: 50 51 52 53 54
-        on right: 49 149 150
+        on right: 49 153 154
     assignmentStatement (77)
         on left: 55 56 57 58 59
         on right: 10
@@ -386,7 +394,7 @@ Nonterminals, with rules where they appear
         on right: 12
     intMathExpression <iVal> (80)
         on left: 62 63 64
-        on right: 29 39 51 55 62 63 74 94 95 96 97 98 99 122 128
+        on right: 29 39 51 55 62 63 74 94 95 96 97 98 99 124 130
     intMathTerm <iVal> (81)
         on left: 65 66 67 68
         on right: 62 63 64 65 66 67
@@ -398,7 +406,7 @@ Nonterminals, with rules where they appear
         on right: 69
     floatMathExpression <fVal> (84)
         on left: 75 76 77
-        on right: 30 40 52 56 75 76 83 100 101 102 103 104 105 123 129
+        on right: 30 40 52 56 75 76 83 100 101 102 103 104 105 125 131
     floatMathTerm <fVal> (85)
         on left: 78 79 80
         on right: 75 76 77 78 79
@@ -407,10 +415,10 @@ Nonterminals, with rules where they appear
         on right: 78 79 80
     stringExpression <sVal> (87)
         on left: 84 85 86 87
-        on right: 31 41 53 57 86 87 124 130
+        on right: 31 41 53 57 86 87 126 132
     logicalExpression <bVal> (88)
         on left: 88 89
-        on right: 32 42 54 58 89 106 111 117 119 121 134
+        on right: 32 42 54 58 89 106 111 117 120 123 136
     logicalTerm <bVal> (89)
         on left: 90 91
         on right: 88 89 91
@@ -445,83 +453,98 @@ Nonterminals, with rules where they appear
         on left: 116
         on right: 117
     whileStatement (100)
-        on left: 119
+        on left: 120
         on right: 15
     $@8 (101)
         on left: 118
-        on right: 119
-    repeatStatement (102)
-        on left: 121
+        on right: 120
+    $@9 (102)
+        on left: 119
+        on right: 120
+    repeatStatement (103)
+        on left: 123
         on right: 17
-    $@9 (103)
-        on left: 120
-        on right: 121
-    forAssignment (104)
-        on left: 122 123 124 125 126 127
-        on right: 134
-    forDeclaration (105)
-        on left: 128 129 130 131 132
-        on right: 134
-    forStatement (106)
-        on left: 134
-        on right: 16
-    $@10 (107)
-        on left: 133
-        on right: 134
-    switchStatement (108)
+    $@10 (104)
+        on left: 121
+        on right: 123
+    $@11 (105)
+        on left: 122
+        on right: 123
+    forAssignment (106)
+        on left: 124 125 126 127 128 129
+        on right: 136
+    forDeclaration (107)
+        on left: 130 131 132 133 134
+        on right: 136
+    forStatement (108)
         on left: 136
-        on right: 14
-    $@11 (109)
+        on right: 16
+    $@12 (109)
         on left: 135
         on right: 136
-    caseStatement (110)
-        on left: 137 138 139 140
-        on right: 136 137
-    enumIdentifiers (111)
-        on left: 141 142
-        on right: 141 144
-    enumStatement (112)
+    switchStatement (110)
+        on left: 139
+        on right: 14
+    $@13 (111)
+        on left: 137
+        on right: 139
+    $@14 (112)
+        on left: 138
+        on right: 139
+    caseList (113)
+        on left: 140 141 142
+        on right: 139 140
+    caseStatement (114)
         on left: 144
-        on right: 18
-    $@12 (113)
+        on right: 140
+    $@15 (115)
         on left: 143
         on right: 144
-    functionStatement (114)
-        on left: 146
+    enumIdentifiers (116)
+        on left: 145 146
+        on right: 145 148
+    enumStatement (117)
+        on left: 148
+        on right: 18
+    $@16 (118)
+        on left: 147
+        on right: 148
+    functionStatement (119)
+        on left: 150
         on right: 4
-    $@13 (115)
-        on left: 145
-        on right: 146
-    parameter (116)
-        on left: 147 148 149 150 151
-        on right: 146 147 149
-    returnStatement (117)
-        on left: 152 153
+    $@17 (120)
+        on left: 149
+        on right: 150
+    parameter (121)
+        on left: 151 152 153 154 155
+        on right: 150 151 153
+    returnStatement (122)
+        on left: 156 157
         on right: 19
-    continueBreakStatement (118)
-        on left: 154 155 156 157 158 159
+    continueBreakStatement (123)
+        on left: 158 159 160 161 162 163
         on right: 21
-    printStatement (119)
-        on left: 160 161
-        on right: 20
-    functionCallStatement (120)
-        on left: 162 163
-        on right: 22
-    argument (121)
+    printStatement (124)
         on left: 164 165
-        on right: 152 160 162 164
-    comment (122)
-        on left: 166
+        on right: 20
+    functionCallStatement (125)
+        on left: 166 167
+        on right: 22
+    argument (126)
+        on left: 168 169
+        on right: 156 164 166 168
+    comment (127)
+        on left: 170
         on right: 23
-    main (123)
-        on left: 169
+    main (128)
+        on left: 173
         on right: 5
-    $@14 (124)
-        on left: 167
-        on right: 169
-    $@15 (125)
-        on left: 168
-        on right: 169
+    $@18 (129)
+        on left: 171
+        on right: 173
+    $@19 (130)
+        on left: 172
+        on right: 173
 
 
 State 0
@@ -648,55 +671,55 @@ State 7
 
 State 8
 
-  136 switchStatement: SWITCH . LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@11 caseStatement RIGHT_CURLY_BRACE
+  139 switchStatement: SWITCH . LEFT_PARENTHESIS IDENTIFIER $@13 RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@14 caseList RIGHT_CURLY_BRACE
 
     LEFT_PARENTHESIS  shift, and go to state 60
 
 
 State 9
 
-  157 continueBreakStatement: CONTINUE . ';'
-  158                       | CONTINUE . IDENTIFIER ';'
-  159                       | CONTINUE .
+  161 continueBreakStatement: CONTINUE . ';'
+  162                       | CONTINUE . IDENTIFIER ';'
+  163                       | CONTINUE .
 
     IDENTIFIER  shift, and go to state 61
     ';'         shift, and go to state 62
 
-    IDENTIFIER  [reduce using rule 159 (continueBreakStatement)]
-    $default    reduce using rule 159 (continueBreakStatement)
+    IDENTIFIER  [reduce using rule 163 (continueBreakStatement)]
+    $default    reduce using rule 163 (continueBreakStatement)
 
 
 State 10
 
-  154 continueBreakStatement: BREAK . ';'
-  155                       | BREAK . IDENTIFIER ';'
-  156                       | BREAK .
+  158 continueBreakStatement: BREAK . ';'
+  159                       | BREAK . IDENTIFIER ';'
+  160                       | BREAK .
 
     IDENTIFIER  shift, and go to state 63
     ';'         shift, and go to state 64
 
-    IDENTIFIER  [reduce using rule 156 (continueBreakStatement)]
-    $default    reduce using rule 156 (continueBreakStatement)
+    IDENTIFIER  [reduce using rule 160 (continueBreakStatement)]
+    $default    reduce using rule 160 (continueBreakStatement)
 
 
 State 11
 
-  119 whileStatement: WHILE . LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@8 blockStatements RIGHT_CURLY_BRACE
+  120 whileStatement: WHILE . LEFT_PARENTHESIS logicalExpression $@8 RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE
 
     LEFT_PARENTHESIS  shift, and go to state 65
 
 
 State 12
 
-  134 forStatement: FOR . LEFT_PARENTHESIS $@10 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+  136 forStatement: FOR . LEFT_PARENTHESIS $@12 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
     LEFT_PARENTHESIS  shift, and go to state 66
 
 
 State 13
 
-  152 returnStatement: RETURN . argument ';'
-  153                | RETURN . ';'
+  156 returnStatement: RETURN . argument ';'
+  157                | RETURN . ';'
 
     NOT               shift, and go to state 67
     LEFT_PARENTHESIS  shift, and go to state 68
@@ -725,47 +748,47 @@ State 13
 
 State 14
 
-  121 repeatStatement: REPEAT . LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS
+  123 repeatStatement: REPEAT . LEFT_CURLY_BRACE $@10 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression $@11 RIGHT_PARENTHESIS
 
     LEFT_CURLY_BRACE  shift, and go to state 89
 
 
 State 15
 
-  144 enumStatement: ENUM . IDENTIFIER LEFT_CURLY_BRACE $@12 enumIdentifiers RIGHT_CURLY_BRACE
+  148 enumStatement: ENUM . IDENTIFIER LEFT_CURLY_BRACE $@16 enumIdentifiers RIGHT_CURLY_BRACE
 
     IDENTIFIER  shift, and go to state 90
 
 
 State 16
 
-  146 functionStatement: FUNCTION . IDENTIFIER LEFT_PARENTHESIS $@13 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+  150 functionStatement: FUNCTION . IDENTIFIER LEFT_PARENTHESIS $@17 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
     IDENTIFIER  shift, and go to state 91
 
 
 State 17
 
-  169 main: MAIN . $@14 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@15 blockStatements RIGHT_CURLY_BRACE
+  173 main: MAIN . $@18 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@19 blockStatements RIGHT_CURLY_BRACE
 
-    $default  reduce using rule 167 ($@14)
+    $default  reduce using rule 171 ($@18)
 
-    $@14  go to state 92
+    $@18  go to state 92
 
 
 State 18
 
-  160 printStatement: PRINT . LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
-  161               | PRINT . LEFT_PARENTHESIS RIGHT_PARENTHESIS ';'
+  164 printStatement: PRINT . LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
+  165               | PRINT . LEFT_PARENTHESIS RIGHT_PARENTHESIS ';'
 
     LEFT_PARENTHESIS  shift, and go to state 93
 
 
 State 19
 
-  166 comment: COMMENT .
+  170 comment: COMMENT .
 
-    $default  reduce using rule 166 (comment)
+    $default  reduce using rule 170 (comment)
 
 
 State 20
@@ -777,8 +800,8 @@ State 20
    59                    | IDENTIFIER . ASSIGN CHAR_LITERAL ';'
    60 incStatement: IDENTIFIER . INCREMENT ';'
    61 decStatement: IDENTIFIER . DECREMENT ';'
-  162 functionCallStatement: IDENTIFIER . LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
-  163                      | IDENTIFIER . LEFT_PARENTHESIS RIGHT_PARENTHESIS ';'
+  166 functionCallStatement: IDENTIFIER . LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
+  167                      | IDENTIFIER . LEFT_PARENTHESIS RIGHT_PARENTHESIS ';'
 
     INCREMENT         shift, and go to state 94
     DECREMENT         shift, and go to state 95
@@ -1185,42 +1208,42 @@ State 59
 
 State 60
 
-  136 switchStatement: SWITCH LEFT_PARENTHESIS . IDENTIFIER RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@11 caseStatement RIGHT_CURLY_BRACE
+  139 switchStatement: SWITCH LEFT_PARENTHESIS . IDENTIFIER $@13 RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@14 caseList RIGHT_CURLY_BRACE
 
     IDENTIFIER  shift, and go to state 116
 
 
 State 61
 
-  158 continueBreakStatement: CONTINUE IDENTIFIER . ';'
+  162 continueBreakStatement: CONTINUE IDENTIFIER . ';'
 
     ';'  shift, and go to state 117
 
 
 State 62
 
-  157 continueBreakStatement: CONTINUE ';' .
+  161 continueBreakStatement: CONTINUE ';' .
 
-    $default  reduce using rule 157 (continueBreakStatement)
+    $default  reduce using rule 161 (continueBreakStatement)
 
 
 State 63
 
-  155 continueBreakStatement: BREAK IDENTIFIER . ';'
+  159 continueBreakStatement: BREAK IDENTIFIER . ';'
 
     ';'  shift, and go to state 118
 
 
 State 64
 
-  154 continueBreakStatement: BREAK ';' .
+  158 continueBreakStatement: BREAK ';' .
 
-    $default  reduce using rule 154 (continueBreakStatement)
+    $default  reduce using rule 158 (continueBreakStatement)
 
 
 State 65
 
-  119 whileStatement: WHILE LEFT_PARENTHESIS . logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@8 blockStatements RIGHT_CURLY_BRACE
+  120 whileStatement: WHILE LEFT_PARENTHESIS . logicalExpression $@8 RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE
 
     NOT               shift, and go to state 67
     LEFT_PARENTHESIS  shift, and go to state 119
@@ -1244,11 +1267,11 @@ State 65
 
 State 66
 
-  134 forStatement: FOR LEFT_PARENTHESIS . $@10 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+  136 forStatement: FOR LEFT_PARENTHESIS . $@12 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
-    $default  reduce using rule 133 ($@10)
+    $default  reduce using rule 135 ($@12)
 
-    $@10  go to state 124
+    $@12  go to state 124
 
 
 State 67
@@ -1382,19 +1405,19 @@ State 73
 
 State 74
 
-  153 returnStatement: RETURN ';' .
+  157 returnStatement: RETURN ';' .
 
-    $default  reduce using rule 153 (returnStatement)
+    $default  reduce using rule 157 (returnStatement)
 
 
 State 75
 
-  164 argument: expression . ',' argument
-  165         | expression .
+  168 argument: expression . ',' argument
+  169         | expression .
 
     ','  shift, and go to state 132
 
-    $default  reduce using rule 165 (argument)
+    $default  reduce using rule 169 (argument)
 
 
 State 76
@@ -1538,45 +1561,45 @@ State 87
 
 State 88
 
-  152 returnStatement: RETURN argument . ';'
+  156 returnStatement: RETURN argument . ';'
 
     ';'  shift, and go to state 157
 
 
 State 89
 
-  121 repeatStatement: REPEAT LEFT_CURLY_BRACE . $@9 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS
+  123 repeatStatement: REPEAT LEFT_CURLY_BRACE . $@10 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression $@11 RIGHT_PARENTHESIS
 
-    $default  reduce using rule 120 ($@9)
+    $default  reduce using rule 121 ($@10)
 
-    $@9  go to state 158
+    $@10  go to state 158
 
 
 State 90
 
-  144 enumStatement: ENUM IDENTIFIER . LEFT_CURLY_BRACE $@12 enumIdentifiers RIGHT_CURLY_BRACE
+  148 enumStatement: ENUM IDENTIFIER . LEFT_CURLY_BRACE $@16 enumIdentifiers RIGHT_CURLY_BRACE
 
     LEFT_CURLY_BRACE  shift, and go to state 159
 
 
 State 91
 
-  146 functionStatement: FUNCTION IDENTIFIER . LEFT_PARENTHESIS $@13 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+  150 functionStatement: FUNCTION IDENTIFIER . LEFT_PARENTHESIS $@17 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
     LEFT_PARENTHESIS  shift, and go to state 160
 
 
 State 92
 
-  169 main: MAIN $@14 . LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@15 blockStatements RIGHT_CURLY_BRACE
+  173 main: MAIN $@18 . LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@19 blockStatements RIGHT_CURLY_BRACE
 
     LEFT_PARENTHESIS  shift, and go to state 161
 
 
 State 93
 
-  160 printStatement: PRINT LEFT_PARENTHESIS . argument RIGHT_PARENTHESIS ';'
-  161               | PRINT LEFT_PARENTHESIS . RIGHT_PARENTHESIS ';'
+  164 printStatement: PRINT LEFT_PARENTHESIS . argument RIGHT_PARENTHESIS ';'
+  165               | PRINT LEFT_PARENTHESIS . RIGHT_PARENTHESIS ';'
 
     NOT                shift, and go to state 67
     LEFT_PARENTHESIS   shift, and go to state 68
@@ -1650,8 +1673,8 @@ State 96
 
 State 97
 
-  162 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS . argument RIGHT_PARENTHESIS ';'
-  163                      | IDENTIFIER LEFT_PARENTHESIS . RIGHT_PARENTHESIS ';'
+  166 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS . argument RIGHT_PARENTHESIS ';'
+  167                      | IDENTIFIER LEFT_PARENTHESIS . RIGHT_PARENTHESIS ';'
 
     NOT                shift, and go to state 67
     LEFT_PARENTHESIS   shift, and go to state 68
@@ -1874,23 +1897,25 @@ State 115
 
 State 116
 
-  136 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER . RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@11 caseStatement RIGHT_CURLY_BRACE
+  139 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER . $@13 RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@14 caseList RIGHT_CURLY_BRACE
 
-    RIGHT_PARENTHESIS  shift, and go to state 191
+    $default  reduce using rule 137 ($@13)
+
+    $@13  go to state 191
 
 
 State 117
 
-  158 continueBreakStatement: CONTINUE IDENTIFIER ';' .
+  162 continueBreakStatement: CONTINUE IDENTIFIER ';' .
 
-    $default  reduce using rule 158 (continueBreakStatement)
+    $default  reduce using rule 162 (continueBreakStatement)
 
 
 State 118
 
-  155 continueBreakStatement: BREAK IDENTIFIER ';' .
+  159 continueBreakStatement: BREAK IDENTIFIER ';' .
 
-    $default  reduce using rule 155 (continueBreakStatement)
+    $default  reduce using rule 159 (continueBreakStatement)
 
 
 State 119
@@ -2005,15 +2030,18 @@ State 122
 State 123
 
    89 logicalExpression: logicalExpression . OR logicalTerm
-  119 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression . RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@8 blockStatements RIGHT_CURLY_BRACE
+  120 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression . $@8 RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE
 
-    OR                 shift, and go to state 155
-    RIGHT_PARENTHESIS  shift, and go to state 192
+    OR  shift, and go to state 155
+
+    $default  reduce using rule 118 ($@8)
+
+    $@8  go to state 192
 
 
 State 124
 
-  134 forStatement: FOR LEFT_PARENTHESIS $@10 . forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+  136 forStatement: FOR LEFT_PARENTHESIS $@12 . forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
     INT         shift, and go to state 193
     CHAR        shift, and go to state 194
@@ -2114,7 +2142,7 @@ State 131
 
 State 132
 
-  164 argument: expression ',' . argument
+  168 argument: expression ',' . argument
 
     NOT               shift, and go to state 67
     LEFT_PARENTHESIS  shift, and go to state 68
@@ -2468,14 +2496,14 @@ State 156
 
 State 157
 
-  152 returnStatement: RETURN argument ';' .
+  156 returnStatement: RETURN argument ';' .
 
-    $default  reduce using rule 152 (returnStatement)
+    $default  reduce using rule 156 (returnStatement)
 
 
 State 158
 
-  121 repeatStatement: REPEAT LEFT_CURLY_BRACE $@9 . blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS
+  123 repeatStatement: REPEAT LEFT_CURLY_BRACE $@10 . blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression $@11 RIGHT_PARENTHESIS
 
     INT         shift, and go to state 1
     CHAR        shift, and go to state 2
@@ -2523,39 +2551,39 @@ State 158
 
 State 159
 
-  144 enumStatement: ENUM IDENTIFIER LEFT_CURLY_BRACE . $@12 enumIdentifiers RIGHT_CURLY_BRACE
+  148 enumStatement: ENUM IDENTIFIER LEFT_CURLY_BRACE . $@16 enumIdentifiers RIGHT_CURLY_BRACE
 
-    $default  reduce using rule 143 ($@12)
+    $default  reduce using rule 147 ($@16)
 
-    $@12  go to state 231
+    $@16  go to state 231
 
 
 State 160
 
-  146 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS . $@13 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+  150 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS . $@17 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
-    $default  reduce using rule 145 ($@13)
+    $default  reduce using rule 149 ($@17)
 
-    $@13  go to state 232
+    $@17  go to state 232
 
 
 State 161
 
-  169 main: MAIN $@14 LEFT_PARENTHESIS . RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@15 blockStatements RIGHT_CURLY_BRACE
+  173 main: MAIN $@18 LEFT_PARENTHESIS . RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@19 blockStatements RIGHT_CURLY_BRACE
 
     RIGHT_PARENTHESIS  shift, and go to state 233
 
 
 State 162
 
-  161 printStatement: PRINT LEFT_PARENTHESIS RIGHT_PARENTHESIS . ';'
+  165 printStatement: PRINT LEFT_PARENTHESIS RIGHT_PARENTHESIS . ';'
 
     ';'  shift, and go to state 234
 
 
 State 163
 
-  160 printStatement: PRINT LEFT_PARENTHESIS argument . RIGHT_PARENTHESIS ';'
+  164 printStatement: PRINT LEFT_PARENTHESIS argument . RIGHT_PARENTHESIS ';'
 
     RIGHT_PARENTHESIS  shift, and go to state 235
 
@@ -2647,14 +2675,14 @@ State 170
 
 State 171
 
-  163 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS . ';'
+  167 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS . ';'
 
     ';'  shift, and go to state 241
 
 
 State 172
 
-  162 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS argument . RIGHT_PARENTHESIS ';'
+  166 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS argument . RIGHT_PARENTHESIS ';'
 
     RIGHT_PARENTHESIS  shift, and go to state 242
 
@@ -2863,16 +2891,16 @@ State 190
 
 State 191
 
-  136 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS . LEFT_CURLY_BRACE $@11 caseStatement RIGHT_CURLY_BRACE
+  139 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER $@13 . RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@14 caseList RIGHT_CURLY_BRACE
 
-    LEFT_CURLY_BRACE  shift, and go to state 252
+    RIGHT_PARENTHESIS  shift, and go to state 252
 
 
 State 192
 
-  119 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS . LEFT_CURLY_BRACE $@8 blockStatements RIGHT_CURLY_BRACE
+  120 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression $@8 . RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE
 
-    LEFT_CURLY_BRACE  shift, and go to state 253
+    RIGHT_PARENTHESIS  shift, and go to state 253
 
 
 State 193
@@ -2912,24 +2940,24 @@ State 197
 
 State 198
 
-  128 forDeclaration: IDENTIFIER . ASSIGN intMathExpression ';'
-  129               | IDENTIFIER . ASSIGN floatMathExpression ';'
-  130               | IDENTIFIER . ASSIGN stringExpression ';'
-  131               | IDENTIFIER . ASSIGN BOOL_LITERAL ';'
+  130 forDeclaration: IDENTIFIER . ASSIGN intMathExpression ';'
+  131               | IDENTIFIER . ASSIGN floatMathExpression ';'
+  132               | IDENTIFIER . ASSIGN stringExpression ';'
+  133               | IDENTIFIER . ASSIGN BOOL_LITERAL ';'
 
     ASSIGN  shift, and go to state 259
 
 
 State 199
 
-  132 forDeclaration: assignVariableDeclaration .
+  134 forDeclaration: assignVariableDeclaration .
 
-    $default  reduce using rule 132 (forDeclaration)
+    $default  reduce using rule 134 (forDeclaration)
 
 
 State 200
 
-  134 forStatement: FOR LEFT_PARENTHESIS $@10 forDeclaration . logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+  136 forStatement: FOR LEFT_PARENTHESIS $@12 forDeclaration . logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
     NOT               shift, and go to state 67
     LEFT_PARENTHESIS  shift, and go to state 119
@@ -2981,9 +3009,9 @@ State 204
 
 State 205
 
-  164 argument: expression ',' argument .
+  168 argument: expression ',' argument .
 
-    $default  reduce using rule 164 (argument)
+    $default  reduce using rule 168 (argument)
 
 
 State 206
@@ -3248,7 +3276,7 @@ State 229
 State 230
 
     7 blockStatements: blockStatements . blockStatement
-  121 repeatStatement: REPEAT LEFT_CURLY_BRACE $@9 blockStatements . RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS
+  123 repeatStatement: REPEAT LEFT_CURLY_BRACE $@10 blockStatements . RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression $@11 RIGHT_PARENTHESIS
 
     INT                shift, and go to state 1
     CHAR               shift, and go to state 2
@@ -3296,7 +3324,7 @@ State 230
 
 State 231
 
-  144 enumStatement: ENUM IDENTIFIER LEFT_CURLY_BRACE $@12 . enumIdentifiers RIGHT_CURLY_BRACE
+  148 enumStatement: ENUM IDENTIFIER LEFT_CURLY_BRACE $@16 . enumIdentifiers RIGHT_CURLY_BRACE
 
     IDENTIFIER  shift, and go to state 262
 
@@ -3305,7 +3333,7 @@ State 231
 
 State 232
 
-  146 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@13 . parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+  150 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@17 . parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
     INT     shift, and go to state 1
     CHAR    shift, and go to state 2
@@ -3314,7 +3342,7 @@ State 232
     CONST   shift, and go to state 5
     BOOL    shift, and go to state 6
 
-    $default  reduce using rule 151 (parameter)
+    $default  reduce using rule 155 (parameter)
 
     noSemiColumnVariableDeclarationStatement  go to state 264
     noSemiColumnAssignVariableDeclaration     go to state 265
@@ -3325,21 +3353,21 @@ State 232
 
 State 233
 
-  169 main: MAIN $@14 LEFT_PARENTHESIS RIGHT_PARENTHESIS . LEFT_CURLY_BRACE $@15 blockStatements RIGHT_CURLY_BRACE
+  173 main: MAIN $@18 LEFT_PARENTHESIS RIGHT_PARENTHESIS . LEFT_CURLY_BRACE $@19 blockStatements RIGHT_CURLY_BRACE
 
     LEFT_CURLY_BRACE  shift, and go to state 269
 
 
 State 234
 
-  161 printStatement: PRINT LEFT_PARENTHESIS RIGHT_PARENTHESIS ';' .
+  165 printStatement: PRINT LEFT_PARENTHESIS RIGHT_PARENTHESIS ';' .
 
-    $default  reduce using rule 161 (printStatement)
+    $default  reduce using rule 165 (printStatement)
 
 
 State 235
 
-  160 printStatement: PRINT LEFT_PARENTHESIS argument RIGHT_PARENTHESIS . ';'
+  164 printStatement: PRINT LEFT_PARENTHESIS argument RIGHT_PARENTHESIS . ';'
 
     ';'  shift, and go to state 270
 
@@ -3381,14 +3409,14 @@ State 240
 
 State 241
 
-  163 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS ';' .
+  167 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS ';' .
 
-    $default  reduce using rule 163 (functionCallStatement)
+    $default  reduce using rule 167 (functionCallStatement)
 
 
 State 242
 
-  162 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS argument RIGHT_PARENTHESIS . ';'
+  166 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS argument RIGHT_PARENTHESIS . ';'
 
     ';'  shift, and go to state 271
 
@@ -3482,20 +3510,16 @@ State 251
 
 State 252
 
-  136 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS LEFT_CURLY_BRACE . $@11 caseStatement RIGHT_CURLY_BRACE
+  139 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER $@13 RIGHT_PARENTHESIS . LEFT_CURLY_BRACE $@14 caseList RIGHT_CURLY_BRACE
 
-    $default  reduce using rule 135 ($@11)
-
-    $@11  go to state 274
+    LEFT_CURLY_BRACE  shift, and go to state 274
 
 
 State 253
 
-  119 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE . $@8 blockStatements RIGHT_CURLY_BRACE
+  120 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression $@8 RIGHT_PARENTHESIS . LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE
 
-    $default  reduce using rule 118 ($@8)
-
-    $@8  go to state 275
+    LEFT_CURLY_BRACE  shift, and go to state 275
 
 
 State 254
@@ -3535,10 +3559,10 @@ State 258
 
 State 259
 
-  128 forDeclaration: IDENTIFIER ASSIGN . intMathExpression ';'
-  129               | IDENTIFIER ASSIGN . floatMathExpression ';'
-  130               | IDENTIFIER ASSIGN . stringExpression ';'
-  131               | IDENTIFIER ASSIGN . BOOL_LITERAL ';'
+  130 forDeclaration: IDENTIFIER ASSIGN . intMathExpression ';'
+  131               | IDENTIFIER ASSIGN . floatMathExpression ';'
+  132               | IDENTIFIER ASSIGN . stringExpression ';'
+  133               | IDENTIFIER ASSIGN . BOOL_LITERAL ';'
 
     LEFT_PARENTHESIS  shift, and go to state 276
     IDENTIFIER        shift, and go to state 277
@@ -3560,7 +3584,7 @@ State 259
 State 260
 
    89 logicalExpression: logicalExpression . OR logicalTerm
-  134 forStatement: FOR LEFT_PARENTHESIS $@10 forDeclaration logicalExpression . ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+  136 forStatement: FOR LEFT_PARENTHESIS $@12 forDeclaration logicalExpression . ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
     OR   shift, and go to state 155
     ';'  shift, and go to state 282
@@ -3568,36 +3592,36 @@ State 260
 
 State 261
 
-  121 repeatStatement: REPEAT LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE . UNTIL LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS
+  123 repeatStatement: REPEAT LEFT_CURLY_BRACE $@10 blockStatements RIGHT_CURLY_BRACE . UNTIL LEFT_PARENTHESIS logicalExpression $@11 RIGHT_PARENTHESIS
 
     UNTIL  shift, and go to state 283
 
 
 State 262
 
-  141 enumIdentifiers: IDENTIFIER . ',' enumIdentifiers
-  142                | IDENTIFIER .
+  145 enumIdentifiers: IDENTIFIER . ',' enumIdentifiers
+  146                | IDENTIFIER .
 
     ','  shift, and go to state 284
 
-    $default  reduce using rule 142 (enumIdentifiers)
+    $default  reduce using rule 146 (enumIdentifiers)
 
 
 State 263
 
-  144 enumStatement: ENUM IDENTIFIER LEFT_CURLY_BRACE $@12 enumIdentifiers . RIGHT_CURLY_BRACE
+  148 enumStatement: ENUM IDENTIFIER LEFT_CURLY_BRACE $@16 enumIdentifiers . RIGHT_CURLY_BRACE
 
     RIGHT_CURLY_BRACE  shift, and go to state 285
 
 
 State 264
 
-  147 parameter: noSemiColumnVariableDeclarationStatement . ',' parameter
-  148          | noSemiColumnVariableDeclarationStatement .
+  151 parameter: noSemiColumnVariableDeclarationStatement . ',' parameter
+  152          | noSemiColumnVariableDeclarationStatement .
 
     ','  shift, and go to state 286
 
-    $default  reduce using rule 148 (parameter)
+    $default  reduce using rule 152 (parameter)
 
 
 State 265
@@ -3616,42 +3640,42 @@ State 266
 
 State 267
 
-  149 parameter: noSemiColumnConstDeclaration . ',' parameter
-  150          | noSemiColumnConstDeclaration .
+  153 parameter: noSemiColumnConstDeclaration . ',' parameter
+  154          | noSemiColumnConstDeclaration .
 
     ','  shift, and go to state 287
 
-    $default  reduce using rule 150 (parameter)
+    $default  reduce using rule 154 (parameter)
 
 
 State 268
 
-  146 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@13 parameter . RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+  150 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@17 parameter . RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
     RIGHT_PARENTHESIS  shift, and go to state 288
 
 
 State 269
 
-  169 main: MAIN $@14 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE . $@15 blockStatements RIGHT_CURLY_BRACE
+  173 main: MAIN $@18 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE . $@19 blockStatements RIGHT_CURLY_BRACE
 
-    $default  reduce using rule 168 ($@15)
+    $default  reduce using rule 172 ($@19)
 
-    $@15  go to state 289
+    $@19  go to state 289
 
 
 State 270
 
-  160 printStatement: PRINT LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';' .
+  164 printStatement: PRINT LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';' .
 
-    $default  reduce using rule 160 (printStatement)
+    $default  reduce using rule 164 (printStatement)
 
 
 State 271
 
-  162 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';' .
+  166 functionCallStatement: IDENTIFIER LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';' .
 
-    $default  reduce using rule 162 (functionCallStatement)
+    $default  reduce using rule 166 (functionCallStatement)
 
 
 State 272
@@ -3674,62 +3698,20 @@ State 273
 
 State 274
 
-  136 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@11 . caseStatement RIGHT_CURLY_BRACE
+  139 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER $@13 RIGHT_PARENTHESIS LEFT_CURLY_BRACE . $@14 caseList RIGHT_CURLY_BRACE
 
-    CASE     shift, and go to state 292
-    DEFAULT  shift, and go to state 293
+    $default  reduce using rule 138 ($@14)
 
-    $default  reduce using rule 140 (caseStatement)
-
-    caseStatement  go to state 294
+    $@14  go to state 292
 
 
 State 275
 
-  119 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@8 . blockStatements RIGHT_CURLY_BRACE
+  120 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression $@8 RIGHT_PARENTHESIS LEFT_CURLY_BRACE . $@9 blockStatements RIGHT_CURLY_BRACE
 
-    INT         shift, and go to state 1
-    CHAR        shift, and go to state 2
-    FLOAT       shift, and go to state 3
-    STRING      shift, and go to state 4
-    CONST       shift, and go to state 5
-    BOOL        shift, and go to state 6
-    IF          shift, and go to state 7
-    SWITCH      shift, and go to state 8
-    CONTINUE    shift, and go to state 9
-    BREAK       shift, and go to state 10
-    WHILE       shift, and go to state 11
-    FOR         shift, and go to state 12
-    RETURN      shift, and go to state 13
-    REPEAT      shift, and go to state 14
-    ENUM        shift, and go to state 15
-    PRINT       shift, and go to state 18
-    COMMENT     shift, and go to state 19
-    IDENTIFIER  shift, and go to state 20
+    $default  reduce using rule 119 ($@9)
 
-    blockStatements                           go to state 295
-    blockStatement                            go to state 24
-    variableDeclarationStatement              go to state 25
-    assignVariableDeclaration                 go to state 26
-    noSemiColumnAssignVariableDeclaration     go to state 27
-    nonAssignVariableDeclaration              go to state 28
-    noSemiColumnNonAssignVariableDeclaration  go to state 29
-    constDeclarationStatement                 go to state 30
-    noSemiColumnConstDeclaration              go to state 31
-    assignmentStatement                       go to state 32
-    incStatement                              go to state 33
-    decStatement                              go to state 34
-    ifStatement                               go to state 35
-    whileStatement                            go to state 36
-    repeatStatement                           go to state 37
-    forStatement                              go to state 38
-    switchStatement                           go to state 39
-    enumStatement                             go to state 40
-    returnStatement                           go to state 42
-    continueBreakStatement                    go to state 43
-    printStatement                            go to state 44
-    functionCallStatement                     go to state 45
-    comment                                   go to state 46
+    $@9  go to state 293
 
 
 State 276
@@ -3785,77 +3767,77 @@ State 277
 
 State 278
 
-  131 forDeclaration: IDENTIFIER ASSIGN BOOL_LITERAL . ';'
+  133 forDeclaration: IDENTIFIER ASSIGN BOOL_LITERAL . ';'
 
-    ';'  shift, and go to state 296
+    ';'  shift, and go to state 294
 
 
 State 279
 
    62 intMathExpression: intMathExpression . PLUS intMathTerm
    63                  | intMathExpression . MINUS intMathTerm
-  128 forDeclaration: IDENTIFIER ASSIGN intMathExpression . ';'
+  130 forDeclaration: IDENTIFIER ASSIGN intMathExpression . ';'
 
     PLUS   shift, and go to state 133
     MINUS  shift, and go to state 134
-    ';'    shift, and go to state 297
+    ';'    shift, and go to state 295
 
 
 State 280
 
    75 floatMathExpression: floatMathExpression . PLUS floatMathTerm
    76                    | floatMathExpression . MINUS floatMathTerm
-  129 forDeclaration: IDENTIFIER ASSIGN floatMathExpression . ';'
+  131 forDeclaration: IDENTIFIER ASSIGN floatMathExpression . ';'
 
     PLUS   shift, and go to state 144
     MINUS  shift, and go to state 145
-    ';'    shift, and go to state 298
+    ';'    shift, and go to state 296
 
 
 State 281
 
    86 stringExpression: stringExpression . PLUS stringExpression
-  130 forDeclaration: IDENTIFIER ASSIGN stringExpression . ';'
+  132 forDeclaration: IDENTIFIER ASSIGN stringExpression . ';'
 
     PLUS  shift, and go to state 154
-    ';'   shift, and go to state 299
+    ';'   shift, and go to state 297
 
 
 State 282
 
-  134 forStatement: FOR LEFT_PARENTHESIS $@10 forDeclaration logicalExpression ';' . forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+  136 forStatement: FOR LEFT_PARENTHESIS $@12 forDeclaration logicalExpression ';' . forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
-    IDENTIFIER  shift, and go to state 300
+    IDENTIFIER  shift, and go to state 298
 
-    forAssignment  go to state 301
+    forAssignment  go to state 299
 
 
 State 283
 
-  121 repeatStatement: REPEAT LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE UNTIL . LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS
+  123 repeatStatement: REPEAT LEFT_CURLY_BRACE $@10 blockStatements RIGHT_CURLY_BRACE UNTIL . LEFT_PARENTHESIS logicalExpression $@11 RIGHT_PARENTHESIS
 
-    LEFT_PARENTHESIS  shift, and go to state 302
+    LEFT_PARENTHESIS  shift, and go to state 300
 
 
 State 284
 
-  141 enumIdentifiers: IDENTIFIER ',' . enumIdentifiers
+  145 enumIdentifiers: IDENTIFIER ',' . enumIdentifiers
 
     IDENTIFIER  shift, and go to state 262
 
-    enumIdentifiers  go to state 303
+    enumIdentifiers  go to state 301
 
 
 State 285
 
-  144 enumStatement: ENUM IDENTIFIER LEFT_CURLY_BRACE $@12 enumIdentifiers RIGHT_CURLY_BRACE .
+  148 enumStatement: ENUM IDENTIFIER LEFT_CURLY_BRACE $@16 enumIdentifiers RIGHT_CURLY_BRACE .
 
-    $default  reduce using rule 144 (enumStatement)
+    $default  reduce using rule 148 (enumStatement)
 
 
 State 286
 
-  147 parameter: noSemiColumnVariableDeclarationStatement ',' . parameter
+  151 parameter: noSemiColumnVariableDeclarationStatement ',' . parameter
 
     INT     shift, and go to state 1
     CHAR    shift, and go to state 2
@@ -3864,18 +3846,18 @@ State 286
     CONST   shift, and go to state 5
     BOOL    shift, and go to state 6
 
-    $default  reduce using rule 151 (parameter)
+    $default  reduce using rule 155 (parameter)
 
     noSemiColumnVariableDeclarationStatement  go to state 264
     noSemiColumnAssignVariableDeclaration     go to state 265
     noSemiColumnNonAssignVariableDeclaration  go to state 266
     noSemiColumnConstDeclaration              go to state 267
-    parameter                                 go to state 304
+    parameter                                 go to state 302
 
 
 State 287
 
-  149 parameter: noSemiColumnConstDeclaration ',' . parameter
+  153 parameter: noSemiColumnConstDeclaration ',' . parameter
 
     INT     shift, and go to state 1
     CHAR    shift, and go to state 2
@@ -3884,25 +3866,25 @@ State 287
     CONST   shift, and go to state 5
     BOOL    shift, and go to state 6
 
-    $default  reduce using rule 151 (parameter)
+    $default  reduce using rule 155 (parameter)
 
     noSemiColumnVariableDeclarationStatement  go to state 264
     noSemiColumnAssignVariableDeclaration     go to state 265
     noSemiColumnNonAssignVariableDeclaration  go to state 266
     noSemiColumnConstDeclaration              go to state 267
-    parameter                                 go to state 305
+    parameter                                 go to state 303
 
 
 State 288
 
-  146 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@13 parameter RIGHT_PARENTHESIS . LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+  150 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@17 parameter RIGHT_PARENTHESIS . LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
-    LEFT_CURLY_BRACE  shift, and go to state 306
+    LEFT_CURLY_BRACE  shift, and go to state 304
 
 
 State 289
 
-  169 main: MAIN $@14 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@15 . blockStatements RIGHT_CURLY_BRACE
+  173 main: MAIN $@18 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@19 . blockStatements RIGHT_CURLY_BRACE
 
     INT         shift, and go to state 1
     CHAR        shift, and go to state 2
@@ -3923,7 +3905,7 @@ State 289
     COMMENT     shift, and go to state 19
     IDENTIFIER  shift, and go to state 20
 
-    blockStatements                           go to state 307
+    blockStatements                           go to state 305
     blockStatement                            go to state 24
     variableDeclarationStatement              go to state 25
     assignVariableDeclaration                 go to state 26
@@ -3971,7 +3953,7 @@ State 290
     COMMENT     shift, and go to state 19
     IDENTIFIER  shift, and go to state 20
 
-    blockStatements                           go to state 308
+    blockStatements                           go to state 306
     blockStatement                            go to state 24
     variableDeclarationStatement              go to state 25
     assignVariableDeclaration                 go to state 26
@@ -4019,7 +4001,7 @@ State 291
     COMMENT     shift, and go to state 19
     IDENTIFIER  shift, and go to state 20
 
-    blockStatements                           go to state 309
+    blockStatements                           go to state 307
     blockStatement                            go to state 24
     variableDeclarationStatement              go to state 25
     assignVariableDeclaration                 go to state 26
@@ -4046,36 +4028,211 @@ State 291
 
 State 292
 
-  137 caseStatement: CASE . values ':' blockStatements BREAK ';' caseStatement
-  138              | CASE . values ':' blockStatements BREAK ';'
+  139 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER $@13 RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@14 . caseList RIGHT_CURLY_BRACE
 
-    DIGIT           shift, and go to state 310
-    FLOAT_LITERAL   shift, and go to state 311
-    STRING_LITERAL  shift, and go to state 312
-    CHAR_LITERAL    shift, and go to state 313
-    BOOL_LITERAL    shift, and go to state 314
+    CASE     shift, and go to state 308
+    DEFAULT  shift, and go to state 309
 
-    values  go to state 315
+    $default  reduce using rule 142 (caseList)
+
+    caseList       go to state 310
+    caseStatement  go to state 311
 
 
 State 293
 
-  139 caseStatement: DEFAULT . ':' blockStatements BREAK ';'
+  120 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression $@8 RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@9 . blockStatements RIGHT_CURLY_BRACE
 
-    ':'  shift, and go to state 316
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 10
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    blockStatements                           go to state 312
+    blockStatement                            go to state 24
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    incStatement                              go to state 33
+    decStatement                              go to state 34
+    ifStatement                               go to state 35
+    whileStatement                            go to state 36
+    repeatStatement                           go to state 37
+    forStatement                              go to state 38
+    switchStatement                           go to state 39
+    enumStatement                             go to state 40
+    returnStatement                           go to state 42
+    continueBreakStatement                    go to state 43
+    printStatement                            go to state 44
+    functionCallStatement                     go to state 45
+    comment                                   go to state 46
 
 
 State 294
 
-  136 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@11 caseStatement . RIGHT_CURLY_BRACE
+  133 forDeclaration: IDENTIFIER ASSIGN BOOL_LITERAL ';' .
 
-    RIGHT_CURLY_BRACE  shift, and go to state 317
+    $default  reduce using rule 133 (forDeclaration)
 
 
 State 295
 
+  130 forDeclaration: IDENTIFIER ASSIGN intMathExpression ';' .
+
+    $default  reduce using rule 130 (forDeclaration)
+
+
+State 296
+
+  131 forDeclaration: IDENTIFIER ASSIGN floatMathExpression ';' .
+
+    $default  reduce using rule 131 (forDeclaration)
+
+
+State 297
+
+  132 forDeclaration: IDENTIFIER ASSIGN stringExpression ';' .
+
+    $default  reduce using rule 132 (forDeclaration)
+
+
+State 298
+
+  124 forAssignment: IDENTIFIER . ASSIGN intMathExpression
+  125              | IDENTIFIER . ASSIGN floatMathExpression
+  126              | IDENTIFIER . ASSIGN stringExpression
+  127              | IDENTIFIER . ASSIGN BOOL_LITERAL
+  128              | IDENTIFIER . INCREMENT
+  129              | IDENTIFIER . DECREMENT
+
+    INCREMENT  shift, and go to state 313
+    DECREMENT  shift, and go to state 314
+    ASSIGN     shift, and go to state 315
+
+
+State 299
+
+  136 forStatement: FOR LEFT_PARENTHESIS $@12 forDeclaration logicalExpression ';' forAssignment . RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+
+    RIGHT_PARENTHESIS  shift, and go to state 316
+
+
+State 300
+
+  123 repeatStatement: REPEAT LEFT_CURLY_BRACE $@10 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS . logicalExpression $@11 RIGHT_PARENTHESIS
+
+    NOT               shift, and go to state 67
+    LEFT_PARENTHESIS  shift, and go to state 119
+    IDENTIFIER        shift, and go to state 120
+    DIGIT             shift, and go to state 70
+    FLOAT_LITERAL     shift, and go to state 71
+    BOOL_LITERAL      shift, and go to state 73
+
+    intMathExpression    go to state 121
+    intMathTerm          go to state 77
+    intMathFactor        go to state 78
+    intMathPrimary       go to state 79
+    floatMathExpression  go to state 122
+    floatMathTerm        go to state 81
+    floatMathFactor      go to state 82
+    logicalExpression    go to state 317
+    logicalTerm          go to state 85
+    logicalFactor        go to state 86
+    logicalPrimary       go to state 87
+
+
+State 301
+
+  145 enumIdentifiers: IDENTIFIER ',' enumIdentifiers .
+
+    $default  reduce using rule 145 (enumIdentifiers)
+
+
+State 302
+
+  151 parameter: noSemiColumnVariableDeclarationStatement ',' parameter .
+
+    $default  reduce using rule 151 (parameter)
+
+
+State 303
+
+  153 parameter: noSemiColumnConstDeclaration ',' parameter .
+
+    $default  reduce using rule 153 (parameter)
+
+
+State 304
+
+  150 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@17 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE . blockStatements RIGHT_CURLY_BRACE
+
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 10
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    blockStatements                           go to state 318
+    blockStatement                            go to state 24
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    incStatement                              go to state 33
+    decStatement                              go to state 34
+    ifStatement                               go to state 35
+    whileStatement                            go to state 36
+    repeatStatement                           go to state 37
+    forStatement                              go to state 38
+    switchStatement                           go to state 39
+    enumStatement                             go to state 40
+    returnStatement                           go to state 42
+    continueBreakStatement                    go to state 43
+    printStatement                            go to state 44
+    functionCallStatement                     go to state 45
+    comment                                   go to state 46
+
+
+State 305
+
     7 blockStatements: blockStatements . blockStatement
-  119 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@8 blockStatements . RIGHT_CURLY_BRACE
+  173 main: MAIN $@18 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@19 blockStatements . RIGHT_CURLY_BRACE
 
     INT                shift, and go to state 1
     CHAR               shift, and go to state 2
@@ -4091,7 +4248,7 @@ State 295
     FOR                shift, and go to state 12
     RETURN             shift, and go to state 13
     REPEAT             shift, and go to state 14
-    RIGHT_CURLY_BRACE  shift, and go to state 318
+    RIGHT_CURLY_BRACE  shift, and go to state 319
     ENUM               shift, and go to state 15
     PRINT              shift, and go to state 18
     COMMENT            shift, and go to state 19
@@ -4121,125 +4278,32 @@ State 295
     comment                                   go to state 46
 
 
-State 296
-
-  131 forDeclaration: IDENTIFIER ASSIGN BOOL_LITERAL ';' .
-
-    $default  reduce using rule 131 (forDeclaration)
-
-
-State 297
-
-  128 forDeclaration: IDENTIFIER ASSIGN intMathExpression ';' .
-
-    $default  reduce using rule 128 (forDeclaration)
-
-
-State 298
-
-  129 forDeclaration: IDENTIFIER ASSIGN floatMathExpression ';' .
-
-    $default  reduce using rule 129 (forDeclaration)
-
-
-State 299
-
-  130 forDeclaration: IDENTIFIER ASSIGN stringExpression ';' .
-
-    $default  reduce using rule 130 (forDeclaration)
-
-
-State 300
-
-  122 forAssignment: IDENTIFIER . ASSIGN intMathExpression
-  123              | IDENTIFIER . ASSIGN floatMathExpression
-  124              | IDENTIFIER . ASSIGN stringExpression
-  125              | IDENTIFIER . ASSIGN BOOL_LITERAL
-  126              | IDENTIFIER . INCREMENT
-  127              | IDENTIFIER . DECREMENT
-
-    INCREMENT  shift, and go to state 319
-    DECREMENT  shift, and go to state 320
-    ASSIGN     shift, and go to state 321
-
-
-State 301
-
-  134 forStatement: FOR LEFT_PARENTHESIS $@10 forDeclaration logicalExpression ';' forAssignment . RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
-
-    RIGHT_PARENTHESIS  shift, and go to state 322
-
-
-State 302
-
-  121 repeatStatement: REPEAT LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS . logicalExpression RIGHT_PARENTHESIS
-
-    NOT               shift, and go to state 67
-    LEFT_PARENTHESIS  shift, and go to state 119
-    IDENTIFIER        shift, and go to state 120
-    DIGIT             shift, and go to state 70
-    FLOAT_LITERAL     shift, and go to state 71
-    BOOL_LITERAL      shift, and go to state 73
-
-    intMathExpression    go to state 121
-    intMathTerm          go to state 77
-    intMathFactor        go to state 78
-    intMathPrimary       go to state 79
-    floatMathExpression  go to state 122
-    floatMathTerm        go to state 81
-    floatMathFactor      go to state 82
-    logicalExpression    go to state 323
-    logicalTerm          go to state 85
-    logicalFactor        go to state 86
-    logicalPrimary       go to state 87
-
-
-State 303
-
-  141 enumIdentifiers: IDENTIFIER ',' enumIdentifiers .
-
-    $default  reduce using rule 141 (enumIdentifiers)
-
-
-State 304
-
-  147 parameter: noSemiColumnVariableDeclarationStatement ',' parameter .
-
-    $default  reduce using rule 147 (parameter)
-
-
-State 305
-
-  149 parameter: noSemiColumnConstDeclaration ',' parameter .
-
-    $default  reduce using rule 149 (parameter)
-
-
 State 306
 
-  146 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@13 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE . blockStatements RIGHT_CURLY_BRACE
+    7 blockStatements: blockStatements . blockStatement
+  111 ifStatement: IF $@1 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@2 blockStatements . RIGHT_CURLY_BRACE
 
-    INT         shift, and go to state 1
-    CHAR        shift, and go to state 2
-    FLOAT       shift, and go to state 3
-    STRING      shift, and go to state 4
-    CONST       shift, and go to state 5
-    BOOL        shift, and go to state 6
-    IF          shift, and go to state 7
-    SWITCH      shift, and go to state 8
-    CONTINUE    shift, and go to state 9
-    BREAK       shift, and go to state 10
-    WHILE       shift, and go to state 11
-    FOR         shift, and go to state 12
-    RETURN      shift, and go to state 13
-    REPEAT      shift, and go to state 14
-    ENUM        shift, and go to state 15
-    PRINT       shift, and go to state 18
-    COMMENT     shift, and go to state 19
-    IDENTIFIER  shift, and go to state 20
+    INT                shift, and go to state 1
+    CHAR               shift, and go to state 2
+    FLOAT              shift, and go to state 3
+    STRING             shift, and go to state 4
+    CONST              shift, and go to state 5
+    BOOL               shift, and go to state 6
+    IF                 shift, and go to state 7
+    SWITCH             shift, and go to state 8
+    CONTINUE           shift, and go to state 9
+    BREAK              shift, and go to state 10
+    WHILE              shift, and go to state 11
+    FOR                shift, and go to state 12
+    RETURN             shift, and go to state 13
+    REPEAT             shift, and go to state 14
+    RIGHT_CURLY_BRACE  shift, and go to state 320
+    ENUM               shift, and go to state 15
+    PRINT              shift, and go to state 18
+    COMMENT            shift, and go to state 19
+    IDENTIFIER         shift, and go to state 20
 
-    blockStatements                           go to state 324
-    blockStatement                            go to state 24
+    blockStatement                            go to state 100
     variableDeclarationStatement              go to state 25
     assignVariableDeclaration                 go to state 26
     noSemiColumnAssignVariableDeclaration     go to state 27
@@ -4266,7 +4330,7 @@ State 306
 State 307
 
     7 blockStatements: blockStatements . blockStatement
-  169 main: MAIN $@14 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@15 blockStatements . RIGHT_CURLY_BRACE
+  117 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements . RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
 
     INT                shift, and go to state 1
     CHAR               shift, and go to state 2
@@ -4282,7 +4346,7 @@ State 307
     FOR                shift, and go to state 12
     RETURN             shift, and go to state 13
     REPEAT             shift, and go to state 14
-    RIGHT_CURLY_BRACE  shift, and go to state 325
+    RIGHT_CURLY_BRACE  shift, and go to state 321
     ENUM               shift, and go to state 15
     PRINT              shift, and go to state 18
     COMMENT            shift, and go to state 19
@@ -4314,57 +4378,48 @@ State 307
 
 State 308
 
-    7 blockStatements: blockStatements . blockStatement
-  111 ifStatement: IF $@1 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@2 blockStatements . RIGHT_CURLY_BRACE
+  144 caseStatement: CASE . values $@15 ':' blockStatements BREAK ';'
 
-    INT                shift, and go to state 1
-    CHAR               shift, and go to state 2
-    FLOAT              shift, and go to state 3
-    STRING             shift, and go to state 4
-    CONST              shift, and go to state 5
-    BOOL               shift, and go to state 6
-    IF                 shift, and go to state 7
-    SWITCH             shift, and go to state 8
-    CONTINUE           shift, and go to state 9
-    BREAK              shift, and go to state 10
-    WHILE              shift, and go to state 11
-    FOR                shift, and go to state 12
-    RETURN             shift, and go to state 13
-    REPEAT             shift, and go to state 14
-    RIGHT_CURLY_BRACE  shift, and go to state 326
-    ENUM               shift, and go to state 15
-    PRINT              shift, and go to state 18
-    COMMENT            shift, and go to state 19
-    IDENTIFIER         shift, and go to state 20
+    DIGIT           shift, and go to state 322
+    FLOAT_LITERAL   shift, and go to state 323
+    STRING_LITERAL  shift, and go to state 324
+    CHAR_LITERAL    shift, and go to state 325
+    BOOL_LITERAL    shift, and go to state 326
 
-    blockStatement                            go to state 100
-    variableDeclarationStatement              go to state 25
-    assignVariableDeclaration                 go to state 26
-    noSemiColumnAssignVariableDeclaration     go to state 27
-    nonAssignVariableDeclaration              go to state 28
-    noSemiColumnNonAssignVariableDeclaration  go to state 29
-    constDeclarationStatement                 go to state 30
-    noSemiColumnConstDeclaration              go to state 31
-    assignmentStatement                       go to state 32
-    incStatement                              go to state 33
-    decStatement                              go to state 34
-    ifStatement                               go to state 35
-    whileStatement                            go to state 36
-    repeatStatement                           go to state 37
-    forStatement                              go to state 38
-    switchStatement                           go to state 39
-    enumStatement                             go to state 40
-    returnStatement                           go to state 42
-    continueBreakStatement                    go to state 43
-    printStatement                            go to state 44
-    functionCallStatement                     go to state 45
-    comment                                   go to state 46
+    values  go to state 327
 
 
 State 309
 
+  141 caseList: DEFAULT . ':' blockStatements BREAK ';'
+
+    ':'  shift, and go to state 328
+
+
+State 310
+
+  139 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER $@13 RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@14 caseList . RIGHT_CURLY_BRACE
+
+    RIGHT_CURLY_BRACE  shift, and go to state 329
+
+
+State 311
+
+  140 caseList: caseStatement . caseList
+
+    CASE     shift, and go to state 308
+    DEFAULT  shift, and go to state 309
+
+    $default  reduce using rule 142 (caseList)
+
+    caseList       go to state 330
+    caseStatement  go to state 311
+
+
+State 312
+
     7 blockStatements: blockStatements . blockStatement
-  117 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements . RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
+  120 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression $@8 RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@9 blockStatements . RIGHT_CURLY_BRACE
 
     INT                shift, and go to state 1
     CHAR               shift, and go to state 2
@@ -4380,7 +4435,7 @@ State 309
     FOR                shift, and go to state 12
     RETURN             shift, and go to state 13
     REPEAT             shift, and go to state 14
-    RIGHT_CURLY_BRACE  shift, and go to state 327
+    RIGHT_CURLY_BRACE  shift, and go to state 331
     ENUM               shift, and go to state 15
     PRINT              shift, and go to state 18
     COMMENT            shift, and go to state 19
@@ -4410,169 +4465,67 @@ State 309
     comment                                   go to state 46
 
 
-State 310
-
-   24 values: DIGIT .
-
-    $default  reduce using rule 24 (values)
-
-
-State 311
-
-   25 values: FLOAT_LITERAL .
-
-    $default  reduce using rule 25 (values)
-
-
-State 312
-
-   26 values: STRING_LITERAL .
-
-    $default  reduce using rule 26 (values)
-
-
 State 313
 
-   27 values: CHAR_LITERAL .
+  128 forAssignment: IDENTIFIER INCREMENT .
 
-    $default  reduce using rule 27 (values)
+    $default  reduce using rule 128 (forAssignment)
 
 
 State 314
 
-   28 values: BOOL_LITERAL .
+  129 forAssignment: IDENTIFIER DECREMENT .
 
-    $default  reduce using rule 28 (values)
+    $default  reduce using rule 129 (forAssignment)
 
 
 State 315
 
-  137 caseStatement: CASE values . ':' blockStatements BREAK ';' caseStatement
-  138              | CASE values . ':' blockStatements BREAK ';'
-
-    ':'  shift, and go to state 328
-
-
-State 316
-
-  139 caseStatement: DEFAULT ':' . blockStatements BREAK ';'
-
-    INT         shift, and go to state 1
-    CHAR        shift, and go to state 2
-    FLOAT       shift, and go to state 3
-    STRING      shift, and go to state 4
-    CONST       shift, and go to state 5
-    BOOL        shift, and go to state 6
-    IF          shift, and go to state 7
-    SWITCH      shift, and go to state 8
-    CONTINUE    shift, and go to state 9
-    BREAK       shift, and go to state 10
-    WHILE       shift, and go to state 11
-    FOR         shift, and go to state 12
-    RETURN      shift, and go to state 13
-    REPEAT      shift, and go to state 14
-    ENUM        shift, and go to state 15
-    PRINT       shift, and go to state 18
-    COMMENT     shift, and go to state 19
-    IDENTIFIER  shift, and go to state 20
-
-    blockStatements                           go to state 329
-    blockStatement                            go to state 24
-    variableDeclarationStatement              go to state 25
-    assignVariableDeclaration                 go to state 26
-    noSemiColumnAssignVariableDeclaration     go to state 27
-    nonAssignVariableDeclaration              go to state 28
-    noSemiColumnNonAssignVariableDeclaration  go to state 29
-    constDeclarationStatement                 go to state 30
-    noSemiColumnConstDeclaration              go to state 31
-    assignmentStatement                       go to state 32
-    incStatement                              go to state 33
-    decStatement                              go to state 34
-    ifStatement                               go to state 35
-    whileStatement                            go to state 36
-    repeatStatement                           go to state 37
-    forStatement                              go to state 38
-    switchStatement                           go to state 39
-    enumStatement                             go to state 40
-    returnStatement                           go to state 42
-    continueBreakStatement                    go to state 43
-    printStatement                            go to state 44
-    functionCallStatement                     go to state 45
-    comment                                   go to state 46
-
-
-State 317
-
-  136 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@11 caseStatement RIGHT_CURLY_BRACE .
-
-    $default  reduce using rule 136 (switchStatement)
-
-
-State 318
-
-  119 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@8 blockStatements RIGHT_CURLY_BRACE .
-
-    $default  reduce using rule 119 (whileStatement)
-
-
-State 319
-
-  126 forAssignment: IDENTIFIER INCREMENT .
-
-    $default  reduce using rule 126 (forAssignment)
-
-
-State 320
-
-  127 forAssignment: IDENTIFIER DECREMENT .
-
-    $default  reduce using rule 127 (forAssignment)
-
-
-State 321
-
-  122 forAssignment: IDENTIFIER ASSIGN . intMathExpression
-  123              | IDENTIFIER ASSIGN . floatMathExpression
-  124              | IDENTIFIER ASSIGN . stringExpression
-  125              | IDENTIFIER ASSIGN . BOOL_LITERAL
+  124 forAssignment: IDENTIFIER ASSIGN . intMathExpression
+  125              | IDENTIFIER ASSIGN . floatMathExpression
+  126              | IDENTIFIER ASSIGN . stringExpression
+  127              | IDENTIFIER ASSIGN . BOOL_LITERAL
 
     LEFT_PARENTHESIS  shift, and go to state 276
     IDENTIFIER        shift, and go to state 277
     DIGIT             shift, and go to state 70
     FLOAT_LITERAL     shift, and go to state 71
     STRING_LITERAL    shift, and go to state 72
-    BOOL_LITERAL      shift, and go to state 330
+    BOOL_LITERAL      shift, and go to state 332
 
-    intMathExpression    go to state 331
+    intMathExpression    go to state 333
     intMathTerm          go to state 77
     intMathFactor        go to state 78
     intMathPrimary       go to state 79
-    floatMathExpression  go to state 332
+    floatMathExpression  go to state 334
     floatMathTerm        go to state 81
     floatMathFactor      go to state 82
-    stringExpression     go to state 333
+    stringExpression     go to state 335
 
 
-State 322
+State 316
 
-  134 forStatement: FOR LEFT_PARENTHESIS $@10 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS . LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+  136 forStatement: FOR LEFT_PARENTHESIS $@12 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS . LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
-    LEFT_CURLY_BRACE  shift, and go to state 334
+    LEFT_CURLY_BRACE  shift, and go to state 336
 
 
-State 323
+State 317
 
    89 logicalExpression: logicalExpression . OR logicalTerm
-  121 repeatStatement: REPEAT LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression . RIGHT_PARENTHESIS
+  123 repeatStatement: REPEAT LEFT_CURLY_BRACE $@10 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression . $@11 RIGHT_PARENTHESIS
 
-    OR                 shift, and go to state 155
-    RIGHT_PARENTHESIS  shift, and go to state 335
+    OR  shift, and go to state 155
+
+    $default  reduce using rule 122 ($@11)
+
+    $@11  go to state 337
 
 
-State 324
+State 318
 
     7 blockStatements: blockStatements . blockStatement
-  146 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@13 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements . RIGHT_CURLY_BRACE
+  150 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@17 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements . RIGHT_CURLY_BRACE
 
     INT                shift, and go to state 1
     CHAR               shift, and go to state 2
@@ -4588,7 +4541,7 @@ State 324
     FOR                shift, and go to state 12
     RETURN             shift, and go to state 13
     REPEAT             shift, and go to state 14
-    RIGHT_CURLY_BRACE  shift, and go to state 336
+    RIGHT_CURLY_BRACE  shift, and go to state 338
     ENUM               shift, and go to state 15
     PRINT              shift, and go to state 18
     COMMENT            shift, and go to state 19
@@ -4618,33 +4571,76 @@ State 324
     comment                                   go to state 46
 
 
-State 325
+State 319
 
-  169 main: MAIN $@14 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@15 blockStatements RIGHT_CURLY_BRACE .
+  173 main: MAIN $@18 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@19 blockStatements RIGHT_CURLY_BRACE .
 
-    $default  reduce using rule 169 (main)
+    $default  reduce using rule 173 (main)
 
 
-State 326
+State 320
 
   111 ifStatement: IF $@1 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@2 blockStatements RIGHT_CURLY_BRACE .
 
     $default  reduce using rule 111 (ifStatement)
 
 
-State 327
+State 321
 
   117 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE . $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
 
     $default  reduce using rule 114 ($@5)
 
-    $@5  go to state 337
+    $@5  go to state 339
+
+
+State 322
+
+   24 values: DIGIT .
+
+    $default  reduce using rule 24 (values)
+
+
+State 323
+
+   25 values: FLOAT_LITERAL .
+
+    $default  reduce using rule 25 (values)
+
+
+State 324
+
+   26 values: STRING_LITERAL .
+
+    $default  reduce using rule 26 (values)
+
+
+State 325
+
+   27 values: CHAR_LITERAL .
+
+    $default  reduce using rule 27 (values)
+
+
+State 326
+
+   28 values: BOOL_LITERAL .
+
+    $default  reduce using rule 28 (values)
+
+
+State 327
+
+  144 caseStatement: CASE values . $@15 ':' blockStatements BREAK ';'
+
+    $default  reduce using rule 143 ($@15)
+
+    $@15  go to state 340
 
 
 State 328
 
-  137 caseStatement: CASE values ':' . blockStatements BREAK ';' caseStatement
-  138              | CASE values ':' . blockStatements BREAK ';'
+  141 caseList: DEFAULT ':' . blockStatements BREAK ';'
 
     INT         shift, and go to state 1
     CHAR        shift, and go to state 2
@@ -4665,7 +4661,7 @@ State 328
     COMMENT     shift, and go to state 19
     IDENTIFIER  shift, and go to state 20
 
-    blockStatements                           go to state 338
+    blockStatements                           go to state 341
     blockStatement                            go to state 24
     variableDeclarationStatement              go to state 25
     assignVariableDeclaration                 go to state 26
@@ -4692,96 +4688,69 @@ State 328
 
 State 329
 
-    7 blockStatements: blockStatements . blockStatement
-  139 caseStatement: DEFAULT ':' blockStatements . BREAK ';'
+  139 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER $@13 RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@14 caseList RIGHT_CURLY_BRACE .
 
-    INT         shift, and go to state 1
-    CHAR        shift, and go to state 2
-    FLOAT       shift, and go to state 3
-    STRING      shift, and go to state 4
-    CONST       shift, and go to state 5
-    BOOL        shift, and go to state 6
-    IF          shift, and go to state 7
-    SWITCH      shift, and go to state 8
-    CONTINUE    shift, and go to state 9
-    BREAK       shift, and go to state 339
-    WHILE       shift, and go to state 11
-    FOR         shift, and go to state 12
-    RETURN      shift, and go to state 13
-    REPEAT      shift, and go to state 14
-    ENUM        shift, and go to state 15
-    PRINT       shift, and go to state 18
-    COMMENT     shift, and go to state 19
-    IDENTIFIER  shift, and go to state 20
-
-    blockStatement                            go to state 100
-    variableDeclarationStatement              go to state 25
-    assignVariableDeclaration                 go to state 26
-    noSemiColumnAssignVariableDeclaration     go to state 27
-    nonAssignVariableDeclaration              go to state 28
-    noSemiColumnNonAssignVariableDeclaration  go to state 29
-    constDeclarationStatement                 go to state 30
-    noSemiColumnConstDeclaration              go to state 31
-    assignmentStatement                       go to state 32
-    incStatement                              go to state 33
-    decStatement                              go to state 34
-    ifStatement                               go to state 35
-    whileStatement                            go to state 36
-    repeatStatement                           go to state 37
-    forStatement                              go to state 38
-    switchStatement                           go to state 39
-    enumStatement                             go to state 40
-    returnStatement                           go to state 42
-    continueBreakStatement                    go to state 43
-    printStatement                            go to state 44
-    functionCallStatement                     go to state 45
-    comment                                   go to state 46
+    $default  reduce using rule 139 (switchStatement)
 
 
 State 330
 
-  125 forAssignment: IDENTIFIER ASSIGN BOOL_LITERAL .
+  140 caseList: caseStatement caseList .
 
-    $default  reduce using rule 125 (forAssignment)
+    $default  reduce using rule 140 (caseList)
 
 
 State 331
 
-   62 intMathExpression: intMathExpression . PLUS intMathTerm
-   63                  | intMathExpression . MINUS intMathTerm
-  122 forAssignment: IDENTIFIER ASSIGN intMathExpression .
+  120 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression $@8 RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE .
 
-    PLUS   shift, and go to state 133
-    MINUS  shift, and go to state 134
-
-    $default  reduce using rule 122 (forAssignment)
+    $default  reduce using rule 120 (whileStatement)
 
 
 State 332
 
-   75 floatMathExpression: floatMathExpression . PLUS floatMathTerm
-   76                    | floatMathExpression . MINUS floatMathTerm
-  123 forAssignment: IDENTIFIER ASSIGN floatMathExpression .
+  127 forAssignment: IDENTIFIER ASSIGN BOOL_LITERAL .
 
-    PLUS   shift, and go to state 144
-    MINUS  shift, and go to state 145
-
-    $default  reduce using rule 123 (forAssignment)
+    $default  reduce using rule 127 (forAssignment)
 
 
 State 333
 
-   86 stringExpression: stringExpression . PLUS stringExpression
-  124 forAssignment: IDENTIFIER ASSIGN stringExpression .
+   62 intMathExpression: intMathExpression . PLUS intMathTerm
+   63                  | intMathExpression . MINUS intMathTerm
+  124 forAssignment: IDENTIFIER ASSIGN intMathExpression .
 
-    PLUS  shift, and go to state 154
+    PLUS   shift, and go to state 133
+    MINUS  shift, and go to state 134
 
     $default  reduce using rule 124 (forAssignment)
 
 
 State 334
 
-  134 forStatement: FOR LEFT_PARENTHESIS $@10 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE . blockStatements RIGHT_CURLY_BRACE
+   75 floatMathExpression: floatMathExpression . PLUS floatMathTerm
+   76                    | floatMathExpression . MINUS floatMathTerm
+  125 forAssignment: IDENTIFIER ASSIGN floatMathExpression .
+
+    PLUS   shift, and go to state 144
+    MINUS  shift, and go to state 145
+
+    $default  reduce using rule 125 (forAssignment)
+
+
+State 335
+
+   86 stringExpression: stringExpression . PLUS stringExpression
+  126 forAssignment: IDENTIFIER ASSIGN stringExpression .
+
+    PLUS  shift, and go to state 154
+
+    $default  reduce using rule 126 (forAssignment)
+
+
+State 336
+
+  136 forStatement: FOR LEFT_PARENTHESIS $@12 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE . blockStatements RIGHT_CURLY_BRACE
 
     INT         shift, and go to state 1
     CHAR        shift, and go to state 2
@@ -4802,7 +4771,7 @@ State 334
     COMMENT     shift, and go to state 19
     IDENTIFIER  shift, and go to state 20
 
-    blockStatements                           go to state 340
+    blockStatements                           go to state 342
     blockStatement                            go to state 24
     variableDeclarationStatement              go to state 25
     assignVariableDeclaration                 go to state 26
@@ -4827,32 +4796,38 @@ State 334
     comment                                   go to state 46
 
 
-State 335
-
-  121 repeatStatement: REPEAT LEFT_CURLY_BRACE $@9 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS .
-
-    $default  reduce using rule 121 (repeatStatement)
-
-
-State 336
-
-  146 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@13 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE .
-
-    $default  reduce using rule 146 (functionStatement)
-
-
 State 337
 
-  117 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 . ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
+  123 repeatStatement: REPEAT LEFT_CURLY_BRACE $@10 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression $@11 . RIGHT_PARENTHESIS
 
-    ELSE  shift, and go to state 341
+    RIGHT_PARENTHESIS  shift, and go to state 343
 
 
 State 338
 
+  150 functionStatement: FUNCTION IDENTIFIER LEFT_PARENTHESIS $@17 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE .
+
+    $default  reduce using rule 150 (functionStatement)
+
+
+State 339
+
+  117 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 . ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
+
+    ELSE  shift, and go to state 344
+
+
+State 340
+
+  144 caseStatement: CASE values $@15 . ':' blockStatements BREAK ';'
+
+    ':'  shift, and go to state 345
+
+
+State 341
+
     7 blockStatements: blockStatements . blockStatement
-  137 caseStatement: CASE values ':' blockStatements . BREAK ';' caseStatement
-  138              | CASE values ':' blockStatements . BREAK ';'
+  141 caseList: DEFAULT ':' blockStatements . BREAK ';'
 
     INT         shift, and go to state 1
     CHAR        shift, and go to state 2
@@ -4863,7 +4838,7 @@ State 338
     IF          shift, and go to state 7
     SWITCH      shift, and go to state 8
     CONTINUE    shift, and go to state 9
-    BREAK       shift, and go to state 342
+    BREAK       shift, and go to state 346
     WHILE       shift, and go to state 11
     FOR         shift, and go to state 12
     RETURN      shift, and go to state 13
@@ -4897,24 +4872,10 @@ State 338
     comment                                   go to state 46
 
 
-State 339
-
-  139 caseStatement: DEFAULT ':' blockStatements BREAK . ';'
-  154 continueBreakStatement: BREAK . ';'
-  155                       | BREAK . IDENTIFIER ';'
-  156                       | BREAK .
-
-    IDENTIFIER  shift, and go to state 63
-    ';'         shift, and go to state 343
-
-    IDENTIFIER  [reduce using rule 156 (continueBreakStatement)]
-    $default    reduce using rule 156 (continueBreakStatement)
-
-
-State 340
+State 342
 
     7 blockStatements: blockStatements . blockStatement
-  134 forStatement: FOR LEFT_PARENTHESIS $@10 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements . RIGHT_CURLY_BRACE
+  136 forStatement: FOR LEFT_PARENTHESIS $@12 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements . RIGHT_CURLY_BRACE
 
     INT                shift, and go to state 1
     CHAR               shift, and go to state 2
@@ -4930,7 +4891,7 @@ State 340
     FOR                shift, and go to state 12
     RETURN             shift, and go to state 13
     REPEAT             shift, and go to state 14
-    RIGHT_CURLY_BRACE  shift, and go to state 344
+    RIGHT_CURLY_BRACE  shift, and go to state 347
     ENUM               shift, and go to state 15
     PRINT              shift, and go to state 18
     COMMENT            shift, and go to state 19
@@ -4960,88 +4921,25 @@ State 340
     comment                                   go to state 46
 
 
-State 341
+State 343
+
+  123 repeatStatement: REPEAT LEFT_CURLY_BRACE $@10 blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression $@11 RIGHT_PARENTHESIS .
+
+    $default  reduce using rule 123 (repeatStatement)
+
+
+State 344
 
   117 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE . $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
 
     $default  reduce using rule 115 ($@6)
 
-    $@6  go to state 345
-
-
-State 342
-
-  137 caseStatement: CASE values ':' blockStatements BREAK . ';' caseStatement
-  138              | CASE values ':' blockStatements BREAK . ';'
-  154 continueBreakStatement: BREAK . ';'
-  155                       | BREAK . IDENTIFIER ';'
-  156                       | BREAK .
-
-    IDENTIFIER  shift, and go to state 63
-    ';'         shift, and go to state 346
-
-    IDENTIFIER  [reduce using rule 156 (continueBreakStatement)]
-    $default    reduce using rule 156 (continueBreakStatement)
-
-
-State 343
-
-  139 caseStatement: DEFAULT ':' blockStatements BREAK ';' .
-  154 continueBreakStatement: BREAK ';' .
-
-    RIGHT_CURLY_BRACE  reduce using rule 139 (caseStatement)
-    $default           reduce using rule 154 (continueBreakStatement)
-
-
-State 344
-
-  134 forStatement: FOR LEFT_PARENTHESIS $@10 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE .
-
-    $default  reduce using rule 134 (forStatement)
+    $@6  go to state 348
 
 
 State 345
 
-  117 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 . LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
-
-    LEFT_CURLY_BRACE  shift, and go to state 347
-
-
-State 346
-
-  137 caseStatement: CASE values ':' blockStatements BREAK ';' . caseStatement
-  138              | CASE values ':' blockStatements BREAK ';' .
-  154 continueBreakStatement: BREAK ';' .
-
-    CASE     shift, and go to state 292
-    DEFAULT  shift, and go to state 293
-
-    RIGHT_CURLY_BRACE  reduce using rule 138 (caseStatement)
-    RIGHT_CURLY_BRACE  [reduce using rule 140 (caseStatement)]
-    $default           reduce using rule 154 (continueBreakStatement)
-
-    caseStatement  go to state 348
-
-
-State 347
-
-  117 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE . $@7 blockStatements RIGHT_CURLY_BRACE
-
-    $default  reduce using rule 116 ($@7)
-
-    $@7  go to state 349
-
-
-State 348
-
-  137 caseStatement: CASE values ':' blockStatements BREAK ';' caseStatement .
-
-    $default  reduce using rule 137 (caseStatement)
-
-
-State 349
-
-  117 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 . blockStatements RIGHT_CURLY_BRACE
+  144 caseStatement: CASE values $@15 ':' . blockStatements BREAK ';'
 
     INT         shift, and go to state 1
     CHAR        shift, and go to state 2
@@ -5062,8 +4960,84 @@ State 349
     COMMENT     shift, and go to state 19
     IDENTIFIER  shift, and go to state 20
 
-    blockStatements                           go to state 350
+    blockStatements                           go to state 349
     blockStatement                            go to state 24
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    incStatement                              go to state 33
+    decStatement                              go to state 34
+    ifStatement                               go to state 35
+    whileStatement                            go to state 36
+    repeatStatement                           go to state 37
+    forStatement                              go to state 38
+    switchStatement                           go to state 39
+    enumStatement                             go to state 40
+    returnStatement                           go to state 42
+    continueBreakStatement                    go to state 43
+    printStatement                            go to state 44
+    functionCallStatement                     go to state 45
+    comment                                   go to state 46
+
+
+State 346
+
+  141 caseList: DEFAULT ':' blockStatements BREAK . ';'
+  158 continueBreakStatement: BREAK . ';'
+  159                       | BREAK . IDENTIFIER ';'
+  160                       | BREAK .
+
+    IDENTIFIER  shift, and go to state 63
+    ';'         shift, and go to state 350
+
+    IDENTIFIER  [reduce using rule 160 (continueBreakStatement)]
+    $default    reduce using rule 160 (continueBreakStatement)
+
+
+State 347
+
+  136 forStatement: FOR LEFT_PARENTHESIS $@12 forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE .
+
+    $default  reduce using rule 136 (forStatement)
+
+
+State 348
+
+  117 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 . LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE
+
+    LEFT_CURLY_BRACE  shift, and go to state 351
+
+
+State 349
+
+    7 blockStatements: blockStatements . blockStatement
+  144 caseStatement: CASE values $@15 ':' blockStatements . BREAK ';'
+
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 352
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    blockStatement                            go to state 100
     variableDeclarationStatement              go to state 25
     assignVariableDeclaration                 go to state 26
     noSemiColumnAssignVariableDeclaration     go to state 27
@@ -5089,6 +5063,97 @@ State 349
 
 State 350
 
+  141 caseList: DEFAULT ':' blockStatements BREAK ';' .
+  158 continueBreakStatement: BREAK ';' .
+
+    RIGHT_CURLY_BRACE  reduce using rule 141 (caseList)
+    $default           reduce using rule 158 (continueBreakStatement)
+
+
+State 351
+
+  117 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE . $@7 blockStatements RIGHT_CURLY_BRACE
+
+    $default  reduce using rule 116 ($@7)
+
+    $@7  go to state 353
+
+
+State 352
+
+  144 caseStatement: CASE values $@15 ':' blockStatements BREAK . ';'
+  158 continueBreakStatement: BREAK . ';'
+  159                       | BREAK . IDENTIFIER ';'
+  160                       | BREAK .
+
+    IDENTIFIER  shift, and go to state 63
+    ';'         shift, and go to state 354
+
+    IDENTIFIER  [reduce using rule 160 (continueBreakStatement)]
+    $default    reduce using rule 160 (continueBreakStatement)
+
+
+State 353
+
+  117 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 . blockStatements RIGHT_CURLY_BRACE
+
+    INT         shift, and go to state 1
+    CHAR        shift, and go to state 2
+    FLOAT       shift, and go to state 3
+    STRING      shift, and go to state 4
+    CONST       shift, and go to state 5
+    BOOL        shift, and go to state 6
+    IF          shift, and go to state 7
+    SWITCH      shift, and go to state 8
+    CONTINUE    shift, and go to state 9
+    BREAK       shift, and go to state 10
+    WHILE       shift, and go to state 11
+    FOR         shift, and go to state 12
+    RETURN      shift, and go to state 13
+    REPEAT      shift, and go to state 14
+    ENUM        shift, and go to state 15
+    PRINT       shift, and go to state 18
+    COMMENT     shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+
+    blockStatements                           go to state 355
+    blockStatement                            go to state 24
+    variableDeclarationStatement              go to state 25
+    assignVariableDeclaration                 go to state 26
+    noSemiColumnAssignVariableDeclaration     go to state 27
+    nonAssignVariableDeclaration              go to state 28
+    noSemiColumnNonAssignVariableDeclaration  go to state 29
+    constDeclarationStatement                 go to state 30
+    noSemiColumnConstDeclaration              go to state 31
+    assignmentStatement                       go to state 32
+    incStatement                              go to state 33
+    decStatement                              go to state 34
+    ifStatement                               go to state 35
+    whileStatement                            go to state 36
+    repeatStatement                           go to state 37
+    forStatement                              go to state 38
+    switchStatement                           go to state 39
+    enumStatement                             go to state 40
+    returnStatement                           go to state 42
+    continueBreakStatement                    go to state 43
+    printStatement                            go to state 44
+    functionCallStatement                     go to state 45
+    comment                                   go to state 46
+
+
+State 354
+
+  144 caseStatement: CASE values $@15 ':' blockStatements BREAK ';' .
+  158 continueBreakStatement: BREAK ';' .
+
+    CASE               reduce using rule 144 (caseStatement)
+    DEFAULT            reduce using rule 144 (caseStatement)
+    RIGHT_CURLY_BRACE  reduce using rule 144 (caseStatement)
+    $default           reduce using rule 158 (continueBreakStatement)
+
+
+State 355
+
     7 blockStatements: blockStatements . blockStatement
   117 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements . RIGHT_CURLY_BRACE
 
@@ -5106,7 +5171,7 @@ State 350
     FOR                shift, and go to state 12
     RETURN             shift, and go to state 13
     REPEAT             shift, and go to state 14
-    RIGHT_CURLY_BRACE  shift, and go to state 351
+    RIGHT_CURLY_BRACE  shift, and go to state 356
     ENUM               shift, and go to state 15
     PRINT              shift, and go to state 18
     COMMENT            shift, and go to state 19
@@ -5136,7 +5201,7 @@ State 350
     comment                                   go to state 46
 
 
-State 351
+State 356
 
   117 ifStatement: IF $@3 LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@4 blockStatements RIGHT_CURLY_BRACE $@5 ELSE $@6 LEFT_CURLY_BRACE $@7 blockStatements RIGHT_CURLY_BRACE .
 

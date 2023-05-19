@@ -5,6 +5,11 @@
     int yyerror(const char* s);
     int main(void);
     int scope = 0;
+    int whileConditionNum = 0;
+    int repeatConditionNum = 0;
+    int switchIdentifierReg = 0;
+    int switchCondition = 0;
+    int switchIdentifierType = 0;
 %}
 
 %debug
@@ -15,7 +20,16 @@
   char* sVal;
   float fVal;
   char cVal;
-  int bVal;  
+  int bVal;
+  struct {
+    int intValue;
+    float floatValue;
+    char charValue;
+    char* stringValue;
+    int boolValue;
+    int isConst;
+    int reg;
+} values;  
 }
 %token INT CHAR FLOAT STRING CONST BOOL VOID
 %token PLUS MINUS MULTIPLY  DIVIDE  MODULO  INCREMENT  DECREMENT  GREATER  LESS  GREATER_EQUAL  LESS_EQUAL  EQUAL  NOT_EQUAL  AND  OR  NOT  ASSIGN  IF  ELSE  SWITCH  CASE  DEFAULT  CONTINUE   BREAK  THEN  WHILE  DO  FOR  RETURN  REPEAT  UNTIL  LEFT_CURLY_BRACE  RIGHT_CURLY_BRACE  LEFT_PARENTHESIS  RIGHT_PARENTHESIS  LEFT_SQUARE_BRACKET  RIGHT_SQUARE_BRACKET  ENUM  FUNCTION  MAIN  PRINT  SCAN  COMMENT 
@@ -38,6 +52,7 @@
 %type <bVal> logicalTerm
 %type <bVal> logicalFactor
 %type <bVal> logicalPrimary
+%type <values> values
 
 
 %%
@@ -76,11 +91,11 @@ blockStatement                  :   variableDeclarationStatement
                                 |   BOOL*/
 
 
-values                          :  DIGIT
-                                |   FLOAT_LITERAL
-                                |   STRING_LITERAL
-                                |   CHAR_LITERAL
-                                |   BOOL_LITERAL
+values                          :   DIGIT { $$.intValue = $1; printf("values int value %d\n", $$.intValue); }
+                                |   FLOAT_LITERAL { $$.floatValue = $1; printf("values float value %f\n", $$.floatValue); }
+                                |   STRING_LITERAL { $$.stringValue = $1; printf("values string value %s\n", $$.stringValue); }
+                                |   CHAR_LITERAL { $$.charValue = $1; printf("values char value %c\n", $$.charValue); }
+                                |   BOOL_LITERAL { $$.boolValue = $1; printf("values bool value %d\n", $$.boolValue); }
 
 
 expression                      : intMathExpression
@@ -108,15 +123,13 @@ noSemiColumnAssignVariableDeclaration :  CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
                                                                                 allocateCharValReg($2, scope);
                                                                                 break;
                                                                               case 2:                                                            
-                                                                                exit(0);
+                                                                                yyerror("Variable already declared");
                                                                                 break;
                                                                               case 3:
                                                                                 yyerror("Overflow in symbol table");
-                                                                                exit(0);
                                                                                 break;  
                                                                               default:
                                                                                 yyerror("Unknown error");
-                                                                                exit(0);
                                                                                 break;
                                                                             }   
                                                                           } ;
@@ -129,15 +142,13 @@ noSemiColumnAssignVariableDeclaration :  CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
                                                                                       allocateIntValReg($2, scope);
                                                                                       break;
                                                                                     case 2:                                                            
-                                                                                      exit(0);
+                                                                                      yyerror("Variable already declared");
                                                                                       break;
                                                                                     case 3:
                                                                                       yyerror("Overflow in symbol table");
-                                                                                      exit(0);
                                                                                       break;
                                                                                     default:
                                                                                       yyerror("Unknown error");
-                                                                                      exit(0);
                                                                                       break;
                                                                                   }   
                                                                               } ;
@@ -150,15 +161,13 @@ noSemiColumnAssignVariableDeclaration :  CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
                                                                                         allocateFloatValReg($2, scope);
                                                                                         break;
                                                                                       case 2:                                                            
-                                                                                        exit(0);
+                                                                                        yyerror("Variable already declared");
                                                                                         break;
                                                                                       case 3:
                                                                                         yyerror("Overflow in symbol table");
-                                                                                        exit(0);
                                                                                         break;
                                                                                       default:
                                                                                         yyerror("Unknown error");
-                                                                                        exit(0);
                                                                                         break;
                                                                                     }   
                                                                                   } ;
@@ -171,15 +180,13 @@ noSemiColumnAssignVariableDeclaration :  CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
                                                                                       allocateStringValReg($2, scope);
                                                                                       break;
                                                                                     case 2:                                                            
-                                                                                      exit(0);
+                                                                                      yyerror("Variable already declared");
                                                                                       break;
                                                                                     case 3:
                                                                                       yyerror("Overflow in symbol table");
-                                                                                      exit(0);
                                                                                       break;
                                                                                     default:
                                                                                       yyerror("Unknown error");
-                                                                                      exit(0);
                                                                                       break;
                                                                                   } 
                                                                                 } ;
@@ -192,15 +199,13 @@ noSemiColumnAssignVariableDeclaration :  CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
                                                                                     allocateBoolValReg($2, scope);
                                                                                     break;
                                                                                   case 2:                                                            
-                                                                                    exit(0);
+                                                                                    yyerror("Variable already declared");
                                                                                     break;
                                                                                   case 3:
                                                                                     yyerror("Overflow in symbol table");
-                                                                                    exit(0);
                                                                                     break;
                                                                                   default:
                                                                                     yyerror("Unknown error");
-                                                                                    exit(0);
                                                                                     break;
                                                                                 }   
                                                                               } ;
@@ -217,15 +222,13 @@ noSemiColumnNonAssignVariableDeclaration : INT IDENTIFIER {
                                                                 allocateRegister($2, scope);
                                                                 break;
                                                               case 2:                                                            
-                                                                exit(0);
+                                                                yyerror("Variable already declared");
                                                                 break;
                                                               case 3:
                                                                 yyerror("Overflow in symbol table");
-                                                                exit(0);
                                                                 break;
                                                               default:
                                                                 yyerror("Unknown error");
-                                                                exit(0);
                                                                 break;
                                                             }                                                            
                                                           } ;
@@ -238,15 +241,13 @@ noSemiColumnNonAssignVariableDeclaration : INT IDENTIFIER {
                                                             allocateRegister($2, scope);
                                                             break;
                                                           case 2:                                                            
-                                                            exit(0);
+                                                            yyerror("Variable already declared");
                                                             break;
                                                           case 3:
                                                             yyerror("Overflow in symbol table");
-                                                            exit(0);
                                                             break;
                                                           default:
                                                             yyerror("Unknown error");
-                                                            exit(0);
                                                             break;
                                                         }  
                                                       } ;
@@ -259,15 +260,13 @@ noSemiColumnNonAssignVariableDeclaration : INT IDENTIFIER {
                                                                 allocateRegister($2, scope);
                                                                 break;
                                                               case 2:                                                            
-                                                                exit(0);
+                                                                yyerror("Variable already declared");
                                                                 break;
                                                               case 3:
                                                                 yyerror("Overflow in symbol table");
-                                                                exit(0);
                                                                 break;
                                                               default:
                                                                 yyerror("Unknown error");
-                                                                exit(0);
                                                                 break;
                                                             }  
                                                         } ;
@@ -280,15 +279,13 @@ noSemiColumnNonAssignVariableDeclaration : INT IDENTIFIER {
                                                                 allocateRegister($2, scope);
                                                                 break;
                                                               case 2:                                                            
-                                                                exit(0);
+                                                                yyerror("Variable already declared");
                                                                 break;
                                                               case 3:
                                                                 yyerror("Overflow in symbol table");
-                                                                exit(0);
                                                                 break;
                                                               default:
                                                                 yyerror("Unknown error");
-                                                                exit(0);
                                                                 break;
                                                             }  
                                                         } ;
@@ -301,15 +298,13 @@ noSemiColumnNonAssignVariableDeclaration : INT IDENTIFIER {
                                                                 allocateRegister($2, scope);
                                                                 break;
                                                               case 2:                                                            
-                                                                exit(0);
+                                                                yyerror("Variable already declared");
                                                                 break;
                                                               case 3:
                                                                 yyerror("Overflow in symbol table");
-                                                                exit(0);
                                                                 break;
                                                               default:
                                                                 yyerror("Unknown error");
-                                                                exit(0);
                                                                 break;
                                                             }  
                                                       } ;
@@ -326,15 +321,13 @@ noSemiColumnConstDeclaration        : CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL 
                                                                                       allocateCharValReg($3, scope);
                                                                                       break;
                                                                                     case 2:                                                            
-                                                                                      exit(0);
+                                                                                      yyerror("Variable already declared");
                                                                                       break;
                                                                                     case 3:
                                                                                       yyerror("Overflow in symbol table");
-                                                                                      exit(0);
                                                                                       break;
                                                                                     default:
                                                                                       yyerror("Unknown error");
-                                                                                      exit(0);
                                                                                       break;
                                                                                   }  
                                                                                 } ;
@@ -347,15 +340,13 @@ noSemiColumnConstDeclaration        : CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL 
                                                                                           allocateIntValReg($3, scope); 
                                                                                           break;
                                                                                         case 2:                                                            
-                                                                                          exit(0);
+                                                                                          yyerror("Variable already declared");
                                                                                           break;
                                                                                         case 3:
                                                                                           yyerror("Overflow in symbol table");
-                                                                                          exit(0);
                                                                                           break;
                                                                                         default:
                                                                                           yyerror("Unknown error");
-                                                                                          exit(0);
                                                                                           break;
                                                                                       }   
                                                                                     } ;
@@ -368,15 +359,13 @@ noSemiColumnConstDeclaration        : CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL 
                                                                                               allocateFloatValReg($3, scope);
                                                                                               break;
                                                                                             case 2:                                                            
-                                                                                              exit(0);
+                                                                                              yyerror("Variable already declared");
                                                                                               break;
                                                                                             case 3:
                                                                                               yyerror("Overflow in symbol table");
-                                                                                              exit(0);
                                                                                               break;
                                                                                             default:
                                                                                               yyerror("Unknown error");
-                                                                                              exit(0);
                                                                                               break;
                                                                                           } 
                                                                                         } ;
@@ -389,15 +378,13 @@ noSemiColumnConstDeclaration        : CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL 
                                                                                             allocateStringValReg($3, scope);
                                                                                             break;
                                                                                           case 2:                                                            
-                                                                                            exit(0);
+                                                                                            yyerror("Variable already declared");
                                                                                             break;
                                                                                           case 3:
                                                                                             yyerror("Overflow in symbol table");
-                                                                                            exit(0);
                                                                                             break;
                                                                                           default:
                                                                                             yyerror("Unknown error");
-                                                                                            exit(0);
                                                                                             break;
                                                                                         } 
                                                                                       } ;
@@ -410,15 +397,13 @@ noSemiColumnConstDeclaration        : CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL 
                                                                                             allocateBoolValReg($3, scope);
                                                                                             break;
                                                                                           case 2:                                                            
-                                                                                            exit(0);
+                                                                                            yyerror("Variable already declared");
                                                                                             break;
                                                                                           case 3:
                                                                                             yyerror("Overflow in symbol table");
-                                                                                            exit(0);
                                                                                             break;
                                                                                           default:
                                                                                             yyerror("Unknown error");
-                                                                                            exit(0);
                                                                                             break;
                                                                                         } 
                                                                                       } ;
@@ -429,23 +414,19 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                                 if (typeVar != 1){
                                                                                   if (typeVar == -1){
                                                                                     yyerror("Variable not found");
-                                                                                    exit(0);
                                                                                   }
                                                                                   yyerror("Type mismatch in int");
-                                                                                  exit(0);
                                                                                 }
                                                                                 else{
                                                                                   values val = getVariableValue(scope, $1);
                                                                                   if (val.isConst == 1){
                                                                                     yyerror("Cannot assign to a constant");
-                                                                                    exit(0);
                                                                                   }
                                                                                   else{
                                                                                       int update = updateVariable(scope, $1, $3, 0.0, '\0', "", 0);
                                                                                       assignIntValReg(val.reg, $1);
                                                                                       if (update == -1){
                                                                                         yyerror("Variable not found");
-                                                                                        exit(0);
                                                                                       }
                                                                                   }
                                                                                 }
@@ -457,23 +438,19 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                                 if (typeVar != 2){
                                                                                   if (typeVar == -1){
                                                                                     yyerror("Variable not found");
-                                                                                    exit(0);
                                                                                   }
                                                                                   yyerror("Type mismatch in float ");
-                                                                                  exit(0);
                                                                                 }
                                                                                 else{
                                                                                   values val = getVariableValue(scope, $1);
                                                                                   if (val.isConst == 1){
                                                                                     yyerror("Cannot assign to a constant");
-                                                                                    exit(0);
                                                                                   }
                                                                                   else{
                                                                                       int update = updateVariable(scope, $1, 0, $3, '\0', "", 0);
                                                                                       assignFloatValReg(val.reg, $1);
                                                                                       if (update == -1){
                                                                                         yyerror("Variable not found");
-                                                                                        exit(0);
                                                                                       }
                                                                                   }
                                                                                 }
@@ -485,23 +462,19 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                                 if (typeVar != 4){
                                                                                   if (typeVar == -1){
                                                                                     yyerror("Variable not found");
-                                                                                    exit(0);
                                                                                   }
                                                                                   yyerror("Type mismatch");
-                                                                                  exit(0);
                                                                                 }
                                                                                 else{
                                                                                   values val = getVariableValue(scope, $1);
                                                                                   if (val.isConst == 1){
                                                                                     yyerror("Cannot assign to a constant");
-                                                                                    exit(0);
                                                                                   }
                                                                                   else{
                                                                                       int update = updateVariable(scope, $1, 0, 0.0, '\0', $3, 0);
                                                                                       assignStringValReg(val.reg, $1);
                                                                                       if (update == -1){
                                                                                         yyerror("Variable not found");
-                                                                                        exit(0);
                                                                                       }
                                                                                   }
                                                                                 }
@@ -512,23 +485,19 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                                 if (typeVar != 5){
                                                                                   if (typeVar == -1){
                                                                                     yyerror("Variable not found");
-                                                                                    exit(0);
                                                                                   }
                                                                                   yyerror("Type mismatch");
-                                                                                  exit(0);
                                                                                 }
                                                                                 else{
                                                                                   values val = getVariableValue(scope, $1);
                                                                                   if (val.isConst == 1){
                                                                                     yyerror("Cannot assign to a constant");
-                                                                                    exit(0);
                                                                                   }
                                                                                   else{
                                                                                       int update = updateVariable(scope, $1, 0, 0.0, '\0', "", $3);
                                                                                       assignBoolValReg(val.reg, $1);
                                                                                       if (update == -1){
                                                                                         yyerror("Variable not found");
-                                                                                        exit(0);
                                                                                       }
                                                                                   }
                                                                                 }
@@ -539,23 +508,19 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                             if (typeVar != 3){
                                                                               if (typeVar == -1){
                                                                                 yyerror("Variable not found");
-                                                                                exit(0);
                                                                               }
                                                                               yyerror("Type mismatch");
-                                                                              exit(0);
                                                                             }
                                                                             else{
                                                                               values val = getVariableValue(scope, $1);
                                                                               if (val.isConst == 1){
                                                                                 yyerror("Cannot assign to a constant");
-                                                                                exit(0);
                                                                               }
                                                                               else{
                                                                                   int update = updateVariable(scope, $1, 0, 0.0, $3, "", 0);
                                                                                   assignCharValReg(val.reg, $1);
                                                                                   if (update == -1){
                                                                                     yyerror("Variable not found");
-                                                                                    exit(0);
                                                                                   }
                                                                               }
                                                                             }
@@ -568,23 +533,19 @@ incStatement                        : IDENTIFIER INCREMENT ';' {
                                                                   if (typeVar != 1){
                                                                     if (typeVar == -1){
                                                                       yyerror("Variable not found");
-                                                                      exit(0);
                                                                     }
                                                                     yyerror("Type mismatch");
-                                                                    exit(0);
                                                                   }
                                                                   else{
                                                                     values val = getVariableValue(scope, $1);
                                                                     if (val.isConst == 1){
                                                                       yyerror("Cannot increment a constant");
-                                                                      exit(0);
                                                                     }
                                                                     else{
                                                                         int update = updateVariable(scope, $1, val.intValue + 1, 0.0, '\0', "", 0);
                                                                         incQuad(val.reg, $1);
                                                                         if (update == -1){
                                                                           yyerror("Variable not found");
-                                                                          exit(0);
                                                                         }
                                                                     }
                                                                   }
@@ -596,23 +557,23 @@ decStatement                        : IDENTIFIER DECREMENT ';' {
                                                                   if (typeVar != 1){
                                                                     if (typeVar == -1){
                                                                       yyerror("Variable not found");
-                                                                      exit(0);
+                                          
                                                                     }
                                                                     yyerror("Type mismatch");
-                                                                    exit(0);
+                                        
                                                                   }
                                                                   else{
                                                                     values val = getVariableValue(scope, $1);
                                                                     if (val.isConst == 1){
                                                                       yyerror("Cannot decrement a constant");
-                                                                      exit(0);
+                                          
                                                                     }
                                                                     else{
                                                                         int update = updateVariable(scope, $1, val.intValue - 1, 0.0, '\0', "", 0);
                                                                         decQuad(val.reg, $1);
                                                                         if (update == -1){
                                                                           yyerror("Variable not found");
-                                                                          exit(0);
+                                              
                                                                         }
                                                                     }
                                                                   }
@@ -650,23 +611,20 @@ intMathFactor : intMathPrimary
                                         if (typeVar != 1){
                                           if (typeVar == -1){
                                             yyerror("Variable not found");
-                                            exit(0);
                                           }
                                           yyerror("Type mismatch");
-                                          exit(0);
+              
                                         }
                                         else{
                                           values val = getVariableValue(scope, $1);
                                           if (val.isConst == 1){
                                             yyerror("Cannot increment a constant");
-                                            exit(0);
                                           }
                                           else{
                                               int update = updateVariable(scope, $1, val.intValue + 1, 0.0, '\0', "", 0);
                                               incQuad(val.reg, $1);
                                               if (update == -1){
                                                 yyerror("Variable not found");
-                                                exit(0);
                                               }
                                           }
                                         }
@@ -677,23 +635,20 @@ intMathFactor : intMathPrimary
                                         if (typeVar != 1){
                                           if (typeVar == -1){
                                             yyerror("Variable not found");
-                                            exit(0);
+                
                                           }
                                           yyerror("Type mismatch");
-                                          exit(0);
                                         }
                                         else{
                                           values val = getVariableValue(scope, $1);
                                           if (val.isConst == 1){
                                             yyerror("Cannot decrement a constant");
-                                            exit(0);
                                           }
                                           else{
                                               int update = updateVariable(scope, $1, val.intValue - 1, 0.0, '\0', "", 0);
                                               decQuad(val.reg, $1);
                                               if (update == -1){
                                                 yyerror("Variable not found");
-                                                exit(0);
                                               }
                                           }
                                         }
@@ -890,10 +845,10 @@ ifStatement                           : IF {ifStatementBegin();} LEFT_PARENTHESI
 
 
 
-whileStatement  : WHILE LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE {scope+=1;} blockStatements 
-                  RIGHT_CURLY_BRACE {printTable("\nWHILE STATEMENT ENDED", scope); removeScope(scope); scope-=1; printf("whileStatement \n");}
+whileStatement  : WHILE LEFT_PARENTHESIS logicalExpression {whileConditionNum = checkWhileConditionQuad();} RIGHT_PARENTHESIS LEFT_CURLY_BRACE {scope+=1;} blockStatements 
+                  RIGHT_CURLY_BRACE {printTable("\nWHILE STATEMENT ENDED", scope); endWhileQuad(whileConditionNum); removeScope(scope); scope-=1; printf("whileStatement \n");}
 
-repeatStatement : REPEAT LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression 
+repeatStatement : REPEAT LEFT_CURLY_BRACE {repeatConditionNum = openRepeatQuad(); scope+=1;} blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression {endRepeatQuad(repeatConditionNum);}
                   RIGHT_PARENTHESIS {printTable("\nREPEAT STATEMENT ENDED", scope); removeScope(scope); scope-=1; printf("repeatStatement \n");}
 
 forAssignment   : IDENTIFIER ASSIGN intMathExpression {printf("forAssignment \n");}
@@ -909,16 +864,31 @@ forDeclaration  : IDENTIFIER ASSIGN intMathExpression ';' {printf("forDeclaratio
                 | IDENTIFIER ASSIGN BOOL_LITERAL ';' {printf("forDeclaration \n");}
                 | assignVariableDeclaration
 
-forStatement    : FOR LEFT_PARENTHESIS {scope+=1;} forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printTable("\nFOR STATEMENT ENDED", scope); removeScope(scope); scope-=1; printf("forStatement \n");}
+forStatement    : FOR LEFT_PARENTHESIS {scope+=1;} forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS 
+                  LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printTable("\nFOR STATEMENT ENDED", scope); removeScope(scope); scope-=1; printf("forStatement \n");}
 
 
-switchStatement : SWITCH LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS LEFT_CURLY_BRACE {scope+=1;} caseStatement RIGHT_CURLY_BRACE {printTable("\nSWITCH STATEMENT ENDED", scope); removeScope(scope); scope-=1; printf("switchStatement \n");} 
+switchStatement : SWITCH LEFT_PARENTHESIS IDENTIFIER {
+                      values val = getVariableValue(scope, $3);
+                      switchIdentifierReg = val.reg;
+                      switchIdentifierType = getVariableType(scope, $3);
+                      switchCondition = getSwitchCondition();
+                  } RIGHT_PARENTHESIS LEFT_CURLY_BRACE {
+                      scope += 1;
+                      printf("switchStatement \n");
+                  } caseList RIGHT_CURLY_BRACE {
+                      printTable("\nSWITCH STATEMENT ENDED", scope);
+                      endSwitchQuad(switchCondition);
+                      removeScope(scope);
+                      scope -= 1;
+                  }
 
+caseList : caseStatement caseList
+        | DEFAULT ':' blockStatements BREAK ';'
+        | /* empty */
 
-caseStatement   : CASE values ':' blockStatements BREAK ';' caseStatement 
-                | CASE values ':' blockStatements BREAK ';'
-                | DEFAULT ':' blockStatements BREAK ';'
-                | /* empty */
+caseStatement : CASE values { startCaseQuad(switchIdentifierType, switchIdentifierReg, $2.intValue, $2.floatValue, $2.charValue, $2.stringValue, $2.boolValue);}
+                              ':' blockStatements BREAK ';' {endCaseQuad(switchCondition);}
 
 
 enumIdentifiers : IDENTIFIER ',' enumIdentifiers
@@ -941,9 +911,9 @@ parameter       : noSemiColumnVariableDeclarationStatement ',' parameter
 returnStatement : RETURN argument ';' {printf("returnStatement \n");}
                 | RETURN ';' {printf("returnStatement \n");}
 
-continueBreakStatement  : BREAK ';' {printf("breakStatement \n");}
+continueBreakStatement  : BREAK ';' {printf("breakStatement1 \n");}
                 | BREAK IDENTIFIER ';' {printf("breakStatement \n");}
-                | BREAK {printf("breakStatement \n");}
+                | BREAK {printf("breakStatement2 \n");}
                 | CONTINUE ';' {printf("continueStatement \n");}
                 | CONTINUE IDENTIFIER ';' {printf("continueStatement \n");}
                 | CONTINUE {printf("continueStatement \n");}
@@ -969,6 +939,14 @@ main            : MAIN {createLabel("MAIN");} LEFT_PARENTHESIS RIGHT_PARENTHESIS
 int yyerror(const char* s)
 {
   fprintf(stderr, "%s\n",s);
+  FILE *file = fopen("errors.txt", "a");
+  if (file == NULL) {
+      printf("Failed to open the file.\n");
+      return 1;
+  }
+  fprintf(file, "%s\n",s);
+  fclose(file);
+  exit(0);
   return 1;
 }
 
@@ -986,10 +964,16 @@ int main(void)
       return 1;
   }
   fclose(pfile);
+  FILE *efile = fopen("errors.txt", "w");
+  if (efile == NULL) {
+      printf("Failed to open the file.\n");
+      return 1;
+  }
+  fclose(efile);
   // Close the file to clear its contents
   
   initializeSymbolTable();
   yyparse();
-//  printTable();
+  printTable("\nPROGRAM ENDED", 0);
   return 0;
 }

@@ -316,6 +316,7 @@ int labelNumber = 0;
 int firstIfLabel = -1;
 int labelEntries = 0;
 int conditionNumber = 0;
+int caseCount = 0;
 
 void createLabel(char* name)
 {
@@ -645,6 +646,115 @@ void notEqualQuad()
     conditionNumber++;
     registerNumber++;
     fclose(qFile);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+int checkWhileConditionQuad(){
+    FILE* qFile = fopen("finalQuads.txt", "a");
+
+    fprintf(qFile, "WHILE_LABEL_%d: \n", conditionNumber);
+    fprintf(qFile, "CMP R%d, %d\n", registerNumber-1, 1);
+    fprintf(qFile, "JNE WHILE_END_%d\n\n", conditionNumber);
+
+    fclose(qFile);
+    return conditionNumber++;
+}
+void endWhileQuad(int val){
+    FILE* qFile = fopen("finalQuads.txt", "a");
+
+    fprintf(qFile, "JMP WHILE_LABEL_%d:\n", val);
+    fprintf(qFile, "WHILE_END_%d: \n\n", val);
+
+    fclose(qFile);
+}
+int openRepeatQuad(){
+    FILE* qFile = fopen("finalQuads.txt", "a");
+
+    fprintf(qFile, "REPEAT_LABEL%d:\n\n", conditionNumber);
+
+    fclose(qFile);
+    return conditionNumber++;
+}
+void endRepeatQuad(int condition){
+    FILE* qFile = fopen("finalQuads.txt", "a");
+
+    fprintf(qFile, "CMP R%d, %d\n", registerNumber-1, 1);
+    fprintf(qFile, "JNE REPEAT_END_%d:\n", condition);
+    fprintf(qFile, "JMP REPEAT_LABEL%d:\n", condition);
+    fprintf(qFile, "REPEAT_END_%d: \n\n", condition);
+
+    fclose(qFile);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+int getSwitchCondition(){
+    FILE* qFile = fopen("finalQuads.txt", "a");
+
+    fprintf(qFile, "SWITCH_START_%d: \n\n", conditionNumber);
+
+    fclose(qFile);    
+
+    return conditionNumber++;
+}
+
+void startCaseQuad(int type, int reg, int intVal, float floatVal, char charVal, char* stringVal, int boolVal){
+    FILE* qFile = fopen("finalQuads.txt", "a");
+
+    printf("type INT: %d\n", intVal);
+    printf("type FLOAT: %f\n", floatVal);
+    printf("type CHAR: %c\n", charVal);
+    printf("type STRING: %s\n", stringVal);
+    printf("type BOOL: %d\n", boolVal);
+    printf("type: %d\n", type);
+
+    switch (type)
+    {
+        case 1:
+            fprintf(qFile, "MOV R%d, %d \n", registerNumber, intVal);
+            break;
+        case 2:
+            fprintf(qFile, "MOV R%d, %f \n", registerNumber, floatVal);
+            break;
+        case 3:
+            fprintf(qFile, "MOV R%d, %c \n", registerNumber, charVal);
+            break;
+        case 4:
+            fprintf(qFile, "MOV R%d, %s \n", registerNumber, stringVal);
+            break;
+        case 5:
+            fprintf(qFile, "MOV R%d, %d \n", registerNumber, boolVal);
+            break;
+        default:  
+            // yyerror("Error: Unknown type");
+            break;
+    }
+
+    fprintf(qFile, "CMP R%d, R%d\n", reg, registerNumber);
+    fprintf(qFile, "JNE CASE_END_%d\n", caseCount);
+
+
+    fclose(qFile);    
+    registerNumber++;
+}
+
+void endCaseQuad(int condition){
+    FILE* qFile = fopen("finalQuads.txt", "a");
+
+    fprintf(qFile, "JMP SWITCH_END_%d\n", condition);
+    fprintf(qFile, "CASE_END_%d: \n\n", caseCount);
+
+    fclose(qFile);    
+    caseCount++;
+}
+
+
+void endSwitchQuad(int condition){
+    FILE* qFile = fopen("finalQuads.txt", "a");
+
+    fprintf(qFile, "SWITCH_END_%d: \n\n", condition);
+
+    fclose(qFile);    
 }
 
 
