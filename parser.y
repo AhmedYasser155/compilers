@@ -93,7 +93,7 @@ noSemiColumnAssignVariableDeclaration :  CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
                                                                             
                                                                             switch (ret){
                                                                               case 1:
-                                                                                allocateCharValReg($2, $4);
+                                                                                allocateCharValReg($2);
                                                                                 break;
                                                                               case 2:                                                            
                                                                                 exit(0);
@@ -114,7 +114,7 @@ noSemiColumnAssignVariableDeclaration :  CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
 
                                                                                   switch (ret){
                                                                                     case 1:
-                                                                                      /* TODO: add the quad */
+                                                                                      allocateIntValReg($2);
                                                                                       break;
                                                                                     case 2:                                                            
                                                                                       exit(0);
@@ -135,7 +135,7 @@ noSemiColumnAssignVariableDeclaration :  CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
 
                                                                                     switch (ret){
                                                                                       case 1:
-                                                                                        /* TODO: add the quad */
+                                                                                        allocateFloatValReg($2);
                                                                                         break;
                                                                                       case 2:                                                            
                                                                                         exit(0);
@@ -156,7 +156,7 @@ noSemiColumnAssignVariableDeclaration :  CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
 
                                                                                   switch (ret){
                                                                                     case 1:
-                                                                                      /* TODO: add the quad */
+                                                                                      allocateStringValReg($2);
                                                                                       break;
                                                                                     case 2:                                                            
                                                                                       exit(0);
@@ -177,7 +177,7 @@ noSemiColumnAssignVariableDeclaration :  CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
 
                                                                                 switch (ret){
                                                                                   case 1:
-                                                                                    /* TODO: add the quad */
+                                                                                    allocateBoolValReg($2);
                                                                                     break;
                                                                                   case 2:                                                            
                                                                                     exit(0);
@@ -202,7 +202,7 @@ noSemiColumnNonAssignVariableDeclaration : INT IDENTIFIER {
 
                                                             switch (ret){
                                                               case 1:
-                                                                allocateRegister($2);
+                                                                allocateRegister($2, scope);
                                                                 break;
                                                               case 2:                                                            
                                                                 exit(0);
@@ -223,7 +223,7 @@ noSemiColumnNonAssignVariableDeclaration : INT IDENTIFIER {
 
                                                         switch (ret){
                                                           case 1:
-                                                            allocateRegister($2);
+                                                            allocateRegister($2, scope);
                                                             break;
                                                           case 2:                                                            
                                                             exit(0);
@@ -244,7 +244,7 @@ noSemiColumnNonAssignVariableDeclaration : INT IDENTIFIER {
 
                                                           switch (ret){
                                                               case 1:
-                                                                allocateRegister($2);
+                                                                allocateRegister($2, scope);
                                                                 break;
                                                               case 2:                                                            
                                                                 exit(0);
@@ -265,7 +265,7 @@ noSemiColumnNonAssignVariableDeclaration : INT IDENTIFIER {
 
                                                           switch (ret){
                                                               case 1:
-                                                                allocateRegister($2);
+                                                                allocateRegister($2, scope);
                                                                 break;
                                                               case 2:                                                            
                                                                 exit(0);
@@ -286,7 +286,7 @@ noSemiColumnNonAssignVariableDeclaration : INT IDENTIFIER {
 
                                                           switch (ret){
                                                               case 1:
-                                                                allocateRegister($2);
+                                                                allocateRegister($2, scope);
                                                                 break;
                                                               case 2:                                                            
                                                                 exit(0);
@@ -311,7 +311,7 @@ noSemiColumnConstDeclaration        : CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL 
                                                                                   
                                                                                   switch (ret){
                                                                                     case 1:
-                                                                                      allocateCharValReg($3, $5);
+                                                                                      allocateCharValReg($3);
                                                                                       break;
                                                                                     case 2:                                                            
                                                                                       exit(0);
@@ -332,7 +332,7 @@ noSemiColumnConstDeclaration        : CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL 
 
                                                                                       switch (ret){
                                                                                         case 1:
-                                                                                          /* TODO: add the quad */
+                                                                                          allocateIntValReg($3); 
                                                                                           break;
                                                                                         case 2:                                                            
                                                                                           exit(0);
@@ -353,7 +353,7 @@ noSemiColumnConstDeclaration        : CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL 
 
                                                                                           switch (ret){
                                                                                             case 1:
-                                                                                              /* TODO: add the quad */
+                                                                                              allocateFloatValReg($3);
                                                                                               break;
                                                                                             case 2:                                                            
                                                                                               exit(0);
@@ -374,7 +374,7 @@ noSemiColumnConstDeclaration        : CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL 
 
                                                                                         switch (ret){
                                                                                           case 1:
-                                                                                            /* TODO: add the quad */
+                                                                                            allocateStringValReg($3);
                                                                                             break;
                                                                                           case 2:                                                            
                                                                                             exit(0);
@@ -395,7 +395,7 @@ noSemiColumnConstDeclaration        : CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL 
 
                                                                                         switch (ret){
                                                                                           case 1:
-                                                                                            /* TODO: add the quad */
+                                                                                            allocateBoolValReg($3);
                                                                                             break;
                                                                                           case 2:                                                            
                                                                                             exit(0);
@@ -415,7 +415,10 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                                 printf("assignmentStatement \n");
                                                                                 int typeVar = getVariableType(scope, $1);
                                                                                 if (typeVar != 1){
-                                                                                  printf("type is %d \n",typeVar);
+                                                                                  if (typeVar == -1){
+                                                                                    yyerror("Variable not found");
+                                                                                    exit(0);
+                                                                                  }
                                                                                   yyerror("Type mismatch in int");
                                                                                   exit(0);
                                                                                 }
@@ -427,6 +430,7 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                                   }
                                                                                   else{
                                                                                       int update = updateVariable(scope, $1, $3, 0.0, '\0', "", 0);
+                                                                                      assignIntValReg(val.reg, $1);
                                                                                       if (update == -1){
                                                                                         yyerror("Variable not found");
                                                                                         exit(0);
@@ -436,10 +440,13 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
 
                                                                               } ;
                                     | IDENTIFIER ASSIGN floatMathExpression ';' {
-                                       printf("assignmentStatement \n");
+                                                                                printf("assignmentStatement \n");
                                                                                 int typeVar = getVariableType(scope, $1);
                                                                                 if (typeVar != 2){
-                                                                                  printf("type is %d \n",typeVar);
+                                                                                  if (typeVar == -1){
+                                                                                    yyerror("Variable not found");
+                                                                                    exit(0);
+                                                                                  }
                                                                                   yyerror("Type mismatch in float ");
                                                                                   exit(0);
                                                                                 }
@@ -451,6 +458,7 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                                   }
                                                                                   else{
                                                                                       int update = updateVariable(scope, $1, 0, $3, '\0', "", 0);
+                                                                                      assignFloatValReg(val.reg, $1);
                                                                                       if (update == -1){
                                                                                         yyerror("Variable not found");
                                                                                         exit(0);
@@ -463,7 +471,10 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                                 printf("assignmentStatement \n");
                                                                                 int typeVar = getVariableType(scope, $1);
                                                                                 if (typeVar != 4){
-                                                                                  printf("type is %d \n",typeVar);
+                                                                                  if (typeVar == -1){
+                                                                                    yyerror("Variable not found");
+                                                                                    exit(0);
+                                                                                  }
                                                                                   yyerror("Type mismatch");
                                                                                   exit(0);
                                                                                 }
@@ -475,6 +486,7 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                                   }
                                                                                   else{
                                                                                       int update = updateVariable(scope, $1, 0, 0.0, '\0', $3, 0);
+                                                                                      assignStringValReg(val.reg, $1);
                                                                                       if (update == -1){
                                                                                         yyerror("Variable not found");
                                                                                         exit(0);
@@ -486,7 +498,10 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                                 printf("assignmentStatement \n");
                                                                                 int typeVar = getVariableType(scope, $1);
                                                                                 if (typeVar != 5){
-                                                                                  printf("type is %d \n",typeVar);
+                                                                                  if (typeVar == -1){
+                                                                                    yyerror("Variable not found");
+                                                                                    exit(0);
+                                                                                  }
                                                                                   yyerror("Type mismatch");
                                                                                   exit(0);
                                                                                 }
@@ -498,6 +513,7 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                                   }
                                                                                   else{
                                                                                       int update = updateVariable(scope, $1, 0, 0.0, '\0', "", $3);
+                                                                                      assignBoolValReg(val.reg, $1);
                                                                                       if (update == -1){
                                                                                         yyerror("Variable not found");
                                                                                         exit(0);
@@ -509,7 +525,10 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                              printf("assignmentStatement \n");
                                                                             int typeVar = getVariableType(scope, $1);
                                                                             if (typeVar != 3){
-                                                                              printf("type is %d \n",typeVar);
+                                                                              if (typeVar == -1){
+                                                                                yyerror("Variable not found");
+                                                                                exit(0);
+                                                                              }
                                                                               yyerror("Type mismatch");
                                                                               exit(0);
                                                                             }
@@ -521,6 +540,7 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                               }
                                                                               else{
                                                                                   int update = updateVariable(scope, $1, 0, 0.0, $3, "", 0);
+                                                                                  assignCharValReg(val.reg, $1);
                                                                                   if (update == -1){
                                                                                     yyerror("Variable not found");
                                                                                     exit(0);
@@ -534,27 +554,28 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
 intMathExpression                   :    IDENTIFIER  {
                                                         values val = getVariableValue(scope, $1);
                                                         $$ = val.intValue;
+                                                        allocateLastReg();
                                                       }
-                                    |    DIGIT  { $$ = $1; }
+                                    |    DIGIT  { $$ = $1; allocateDigitReg($1); }
                                     |   intMathExpression PLUS intMathExpression {
                                                                                     printf("intMathExpression PLUS intMathExpression \n");
                                                                                     $$ = $1 + $3;
-                                                                                    addTwoInts($1, $3);
+                                                                                    addTwoInts();
                                                                                   }
                                     |   intMathExpression MINUS intMathExpression {
                                                                                     printf("intMathExpression MINUS intMathExpression \n");
                                                                                     $$ = $1 - $3;
-                                                                                    subTwoFloats($1, $3);
+                                                                                    subTwoInts();
                                                                                   }
                                     |   intMathExpression MULTIPLY intMathExpression {
                                                                                       printf("intMathExpression MULTIPLY intMathExpression \n");
                                                                                       $$ = $1 * $3;
-                                                                                      mulTwoFloats($1, $3);
+                                                                                      mulTwoInts();
                                                                                       }
                                     |   intMathExpression DIVIDE intMathExpression {
                                                                                       printf("intMathExpression DIVIDE intMathExpression \n");
                                                                                       $$ = $1 / $3;
-                                                                                      divTwoInts($1, $3);
+                                                                                      divTwoInts();
                                                                                     }
                                     |   intMathExpression MODULO intMathExpression {
                                                                                       printf("intMathExpression MODULO intMathExpression \n");
@@ -576,6 +597,27 @@ intMathExpression                   :    IDENTIFIER  {
                                                                                                 $$ = $2;
                                                                                                 /* TODO: ADD quad */
                                                                                              }
+
+/*intMathExpression : intMathExpression PLUS intMathTerm
+                  | intMathExpression MINUS intMathTerm
+                  | intMathTerm
+                  ;
+
+intMathTerm : intMathTerm MULTIPLY intMathFactor
+            | intMathTerm DIVIDE intMathFactor
+            | intMathTerm MODULO intMathFactor
+            | intMathFactor
+            ;
+
+intMathFactor : intMathPrimary
+              | intMathFactor INCREMENT
+              | intMathFactor DECREMENT
+              ;
+
+intMathPrimary : IDENTIFIER
+               | DIGIT
+               | LEFT_PARENTHESIS intMathExpression RIGHT_PARENTHESIS
+               ;*/
 
 
 
@@ -675,19 +717,19 @@ logicalExpression                   :   IDENTIFIER  {
 
 
 ifStatement                           : IF {ifStatementBegin();} LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS 
-                                        LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE { scope-=1; ifStatementEnd(); printf("ifStatement \n");} 
+                                        LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE {printTable("\nIF STATEMENT ENDED", scope); removeScope(scope); scope-=1; ifStatementEnd(); printf("ifStatement \n");} 
                                       | IF {ifStatementBegin();} LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS 
-                                        LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE {scope-=1; ifStatementEnd();} 
-                                        ELSE {ifStatementElseBegin();} LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE { scope-=1; ifStatementElseEnd(); printf("if-else-Statement \n");}
+                                        LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE {printTable("\nIF STATEMENT ENDED", scope); removeScope(scope); scope-=1; ifStatementEnd();} 
+                                        ELSE {ifStatementElseBegin();} LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE {printTable("\nELSE STATEMENT ENDED", scope); removeScope(scope); scope-=1; ifStatementElseEnd(); printf("if-else-Statement \n");}
                                     
                                     /* TODO: ifelse expression??*/
     
 
 
 
-whileStatement  : WHILE LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printf("whileStatement \n");}
+whileStatement  : WHILE LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE {printTable("\nWHILE STATEMENT ENDED", scope); removeScope(scope); scope-=1; printf("whileStatement \n");}
 
-repeatStatement : REPEAT LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS {printf("repeatStatement \n");}
+repeatStatement : REPEAT LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS {printTable("\nREPEAT STATEMENT ENDED", scope); removeScope(scope); scope-=1; printf("repeatStatement \n");}
 
 forAssignment   : IDENTIFIER ASSIGN intMathExpression {printf("forAssignment \n");}
                 | IDENTIFIER ASSIGN floatMathExpression {printf("forAssignment \n");}
@@ -702,10 +744,10 @@ forDeclaration  : IDENTIFIER ASSIGN intMathExpression ';' {printf("forDeclaratio
                 | IDENTIFIER ASSIGN BOOL_LITERAL ';' {printf("forDeclaration \n");}
                 | assignVariableDeclaration
 
-forStatement    : FOR LEFT_PARENTHESIS forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printf("forStatement \n");}
+forStatement    : FOR LEFT_PARENTHESIS {scope+=1;} forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printTable("\nFOR STATEMENT ENDED", scope); removeScope(scope); scope-=1; printf("forStatement \n");}
 
 
-switchStatement : SWITCH LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS LEFT_CURLY_BRACE caseStatement RIGHT_CURLY_BRACE {printf("switchStatement \n");} 
+switchStatement : SWITCH LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS LEFT_CURLY_BRACE {scope+=1;} caseStatement RIGHT_CURLY_BRACE {printTable("\nSWITCH STATEMENT ENDED", scope); removeScope(scope); scope-=1; printf("switchStatement \n");} 
 
 
 caseStatement   : CASE values ':' blockStatements BREAK ';' caseStatement 
@@ -718,11 +760,11 @@ enumIdentifiers : IDENTIFIER ',' enumIdentifiers
                 | IDENTIFIER
                 
 
-enumStatement   : ENUM IDENTIFIER LEFT_CURLY_BRACE enumIdentifiers RIGHT_CURLY_BRACE {printf("enumStatement \n");}
+enumStatement   : ENUM IDENTIFIER LEFT_CURLY_BRACE {scope+=1;} enumIdentifiers RIGHT_CURLY_BRACE {printTable("\nENUM STATEMENT ENDED", scope); removeScope(scope); scope-=1; printf("enumStatement \n");}
 
 
-functionStatement : FUNCTION IDENTIFIER LEFT_PARENTHESIS parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printf("functionStatement \n");}
-                  | FUNCTION IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printf("functionStatement \n");}
+functionStatement : FUNCTION IDENTIFIER LEFT_PARENTHESIS {scope+=1;} parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printTable("\nFUNCTION ENDED", scope); removeScope(scope); scope-=1; printf("functionStatement \n");}
+//                  | FUNCTION IDENTIFIER LEFT_PARENTHESIS {scope+=1;} RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printTable("\nFUNCTION ENDED", scope); removeScope(scope); scope-=1; printf("functionStatement \n");}
 
 
 parameter       : noSemiColumnVariableDeclarationStatement ',' parameter
@@ -755,7 +797,7 @@ argument        : expression ',' argument
 
 comment         : COMMENT {printf("comment \n");}
 
-main            : MAIN LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printf("main \n");}
+main            : MAIN {createLabel("MAIN");} LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE {printTable("\nMAIN FUNCTION ENDED", scope); removeScope(scope); scope-=1; printf("main \n");}
 
 %%
 
@@ -767,16 +809,22 @@ int yyerror(const char* s)
 
 int main(void)
 {
-  FILE *file = fopen("quads.txt", "w");
+  FILE *file = fopen("finalQuads.txt", "w");
   if (file == NULL) {
       printf("Failed to open the file.\n");
       return 1;
   }
-  // Close the file to clear its contents
   fclose(file);
+  FILE *pfile = fopen("parseTable.txt", "w");
+  if (pfile == NULL) {
+      printf("Failed to open the file.\n");
+      return 1;
+  }
+  fclose(pfile);
+  // Close the file to clear its contents
   
   initializeSymbolTable();
   yyparse();
-  printTable();
+//  printTable();
   return 0;
 }

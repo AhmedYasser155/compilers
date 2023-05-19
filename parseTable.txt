@@ -1,48 +1,83 @@
-Scope: 0, Identifier: x, Type: 1, Value: 5, isConst = 0
-Scope: 0, Identifier: a, Type: 2, Value: 2.500000, isConst = 0
-Scope: 0, Identifier: jnk, Type: 4, Value: sdaa, isConst = 0
-Scope: 0, Identifier: w, Type: 5, Value: 1, isConst = 0
-Scope: 0, Identifier: z, Type: 3, Value: s, isConst = 0
-Scope: 0, Identifier: c, Type: 3, Value: a, isConst = 0
-Scope: 0, Identifier: s, Type: 4, Value: hello, isConst = 0
-Scope: 0, Identifier: b, Type: 5, Value: 1, isConst = 0
-Scope: 0, Identifier: y, Type: 4, Value: falsehello, isConst = 0
-Scope: 0, Identifier: q, Type: 1, Value: 5, isConst = 1
-Scope: 0, Identifier: e, Type: 3, Value: a, isConst = 1
-Scope: 0, Identifier: r, Type: 4, Value: hello, isConst = 1
-Scope: 0, Identifier: t, Type: 5, Value: 1, isConst = 1
-Scope: 0, Identifier: a1, Type: 1, Value: 5, isConst = 0
-Scope: 0, Identifier: a2, Type: 1, Value: -5, isConst = 0
-Scope: 0, Identifier: a3, Type: 1, Value: 0, isConst = 0
-Scope: 0, Identifier: a4, Type: 1, Value: 0, isConst = 0
-Scope: 0, Identifier: a5, Type: 1, Value: 0, isConst = 0
-Scope: 0, Identifier: a6, Type: 1, Value: 1, isConst = 0
-Scope: 0, Identifier: a7, Type: 1, Value: -1, isConst = 0
-Scope: 0, Identifier: a8, Type: 1, Value: 5, isConst = 0
-Scope: 0, Identifier: b1, Type: 2, Value: 5.500000, isConst = 0
-Scope: 0, Identifier: b2, Type: 2, Value: -5.500000, isConst = 0
-Scope: 0, Identifier: b3, Type: 2, Value: 0.000000, isConst = 0
-Scope: 0, Identifier: b4, Type: 2, Value: 0.000000, isConst = 0
-Scope: 0, Identifier: b8, Type: 2, Value: 75.625000, isConst = 0
-Scope: 0, Identifier: s1, Type: 4, Value: hello, isConst = 0
-Scope: 0, Identifier: s2, Type: 4, Value: false, isConst = 0
-Scope: 0, Identifier: s3, Type: 4, Value: falsehello, isConst = 0
-Scope: 0, Identifier: s4, Type: 4, Value: hello, isConst = 0
-Scope: 0, Identifier: c1, Type: 5, Value: 1, isConst = 0
-Scope: 0, Identifier: c2, Type: 5, Value: 0, isConst = 0
-Scope: 0, Identifier: c3, Type: 5, Value: 1, isConst = 0
-Scope: 0, Identifier: c4, Type: 5, Value: 0, isConst = 0
-Scope: 0, Identifier: c5, Type: 5, Value: 1, isConst = 0
-Scope: 0, Identifier: c6, Type: 5, Value: 0, isConst = 0
-Scope: 0, Identifier: c7, Type: 5, Value: 0, isConst = 0
-Scope: 0, Identifier: c8, Type: 5, Value: 1, isConst = 0
-Scope: 0, Identifier: c9, Type: 5, Value: 0, isConst = 0
-Scope: 0, Identifier: c10, Type: 5, Value: 1, isConst = 0
-Scope: 0, Identifier: c11, Type: 5, Value: 1, isConst = 0
-Scope: 0, Identifier: c12, Type: 5, Value: 0, isConst = 0
-Scope: 0, Identifier: c13, Type: 5, Value: 1, isConst = 0
-Scope: 0, Identifier: c14, Type: 5, Value: 0, isConst = 0
-Scope: 0, Identifier: c15, Type: 5, Value: 1, isConst = 0
-Scope: 0, Identifier: c16, Type: 5, Value: 1, isConst = 0
-Scope: 1, Identifier: xxx, Type: 1, Value: 5, isConst = 0
-Scope: 2, Identifier: yyy, Type: 1, Value: 5, isConst = 0
+
+IF STATEMENT ENDED
+Scope: 3, Identifier: yyy, Type: 1, Value: 5, isConst = 0
+
+IF STATEMENT ENDED
+Scope: 2, Identifier: xxx, Type: 1, Value: 5, isConst = 0
+
+WHILE STATEMENT ENDED
+
+REPEAT STATEMENT ENDED
+
+FOR STATEMENT ENDED
+Scope: 2, Identifier: i, Type: 1, Value: 0, isConst = 0
+
+FOR STATEMENT ENDED
+Scope: 2, Identifier: kkk, Type: 1, Value: 0, isConst = 0
+
+SWITCH STATEMENT ENDED
+
+ENUM STATEMENT ENDED
+
+MAIN FUNCTION ENDED
+Scope: 1, Identifier: x, Type: 1, Value: 5, isConst = 0
+Scope: 1, Identifier: sss, Type: 1, Value: 45, isConst = 0
+Scope: 1, Identifier: a, Type: 2, Value: 2.500000, isConst = 0
+Scope: 1, Identifier: jnk, Type: 4, Value: sdaa, isConst = 0
+Scope: 1, Identifier: w, Type: 5, Value: 1, isConst = 0
+Scope: 1, Identifier: z, Type: 3, Value: k, isConst = 0
+Scope: 1, Identifier: c, Type: 3, Value: a, isConst = 0
+Scope: 1, Identifier: s, Type: 4, Value: hello, isConst = 0
+Scope: 1, Identifier: b, Type: 5, Value: 1, isConst = 0
+Scope: 1, Identifier: y, Type: 4, Value: falsehello, isConst = 0
+Scope: 1, Identifier: q, Type: 1, Value: 5, isConst = 1
+Scope: 1, Identifier: e, Type: 3, Value: a, isConst = 1
+Scope: 1, Identifier: r, Type: 4, Value: hello, isConst = 1
+Scope: 1, Identifier: t, Type: 5, Value: 1, isConst = 1
+Scope: 1, Identifier: a1, Type: 1, Value: 50, isConst = 0
+Scope: 1, Identifier: a2, Type: 1, Value: 40, isConst = 0
+Scope: 1, Identifier: a3, Type: 1, Value: 225, isConst = 0
+Scope: 1, Identifier: a4, Type: 1, Value: 9, isConst = 0
+Scope: 1, Identifier: a5, Type: 1, Value: 0, isConst = 0
+Scope: 1, Identifier: a6, Type: 1, Value: 46, isConst = 0
+Scope: 1, Identifier: a7, Type: 1, Value: 44, isConst = 0
+Scope: 1, Identifier: a8, Type: 1, Value: 50, isConst = 0
+Scope: 1, Identifier: b1, Type: 2, Value: 5.500000, isConst = 0
+Scope: 1, Identifier: b2, Type: 2, Value: -5.500000, isConst = 0
+Scope: 1, Identifier: b3, Type: 2, Value: 0.000000, isConst = 0
+Scope: 1, Identifier: b4, Type: 2, Value: 0.000000, isConst = 0
+Scope: 1, Identifier: b8, Type: 2, Value: 75.625000, isConst = 0
+Scope: 1, Identifier: s1, Type: 4, Value: hello, isConst = 0
+Scope: 1, Identifier: s2, Type: 4, Value: false, isConst = 0
+Scope: 1, Identifier: s3, Type: 4, Value: falsehello, isConst = 0
+Scope: 1, Identifier: s4, Type: 4, Value: hello, isConst = 0
+Scope: 1, Identifier: c1, Type: 5, Value: 1, isConst = 0
+Scope: 1, Identifier: c2, Type: 5, Value: 0, isConst = 0
+Scope: 1, Identifier: c3, Type: 5, Value: 1, isConst = 0
+Scope: 1, Identifier: c4, Type: 5, Value: 0, isConst = 0
+Scope: 1, Identifier: c5, Type: 5, Value: 1, isConst = 0
+Scope: 1, Identifier: c6, Type: 5, Value: 0, isConst = 0
+Scope: 1, Identifier: c7, Type: 5, Value: 0, isConst = 0
+Scope: 1, Identifier: c8, Type: 5, Value: 1, isConst = 0
+Scope: 1, Identifier: c9, Type: 5, Value: 0, isConst = 0
+Scope: 1, Identifier: c10, Type: 5, Value: 1, isConst = 0
+Scope: 1, Identifier: c11, Type: 5, Value: 1, isConst = 0
+Scope: 1, Identifier: c12, Type: 5, Value: 0, isConst = 0
+Scope: 1, Identifier: c13, Type: 5, Value: 1, isConst = 0
+Scope: 1, Identifier: c14, Type: 5, Value: 0, isConst = 0
+Scope: 1, Identifier: c15, Type: 5, Value: 1, isConst = 0
+Scope: 1, Identifier: c16, Type: 5, Value: 1, isConst = 0
+
+FUNCTION ENDED
+Scope: 1, Identifier: x, Type: 1, Value: 5, isConst = 0
+
+FUNCTION ENDED
+Scope: 1, Identifier: x, Type: 1, Value: 5, isConst = 0
+
+FUNCTION ENDED
+Scope: 1, Identifier: x, Type: 1, Value: 5, isConst = 0
+Scope: 1, Identifier: y, Type: 1, Value: 0, isConst = 0
+
+FUNCTION ENDED
+Scope: 1, Identifier: x, Type: 4, Value: sfnd, isConst = 1
+Scope: 1, Identifier: y, Type: 1, Value: 7, isConst = 0

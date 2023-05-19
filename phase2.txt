@@ -2,6 +2,12 @@
 main()
 {
     int x;
+
+    x = 5+8;
+    x = (x * 3) - 1 * 2 - 2 + 2 * 3;
+    int sss = x;
+
+
     float a ;
     string jnk;
     bool w;
@@ -72,6 +78,8 @@ string    y = "false";
         int xxx = 5;
     } 
 
+    // yyy = 5; // variable not found
+
     //if (5>3) {    
     //    int fff = 5;
     //} else {
@@ -84,15 +92,78 @@ string    y = "false";
     z='s';
     w=true;
 
+    while (x > 0) {
+        x = 5;
+        x = x - 1;
+    }
+
+    repeat {
+        x = 5;
+        z = 'f';
+    } until (true)
+
+
+    for (int i = 0; i < 10; i++) 
+    {
+        x = 5 + i;
+    }
+
+    for (i = 0; i < 10; i++) {
+        x = 5;
+        z = 'k';
+        int kkk;
+    }
+
+    // kkk = 6;  // variable not type
+
+    switch (x) {
+        case "sfdg":
+            x = 5;
+            break;
+        case "sd":
+            x = 5;
+            break;
+        default:
+            x = 5;
+            break;
+    }
+
+    enum MyEnum {
+        A,
+        B,
+        C
+    }
+
+
+    print("hello world");
+    print(x);
+    print("hello", y);
+
 }
 
+function myFunction() {
+    int x = 5;
+}
+
+function myFunction(int x) {
+    x = 5;
+    return x;
+}
+
+function myFunction(int x, int y) {
+    x = 5;
+    return x;
+}
+
+function myFunction(const string x = "sfnd", int y = 6) {
+    y = 7;
+    return x;
+}
+
+myFunction(x, y);
+myFunction();
 
 
-// if variable is already declared: 1- throw error for redeclaration
-//                                  2- overwrite the value of the variable for assignment
-
-// do the assignment with mathexprressions
-// handle identifier in intMathExpression
-// handle DIGIT in intMathExpression
-
+// TODO: 
+// handle default values for variable declaration
 

@@ -29,6 +29,7 @@ typedef struct {
     char charValue;
     char stringValue[MAX_STRING_LENGTH];
     int boolValue;
+    int reg;
 } VariableEntry;
 
 VariableEntry createDefaultVariableEntry() {
@@ -43,12 +44,11 @@ VariableEntry createDefaultVariableEntry() {
     strncpy(entry.stringValue, "\0", MAX_STRING_LENGTH-1);  // Empty string
     // entry.stringValue[MAX_STRING_LENGTH - 1] = '\0';  // Manually null-terminate the string
     entry.boolValue = 0;
+    entry.reg = -1;
     return entry;
 }
 
-int registerNumber = 0;
-int labelNumber = 0;
-int firstIfLabel = -1;
+
 
 // Array of hashes representing the symbol table
 VariableEntry symbolTable[MAX_SCOPES][MAX_VARIABLES];
@@ -66,8 +66,8 @@ void initializeSymbolTable() {
 
 // Function to check if a variable exists in the symbol table
 int variableExists(int scope, const char* identifier) {
-    for (int i = 0; i <= scope; i++) {
-        VariableEntry* entry = &symbolTable[scope][0];
+    for (int i = scope; i >= 0; i--) {
+        VariableEntry* entry = &symbolTable[i][0];
         // Iterate through the variables in the scope
         for (int j = 0; j < MAX_VARIABLES; j++) {
 
@@ -125,11 +125,11 @@ int  addVariable(int scope, const char* identifier, bool isConst, int type, int 
 // Function to get the type of a variable from the symbol table
 int getVariableType(int scope, char* identifier) {
 
-    for (int i = 0; i <= scope; i++) {
-        VariableEntry* entry = &symbolTable[scope][0];
+    for (int i = scope; i >= 0; i--) {
+        VariableEntry* entry = &symbolTable[i][0];
         // Iterate through the variables in the scope
         for (int j = 0; j < MAX_VARIABLES; j++) {
-
+                
             if (strcmp(entry->identifier, identifier) == 0) {
                 return entry->type; // Variable found
             }
@@ -143,8 +143,8 @@ int getVariableType(int scope, char* identifier) {
 // update the value of a variable assumes that the variable exists, the type is correct
 int updateVariable(int scope, const char* identifier, int intValue, float floatValue, char charValue, const char* stringValue, int boolValue) {
     // printf("Updating variable %s\n", identifier);
-    for (int i = 0; i <= scope; i++) {
-        VariableEntry* entry = &symbolTable[scope][0];
+    for (int i = scope; i >= 0; i--) {
+        VariableEntry* entry = &symbolTable[i][0];
         // Iterate through the variables in the scope
         for (int j = 0; j < MAX_VARIABLES; j++) {
 
@@ -173,13 +173,14 @@ typedef struct {
     char* stringValue;
     int boolValue;
     int isConst;
+    int reg;
 } values;
 
 values getVariableValue(int scope, char* identifier) {
 
     // Iterate through the variables in the scope
-    for (int i = 0; i <= scope; i++) {
-        VariableEntry* entry = &symbolTable[scope][0];
+    for (int i = scope; i > 0; i--) {
+        VariableEntry* entry = &symbolTable[i][0];
         for (int i = 0; i < MAX_VARIABLES; i++) {
             if (strcmp(entry->identifier, identifier) == 0) {
                 values val;
@@ -189,6 +190,7 @@ values getVariableValue(int scope, char* identifier) {
                 val.stringValue = entry->stringValue;
                 val.boolValue = entry->boolValue;
                 val.isConst = entry->isConst;
+                val.reg = entry->reg;
                 return val; // Return the type of the variable
             }
             entry++;
@@ -202,25 +204,56 @@ values getVariableValue(int scope, char* identifier) {
     val.stringValue = "";
     val.boolValue = 0;
     val.isConst = 0;
+    val.reg = -1;
     return val; // Variable not found
+}
+// update the variable register
+int updateVariableReg(int scope, const char* identifier, int reg) {
+    // printf("Updating variable %s\n", identifier);
+    for (int i = scope; i >= 0; i--) {
+        VariableEntry* entry = &symbolTable[i][0];
+        // Iterate through the variables in the scope
+        for (int j = 0; j < MAX_VARIABLES; j++) {
+
+            if (strcmp(entry->identifier, identifier) == 0) {
+                // printf("Variable found\n");
+                entry->reg = reg;
+                return 1; // Variable found
+            }
+            entry++;
+        }
+    }
+
+    return -1; // Variable not found
+}
+
+// when leaving a scope, remove all variables in that scope use createDefaultVariableEntry
+void removeScope(int scope) {
+    VariableEntry* entry = &symbolTable[scope][0];
+    for (int i = 0; i < MAX_VARIABLES; i++) {
+        *entry = createDefaultVariableEntry();
+        entry++;
+    }
 }
 
 
+
 // Function to print the symbol table
-void printTable() {
+void printTable(char* text, int scope) {
     // fprintf("Symbol Table:\n");
-    FILE* file = fopen("parseTable.txt", "w");
+    FILE* file = fopen("parseTable.txt", "a");
     if (file == NULL) {
         printf("Error opening file.\n");
         return;
     }
+    fprintf(file, "%s\n", text);
 
     // Iterate over the symbol table and write each entry to the file
-    for (int i = 0; i < MAX_SCOPES; i++) {
+    // for (int i = 0; i < MAX_SCOPES; i++) {
         for (int j = 0; j < MAX_VARIABLES; j++) {
-            VariableEntry* entry = &symbolTable[i][j];
+            VariableEntry* entry = &symbolTable[scope][j];
             if (strcmp(entry->identifier, "") != 0) {
-                fprintf(file, "Scope: %d, Identifier: %s, Type: %d, Value: ", i, entry->identifier, entry->type);
+                fprintf(file, "Scope: %d, Identifier: %s, Type: %d, Value: ", scope, entry->identifier, entry->type);
                 switch (entry->type) {// int: 1, float: 2, char: 3, string: 4, bool: 5
                     case 1:
                         fprintf(file, "%d", entry->intValue);
@@ -245,7 +278,7 @@ void printTable() {
 
             }
         }   
-    }
+    // }
     
 
     // Close the file
@@ -269,79 +302,160 @@ void printTable() {
 // }
 // fprintf(qFile, "quadruples:\n");
 // fclose(qFile);
-void allocateRegister(char* id)
+typedef struct {
+    char* identifier;
+    int label;
+} labelEntry;
+
+#define MAX_LABELS 100
+
+labelEntry labelTable[MAX_LABELS];
+
+int registerNumber = 0;
+int labelNumber = 0;
+int firstIfLabel = -1;
+int labelEntries = 0;
+
+void createLabel(char* name)
 {
-    FILE* qFile = fopen("quads.txt", "a");
-    fprintf(qFile, "MOV R%d, Variable ID: %s\n", registerNumber++, id);
+    labelEntry entry;
+    entry.identifier = name;
+    entry.label = labelNumber;
+    labelTable[labelEntries++] = entry;
+
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "LABEL%s%d:\n\n", name, labelNumber++);
+    fclose(qFile);
+}
+
+void allocateRegister(char* id, int currentScope)
+{
+    updateVariableReg(currentScope, id, registerNumber);
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MOV R%d, %s\n\n", registerNumber++, id);
     fclose(qFile);
 }
 // Functions to allocate a variables in a register
-void allocateIntValReg(char* id, int value)
+void allocateIntValReg(char* id)
 {
-    FILE* qFile = fopen("quads.txt", "a");
-    fprintf(qFile, "ID: %s, Value: %d\n", id, value);
-    fprintf(qFile, "MOV R%d, %s\n", registerNumber++, id);
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MOV R%d, R%d\n", registerNumber, registerNumber-1); //CHECK: if we remove this
+    fprintf(qFile, "MOV %s, R%d\n\n", id, registerNumber++);            // here use registerNumber-1
     fclose(qFile);
 }
-void allocateFloatValReg(char* id, float value)
+void allocateFloatValReg(char* id)
 {
-    FILE* qFile = fopen("quads.txt", "a");
-    fprintf(qFile, "ID: %s, Value: %f\n", id, value);
-    fprintf(qFile, "MOV R%d, %s\n", registerNumber++, id);
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MOV R%d, R%d\n", registerNumber, registerNumber-1); //CHECK: if we remove this
+    fprintf(qFile, "MOV %s, R%d\n\n", id, registerNumber++);            // here use registerNumber-1
     fclose(qFile);
 }
-void allocateCharValReg(char* id, char value)
+void allocateCharValReg(char* id)
 {   
-    FILE* qFile = fopen("quads.txt", "a");
-    fprintf(qFile, "ID: %s, Value: %c\n", id, value);
-    fprintf(qFile, "MOV R%d, %s\n", registerNumber++, id);
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MOV R%d, R%d\n", registerNumber, registerNumber-1); //CHECK: if we remove this
+    fprintf(qFile, "MOV %s, R%d\n\n", id, registerNumber++);            // here use registerNumber-1
     fclose(qFile);
 }
-void allocateStringValReg(char* id, char* value)
+void allocateStringValReg(char* id)
 {
-    FILE* qFile = fopen("quads.txt", "a");
-    fprintf(qFile, "ID: %s, Value: %s\n", id, value);
-    fprintf(qFile, "MOV R%d, %s\n", registerNumber++, id);
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MOV R%d, R%d\n", registerNumber, registerNumber-1); //CHECK: if we remove this
+    fprintf(qFile, "MOV %s, R%d\n\n", id, registerNumber++);            // here use registerNumber-1
     fclose(qFile);
 }
-void allocateBoolValReg(char* id, int value)
+void allocateBoolValReg(char* id)
 {
-    FILE* qFile = fopen("quads.txt", "a");
-    fprintf(qFile, "ID: %s, Value: %d\n", id, value);
-    fprintf(qFile, "MOV R%d, %s\n", registerNumber++, id);
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MOV R%d, R%d\n", registerNumber, registerNumber-1); //CHECK: if we remove this
+    fprintf(qFile, "MOV %s, R%d\n\n", id, registerNumber++);            // here use registerNumber-1
     fclose(qFile);
 }
-void addTwoInts(int a, int b)
+////////////////////////////////////////////////////////////////////////////////////////
+void assignIntValReg(int reg, char* id)
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MOV R%d, R%d\n", reg, registerNumber-1);
+    fprintf(qFile, "MOV %s, R%d\n\n", id, reg);
+    fclose(qFile);
+}
+void assignFloatValReg(int reg, char* id)
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MOV R%d, R%d\n", reg, registerNumber-1);
+    fprintf(qFile, "MOV %s, R%d\n\n", id, reg);
+    fclose(qFile);
+}
+void assignCharValReg(int reg, char* id)
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MOV R%d, R%d\n", reg, registerNumber-1);
+    fprintf(qFile, "MOV %s, R%d\n\n", id, reg);
+    fclose(qFile);
+}
+void assignStringValReg(int reg, char* id)
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MOV R%d, R%d\n", reg, registerNumber-1);
+    fprintf(qFile, "MOV %s, R%d\n\n", id, reg);
+    fclose(qFile);
+}
+void assignBoolValReg(int reg, char* id)
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MOV R%d, R%d\n", reg, registerNumber-1);
+    fprintf(qFile, "MOV %s, R%d\n\n", id, reg);
+    fclose(qFile);
+}
+////////////////////////////////////////////////////////////////////////////////////////
+void allocateDigitReg(int value)
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MOV R%d, %d\n\n", registerNumber++, value);
+    fclose(qFile);
+}
+void allocateLastReg(){
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MOV R%d, R%d\n\n", registerNumber, registerNumber-1);
+    registerNumber++;
+    fclose(qFile);
+}
+void addTwoInts()
 {
 
-    FILE* qFile = fopen("quads.txt", "a");
-
-    // fprintf("adding %d and %d\n", a, b);
-    fprintf(qFile, "MOV R%d, %d\n", registerNumber++, a);
-    fprintf(qFile, "MOV R%d, %d\n", registerNumber, b);
-    fprintf(qFile, "ADD R%d, R%d\n", registerNumber, registerNumber-1);
-
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "ADD R%d, R%d\n\n", registerNumber-1, registerNumber-2);
     fclose(qFile);
 }
+void subTwoInts()
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "SUB R%d, R%d\n\n", registerNumber-1, registerNumber-2);
+    fclose(qFile);
+}
+
+void mulTwoInts(){
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MUL R%d, R%d\n\n", registerNumber-1, registerNumber-2);
+    fclose(qFile);
+}
+
+void divTwoInts(){
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "DIV R%d, R%d\n\n", registerNumber-1, registerNumber-2);
+    fclose(qFile);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+
 void addTwoFloats(float a, float b)
 {
     FILE* qFile = fopen("quads.txt", "a");
 
     // fprintf(qFile, "adding %f and %f\n", a, b);
-    fprintf(qFile, "MOV R%d, %f\n", registerNumber++, a);
+    fprintf(qFile, "MOV R%d, %f\n", registerNumber, a);
     fprintf(qFile, "MOV R%d, %f\n", registerNumber, b);
     fprintf(qFile, "ADD R%d, R%d\n", registerNumber, registerNumber-1);
-
-    fclose(qFile);
-}
-void subTwoInts(int a, int b)
-{
-    FILE* qFile = fopen("quads.txt", "a");
-
-    // fprintf(qFile, "subtracting %d and %d\n", a, b);
-    fprintf(qFile, "MOV R%d, %d\n", registerNumber++, a);
-    fprintf(qFile, "MOV R%d, %d\n", registerNumber, b);
-    fprintf(qFile, "SUB R%d, R%d\n", registerNumber, registerNumber-1);
 
     fclose(qFile);
 }
@@ -350,20 +464,9 @@ void subTwoFloats(float a, float b)
     FILE* qFile = fopen("quads.txt", "a");
 
     // fprintf(qFile, "subtracting %f and %f\n", a, b);
-    fprintf(qFile, "MOV R%d, %f\n", registerNumber++, a);
+    fprintf(qFile, "MOV R%d, %f\n", registerNumber, a);
     fprintf(qFile, "MOV R%d, %f\n", registerNumber, b);
     fprintf(qFile, "SUB R%d, R%d\n", registerNumber, registerNumber-1);
-
-    fclose(qFile);
-}
-void mulTwoInts(int a, int b)
-{
-    FILE* qFile = fopen("quads.txt", "a");
-
-    // fprintf(qFile, "multiplying %d and %d\n", a, b);
-    fprintf(qFile, "MOV R%d, %d\n", registerNumber++, a);
-    fprintf(qFile, "MOV R%d, %d\n", registerNumber, b);
-    fprintf(qFile, "MUL R%d, R%d\n", registerNumber, registerNumber-1);
 
     fclose(qFile);
 }
@@ -372,20 +475,9 @@ void mulTwoFloats(float a, float b)
     FILE* qFile = fopen("quads.txt", "a");
 
     // fprintf(qFile, "multiplying %f and %f\n", a, b);
-    fprintf(qFile, "MOV R%d, %f\n", registerNumber++, a);
+    fprintf(qFile, "MOV R%d, %f\n", registerNumber, a);
     fprintf(qFile, "MOV R%d, %f\n", registerNumber, b);
     fprintf(qFile, "MUL R%d, R%d\n", registerNumber, registerNumber-1);
-
-    fclose(qFile);
-}
-void divTwoInts(int a, int b)
-{
-    FILE* qFile = fopen("quads.txt", "a");
-
-    // fprintf(qFile, "dividing %d and %d\n", a, b);
-    fprintf(qFile, "MOV R%d, %d\n", registerNumber++, a);
-    fprintf(qFile, "MOV R%d, %d\n", registerNumber, b);
-    fprintf(qFile, "DIV R%d, R%d\n", registerNumber, registerNumber-1);
 
     fclose(qFile);
 }
@@ -394,7 +486,7 @@ void divTwoFloats(float a, float b)
     FILE* qFile = fopen("quads.txt", "a");
 
     // fprintf(qFile, "dividing %f and %f\n", a, b);
-    fprintf(qFile, "MOV R%d, %f\n", registerNumber++, a);
+    fprintf(qFile, "MOV R%d, %f\n", registerNumber, a);
     fprintf(qFile, "MOV R%d, %f\n", registerNumber, b);
     fprintf(qFile, "DIV R%d, R%d\n", registerNumber, registerNumber-1);
 
@@ -405,7 +497,7 @@ void modTwoInts(int a, int b)
     FILE* qFile = fopen("quads.txt", "a");
 
     // fprintf(qFile, "modding %d and %d\n", a, b);
-    fprintf(qFile, "MOV R%d, %d\n", registerNumber++, a);
+    fprintf(qFile, "MOV R%d, %d\n", registerNumber, a);
     fprintf(qFile, "MOV R%d, %d\n", registerNumber, b);
     fprintf(qFile, "MOD R%d, R%d\n", registerNumber, registerNumber-1);
 
