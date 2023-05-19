@@ -29,6 +29,12 @@
 %type <fVal> floatMathExpression
 %type <sVal> stringExpression
 %type <bVal> logicalExpression
+%type <bVal> boolLogicalExpression
+%type <bVal> intLogicalExpression
+%type <bVal> floatLogicalExpression
+%type <bVal> stringLogicalExpression
+%type <bVal> parenLogicalExpression
+
 
 %%
 
@@ -653,22 +659,22 @@ floatMathExpression                 :   IDENTIFIER  {
                                                                                                 $$ = $2;
                                                                                                 // TODO: ADD quad 
                                                                                               }
-                                
+
 stringExpression                    :   STRING_LITERAL {
-                                        char* result = NULL;
-                                        if ($1[0] == '"' && $1[strlen($1) - 1] == '"') {
+                                            char* result = NULL;
+                                            if ($1[0] == '"' && $1[strlen($1) - 1] == '"') {
                                             /* Remove the quotes*/
                                             result = $1 + 1;
-                                            result[strlen(result) - 1] = '\0';
-                                        }
-                                        $$ = result;
+                                                result[strlen(result) - 1] = '\0';
+                                            }
+                                            $$ = result;
 
-                                          }
+                                        }
                                         |IDENTIFIER  {
-                                                      printf("stringExpression \n");
-                                                      values val = getVariableValue(scope, $1);
-                                                      $$ = val.stringValue;
-                                                    }
+                                            printf("stringExpression \n");
+                                            values val = getVariableValue(scope, $1);
+                                            $$ = val.stringValue;
+                                        }
                                     |   stringExpression PLUS stringExpression {
                                                                                 printf("stringExpression PLUS stringExpression \n");
                                                                                 char* str1 = $1;
@@ -679,45 +685,43 @@ stringExpression                    :   STRING_LITERAL {
                                                                                 // TODO: ADD quad
                                                                               }
                                     |   LEFT_PARENTHESIS stringExpression RIGHT_PARENTHESIS {
-                                                                                              printf("LEFT_PARENTHESIS stringExpression RIGHT_PARENTHESIS \n");
-                                                                                              $$ = $2;
+                                                                                printf("LEFT_PARENTHESIS stringExpression RIGHT_PARENTHESIS \n");
+                                                                                $$ = $2;
                                                                                               printf("after parantheses %s \n",$2);
                                                                                               // TODO: ADD quad  
-                                                                                            }
+                                                                            }
 
 
+logicalExpression           : boolLogicalExpression
+                            | intLogicalExpression
+                            | floatLogicalExpression
+                            | stringLogicalExpression
+                            | parenLogicalExpression
+                            | NOT logicalExpression { $$ = !$2; printf("NOT logicalExpression \n"); }
 
-logicalExpression                   :   IDENTIFIER  {
-                                                      /*printf("logicalExpression \n");
-                                                      values val = getVariableValue(scope, $1);
-                                                      printf("VALUE: %d \n", val.boolValue);
-                                                      $$ = val.boolValue;*/
-                                                      /*TODO: NOT WORKING*/
-                                                    }
-                                    |   BOOL_LITERAL { $$ = $1; }
-                                    |   intMathExpression GREATER intMathExpression { $$ = $1 > $3; /* TODO: ADD quad*/ printf("Logical: intMathExpression GREATER intMathExpression \n");}
-                                    |   intMathExpression LESS intMathExpression { $$ = $1 < $3; /* TODO: ADD quad*/ printf("Logical: intMathExpression LESS intMathExpression \n"); }
-                                    |   intMathExpression GREATER_EQUAL intMathExpression { $$ = $1 >= $3; /* TODO: ADD quad*/ printf("Logical: intMathExpression GREATER_EQUAL intMathExpression \n"); }
-                                    |   intMathExpression LESS_EQUAL intMathExpression { $$ = $1 <= $3; /* TODO: ADD quad*/ printf("Logical: intMathExpression LESS_EQUAL intMathExpression \n"); }
-                                    |   intMathExpression EQUAL intMathExpression { $$ = $1 == $3; /* TODO: ADD quad*/ printf("Logical: intMathExpression EQUAL intMathExpression \n"); }
-                                    |   intMathExpression NOT_EQUAL intMathExpression { $$ = $1 != $3; /* TODO: ADD quad*/ printf("Logical: intMathExpression NOT_EQUAL intMathExpression \n"); }
-                                    |   floatMathExpression GREATER floatMathExpression {$$ = $1 > $3; /* TODO: ADD quad*/ printf("Logical: floatMathExpression GREATER floatMathExpression \n"); }
-                                    |   floatMathExpression LESS floatMathExpression {$$ = $1 < $3; /* TODO: ADD quad*/ printf("Logical: floatMathExpression LESS floatMathExpression \n"); }
-                                    |   floatMathExpression GREATER_EQUAL floatMathExpression { $$ = $1 >= $3; /* TODO: ADD quad*/ printf("Logical: floatMathExpression GREATER_EQUAL floatMathExpression \n"); }
-                                    |   floatMathExpression LESS_EQUAL floatMathExpression {$$ = $1 <= $3; /* TODO: ADD quad*/ printf("Logical: floatMathExpression LESS_EQUAL floatMathExpression \n"); }
-                                    |   floatMathExpression EQUAL floatMathExpression {$$ = $1 == $3; /* TODO: ADD quad*/ printf("Logical: floatMathExpression EQUAL floatMathExpression \n");}
-                                    |   floatMathExpression NOT_EQUAL floatMathExpression {$$ = $1 != $3; /* TODO: ADD quad*/ printf("Logical: floatMathExpression NOT_EQUAL floatMathExpression \n");}
-                                    // takes whatever between the quouts as string //
-                                    //|   stringExpression EQUAL stringExpression {$$ = (strcmp($1, $3) == 0); /* TODO: ADD quad*/ printf("Logical: stringExpression EQUAL stringExpression \n");} 
-                                    //|   stringExpression NOT_EQUAL stringExpression {$$ = (strcmp($1, $3) != 0); /* TODO: ADD quad*/ printf("Logical: stringExpression NOT_EQUAL stringExpression \n");}
-                                    |   LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS { $$ = $2; /* TODO: ADD quad*/ printf("Logical: LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS \n");}
-                                    |   logicalExpression AND logicalExpression {$$ = $1 && $3; /* TODO: ADD quad*/ printf("Logical: logicalExpression AND logicalExpression \n");}
-                                    |   logicalExpression OR logicalExpression { $$ = ($1 || $3); /* TODO: ADD quad*/ printf("Logical: logicalExpression OR logicalExpression \n");}
-                                    |   NOT logicalExpression { $$ = !$2; /* TODO: ADD quad*/ printf("NOT logicalExpression \n");}
+boolLogicalExpression       : BOOL_LITERAL { $$ = $1; }
+intLogicalExpression        : intMathExpression GREATER intMathExpression { $$ = $1 > $3; printf("Logical: intMathExpression GREATER intMathExpression \n"); }
+                            | intMathExpression LESS intMathExpression { $$ = $1 < $3; printf("Logical: intMathExpression LESS intMathExpression \n"); }
+                            | intMathExpression GREATER_EQUAL intMathExpression { $$ = $1 >= $3; printf("Logical: intMathExpression GREATER_EQUAL intMathExpression \n"); }
+                            | intMathExpression LESS_EQUAL intMathExpression { $$ = $1 <= $3; printf("Logical: intMathExpression LESS_EQUAL intMathExpression \n"); }
+                            | intMathExpression EQUAL intMathExpression { $$ = $1 == $3; printf("Logical: intMathExpression EQUAL intMathExpression \n"); }
+                            | intMathExpression NOT_EQUAL intMathExpression { $$ = $1 != $3; printf("Logical: intMathExpression NOT_EQUAL intMathExpression \n"); }
+
+floatLogicalExpression      : floatMathExpression GREATER floatMathExpression { $$ = $1 > $3; printf("Logical: floatMathExpression GREATER floatMathExpression \n"); }
+                            | floatMathExpression LESS floatMathExpression { $$ = $1 < $3; printf("Logical: floatMathExpression LESS floatMathExpression \n"); }
+                            | floatMathExpression GREATER_EQUAL floatMathExpression { $$ = $1 >= $3; printf("Logical: floatMathExpression GREATER_EQUAL floatMathExpression \n"); }
+                            | floatMathExpression LESS_EQUAL floatMathExpression { $$ = $1 <= $3; printf("Logical: floatMathExpression LESS_EQUAL floatMathExpression \n"); }
+                            | floatMathExpression EQUAL floatMathExpression { $$ = $1 == $3; printf("Logical: floatMathExpression EQUAL floatMathExpression \n"); }
+                            | floatMathExpression NOT_EQUAL floatMathExpression { $$ = $1 != $3; printf("Logical: floatMathExpression NOT_EQUAL floatMathExpression \n"); }
+
+stringLogicalExpression     : stringExpression EQUAL stringExpression { $$ = (strcmp($1, $3) == 0); printf("Logical: stringExpression EQUAL stringExpression \n"); }
+                            | stringExpression NOT_EQUAL stringExpression { $$ = (strcmp($1, $3) != 0); printf("Logical: stringExpression NOT_EQUAL stringExpression \n"); }
+
+parenLogicalExpression      : LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS { $$ = $2; printf("Logical: LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS \n"); }
 
 
 ifStatement                           : IF {ifStatementBegin();} LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS 
-                                        LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE {printTable("\nIF STATEMENT ENDED", scope); removeScope(scope); scope-=1; ifStatementEnd(); printf("ifStatement \n");} 
+                                        LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE {printTable("\nIF STATEMENT ENDED", scope); removeScope(scope); scope-=1; ifStatementEnd(); printf("ifStatement \n");}
                                       | IF {ifStatementBegin();} LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS 
                                         LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE {printTable("\nIF STATEMENT ENDED", scope); removeScope(scope); scope-=1; ifStatementEnd();} 
                                         ELSE {ifStatementElseBegin();} LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE {printTable("\nELSE STATEMENT ENDED", scope); removeScope(scope); scope-=1; ifStatementElseEnd(); printf("if-else-Statement \n");}
