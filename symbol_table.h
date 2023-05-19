@@ -336,36 +336,41 @@ void allocateRegister(char* id, int currentScope)
     fclose(qFile);
 }
 // Functions to allocate a variables in a register
-void allocateIntValReg(char* id)
+void allocateIntValReg(char* id, int currentScope)
 {
+    updateVariableReg(currentScope, id, registerNumber);
     FILE* qFile = fopen("finalQuads.txt", "a");
     fprintf(qFile, "MOV R%d, R%d\n", registerNumber, registerNumber-1); //CHECK: if we remove this
     fprintf(qFile, "MOV %s, R%d\n\n", id, registerNumber++);            // here use registerNumber-1
     fclose(qFile);
 }
-void allocateFloatValReg(char* id)
+void allocateFloatValReg(char* id, int currentScope)
 {
+    updateVariableReg(currentScope, id, registerNumber);
     FILE* qFile = fopen("finalQuads.txt", "a");
     fprintf(qFile, "MOV R%d, R%d\n", registerNumber, registerNumber-1); //CHECK: if we remove this
     fprintf(qFile, "MOV %s, R%d\n\n", id, registerNumber++);            // here use registerNumber-1
     fclose(qFile);
 }
-void allocateCharValReg(char* id)
+void allocateCharValReg(char* id, int currentScope)
 {   
+    updateVariableReg(currentScope, id, registerNumber);
     FILE* qFile = fopen("finalQuads.txt", "a");
     fprintf(qFile, "MOV R%d, R%d\n", registerNumber, registerNumber-1); //CHECK: if we remove this
     fprintf(qFile, "MOV %s, R%d\n\n", id, registerNumber++);            // here use registerNumber-1
     fclose(qFile);
 }
-void allocateStringValReg(char* id)
+void allocateStringValReg(char* id, int currentScope)
 {
+    updateVariableReg(currentScope, id, registerNumber);
     FILE* qFile = fopen("finalQuads.txt", "a");
     fprintf(qFile, "MOV R%d, R%d\n", registerNumber, registerNumber-1); //CHECK: if we remove this
     fprintf(qFile, "MOV %s, R%d\n\n", id, registerNumber++);            // here use registerNumber-1
     fclose(qFile);
 }
-void allocateBoolValReg(char* id)
+void allocateBoolValReg(char* id, int currentScope)
 {
+    updateVariableReg(currentScope, id, registerNumber);
     FILE* qFile = fopen("finalQuads.txt", "a");
     fprintf(qFile, "MOV R%d, R%d\n", registerNumber, registerNumber-1); //CHECK: if we remove this
     fprintf(qFile, "MOV %s, R%d\n\n", id, registerNumber++);            // here use registerNumber-1
@@ -453,63 +458,70 @@ void divTwoInts(){
     registerNumber++;
     fclose(qFile);
 }
-
-///////////
-void modTwoInts(int a, int b)
+void modTwoInts()
 {
-    FILE* qFile = fopen("quads.txt", "a");
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "DIV R%d, R%d, R%d\n",registerNumber, registerNumber-2, registerNumber-1);
+    fprintf(qFile, "MOD R%d, DX\n\n", registerNumber);
+    registerNumber++;
 
-    fprintf(qFile, "MOV R%d, %d\n", registerNumber, a);
-    fprintf(qFile, "MOV R%d, %d\n", registerNumber, b);
-    fprintf(qFile, "MOD R%d, R%d\n", registerNumber, registerNumber-1);
+    fclose(qFile);
+}
+void incQuad(int reg, char* id)
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+
+    fprintf(qFile, "INC R%d\n", reg);
+    fprintf(qFile, "MOV R%d, R%d\n", registerNumber, reg);
+    fprintf(qFile, "MOV %s, R%d\n\n", id, registerNumber++);
+
+    fclose(qFile);
+}
+void decQuad(int reg, char* id)
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+
+    fprintf(qFile, "DEC R%d\n", reg);
+    fprintf(qFile, "MOV R%d, R%d\n", registerNumber, reg);
+    fprintf(qFile, "MOV %s, R%d\n\n", id, registerNumber++);
 
     fclose(qFile);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-void addTwoFloats(float a, float b)
+void allocateFloatReg(float value)
 {
-    FILE* qFile = fopen("quads.txt", "a");
-
-    // fprintf(qFile, "adding %f and %f\n", a, b);
-    fprintf(qFile, "MOV R%d, %f\n", registerNumber, a);
-    fprintf(qFile, "MOV R%d, %f\n", registerNumber, b);
-    fprintf(qFile, "ADD R%d, R%d\n", registerNumber, registerNumber-1);
-
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MOV R%d, %f\n\n", registerNumber++, value);
     fclose(qFile);
 }
-void subTwoFloats(float a, float b)
+void addTwoFloats()
 {
-    FILE* qFile = fopen("quads.txt", "a");
-
-    // fprintf(qFile, "subtracting %f and %f\n", a, b);
-    fprintf(qFile, "MOV R%d, %f\n", registerNumber, a);
-    fprintf(qFile, "MOV R%d, %f\n", registerNumber, b);
-    fprintf(qFile, "SUB R%d, R%d\n", registerNumber, registerNumber-1);
-
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "FADD R%d, R%d, R%d\n\n",registerNumber, registerNumber-2, registerNumber-1);
+    registerNumber++;
     fclose(qFile);
 }
-void mulTwoFloats(float a, float b)
+void subTwoFloats()
 {
-    FILE* qFile = fopen("quads.txt", "a");
-
-    // fprintf(qFile, "multiplying %f and %f\n", a, b);
-    fprintf(qFile, "MOV R%d, %f\n", registerNumber, a);
-    fprintf(qFile, "MOV R%d, %f\n", registerNumber, b);
-    fprintf(qFile, "MUL R%d, R%d\n", registerNumber, registerNumber-1);
-
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "FSUB R%d, R%d, R%d\n\n",registerNumber, registerNumber-2, registerNumber-1);
+    registerNumber++;
     fclose(qFile);
 }
-void divTwoFloats(float a, float b)
+void mulTwoFloats()
 {
-    FILE* qFile = fopen("quads.txt", "a");
-
-    // fprintf(qFile, "dividing %f and %f\n", a, b);
-    fprintf(qFile, "MOV R%d, %f\n", registerNumber, a);
-    fprintf(qFile, "MOV R%d, %f\n", registerNumber, b);
-    fprintf(qFile, "DIV R%d, R%d\n", registerNumber, registerNumber-1);
-
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "FMUL R%d, R%d, R%d\n\n",registerNumber, registerNumber-2, registerNumber-1);
+    registerNumber++;
+    fclose(qFile);
+}
+void divTwoFloats()
+{
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "FDIV R%d, R%d, R%d\n\n",registerNumber, registerNumber-2, registerNumber-1);
+    registerNumber++;
     fclose(qFile);
 }
 

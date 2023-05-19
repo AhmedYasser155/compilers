@@ -1,19 +1,19 @@
 
 IF STATEMENT ENDED
-Scope: 3, Identifier: yyy, Type: 1, Reg: -1, Value: 5, isConst = 0
+Scope: 3, Identifier: yyy, Type: 1, Reg: 162, Value: 5, isConst = 0
 
 IF STATEMENT ENDED
-Scope: 2, Identifier: xxx, Type: 1, Reg: -1, Value: 5, isConst = 0
+Scope: 2, Identifier: xxx, Type: 1, Reg: 164, Value: 5, isConst = 0
 
 WHILE STATEMENT ENDED
 
 REPEAT STATEMENT ENDED
 
 FOR STATEMENT ENDED
-Scope: 2, Identifier: i, Type: 1, Reg: -1, Value: 0, isConst = 0
+Scope: 2, Identifier: i, Type: 1, Reg: 175, Value: 0, isConst = 0
 
 FOR STATEMENT ENDED
-Scope: 2, Identifier: kkk, Type: 1, Reg: 135, Value: 0, isConst = 0
+Scope: 2, Identifier: kkk, Type: 1, Reg: 185, Value: 0, isConst = 0
 
 SWITCH STATEMENT ENDED
 
@@ -21,63 +21,64 @@ ENUM STATEMENT ENDED
 
 MAIN FUNCTION ENDED
 Scope: 1, Identifier: x, Type: 1, Reg: 0, Value: 5, isConst = 0
-Scope: 1, Identifier: sss, Type: 1, Reg: -1, Value: 42, isConst = 0
-Scope: 1, Identifier: a, Type: 2, Reg: 21, Value: 2.500000, isConst = 0
-Scope: 1, Identifier: jnk, Type: 4, Reg: 22, Value: sdaa, isConst = 0
-Scope: 1, Identifier: w, Type: 5, Reg: 23, Value: 1, isConst = 0
-Scope: 1, Identifier: z, Type: 3, Reg: 24, Value: k, isConst = 0
-Scope: 1, Identifier: c, Type: 3, Reg: -1, Value: a, isConst = 0
-Scope: 1, Identifier: s, Type: 4, Reg: -1, Value: hello, isConst = 0
-Scope: 1, Identifier: b, Type: 5, Reg: -1, Value: 1, isConst = 0
-Scope: 1, Identifier: y, Type: 4, Reg: -1, Value: falsehello, isConst = 0
-Scope: 1, Identifier: q, Type: 1, Reg: -1, Value: 5, isConst = 1
-Scope: 1, Identifier: e, Type: 3, Reg: -1, Value: a, isConst = 1
-Scope: 1, Identifier: r, Type: 4, Reg: -1, Value: hello, isConst = 1
-Scope: 1, Identifier: t, Type: 5, Reg: -1, Value: 1, isConst = 1
-Scope: 1, Identifier: a1, Type: 1, Reg: -1, Value: 47, isConst = 0
-Scope: 1, Identifier: a2, Type: 1, Reg: -1, Value: 37, isConst = 0
-Scope: 1, Identifier: a3, Type: 1, Reg: -1, Value: 210, isConst = 0
-Scope: 1, Identifier: a4, Type: 1, Reg: -1, Value: 8, isConst = 0
-Scope: 1, Identifier: a5, Type: 1, Reg: -1, Value: 2, isConst = 0
-Scope: 1, Identifier: a6, Type: 1, Reg: -1, Value: 43, isConst = 0
-Scope: 1, Identifier: a7, Type: 1, Reg: -1, Value: 41, isConst = 0
-Scope: 1, Identifier: a8, Type: 1, Reg: -1, Value: 47, isConst = 0
-Scope: 1, Identifier: b1, Type: 2, Reg: -1, Value: 5.500000, isConst = 0
-Scope: 1, Identifier: b2, Type: 2, Reg: -1, Value: -5.500000, isConst = 0
-Scope: 1, Identifier: b3, Type: 2, Reg: -1, Value: 0.000000, isConst = 0
-Scope: 1, Identifier: b4, Type: 2, Reg: -1, Value: 0.000000, isConst = 0
-Scope: 1, Identifier: b8, Type: 2, Reg: -1, Value: 75.625000, isConst = 0
-Scope: 1, Identifier: s1, Type: 4, Reg: -1, Value: hello, isConst = 0
-Scope: 1, Identifier: s2, Type: 4, Reg: -1, Value: false, isConst = 0
-Scope: 1, Identifier: s3, Type: 4, Reg: -1, Value: falsehello, isConst = 0
-Scope: 1, Identifier: s4, Type: 4, Reg: -1, Value: hello, isConst = 0
-Scope: 1, Identifier: c1, Type: 5, Reg: -1, Value: 1, isConst = 0
-Scope: 1, Identifier: c2, Type: 5, Reg: -1, Value: 0, isConst = 0
-Scope: 1, Identifier: c3, Type: 5, Reg: -1, Value: 1, isConst = 0
-Scope: 1, Identifier: c4, Type: 5, Reg: -1, Value: 0, isConst = 0
-Scope: 1, Identifier: c5, Type: 5, Reg: -1, Value: 1, isConst = 0
-Scope: 1, Identifier: c6, Type: 5, Reg: -1, Value: 0, isConst = 0
-Scope: 1, Identifier: c7, Type: 5, Reg: -1, Value: 0, isConst = 0
-Scope: 1, Identifier: c8, Type: 5, Reg: -1, Value: 1, isConst = 0
-Scope: 1, Identifier: c9, Type: 5, Reg: -1, Value: 0, isConst = 0
-Scope: 1, Identifier: c10, Type: 5, Reg: -1, Value: 1, isConst = 0
-Scope: 1, Identifier: c11, Type: 5, Reg: -1, Value: 1, isConst = 0
-Scope: 1, Identifier: c12, Type: 5, Reg: -1, Value: 0, isConst = 0
-Scope: 1, Identifier: c13, Type: 5, Reg: -1, Value: 1, isConst = 0
-Scope: 1, Identifier: c14, Type: 5, Reg: -1, Value: 0, isConst = 0
-Scope: 1, Identifier: c15, Type: 5, Reg: -1, Value: 1, isConst = 0
-Scope: 1, Identifier: c16, Type: 5, Reg: -1, Value: 1, isConst = 0
+Scope: 1, Identifier: sss, Type: 1, Reg: 22, Value: -3, isConst = 0
+Scope: 1, Identifier: a, Type: 2, Reg: 26, Value: 2.500000, isConst = 0
+Scope: 1, Identifier: bbb, Type: 2, Reg: 40, Value: 103.124992, isConst = 0
+Scope: 1, Identifier: jnk, Type: 4, Reg: 41, Value: sdaa, isConst = 0
+Scope: 1, Identifier: w, Type: 5, Reg: 42, Value: 1, isConst = 0
+Scope: 1, Identifier: z, Type: 3, Reg: 43, Value: k, isConst = 0
+Scope: 1, Identifier: c, Type: 3, Reg: 44, Value: a, isConst = 0
+Scope: 1, Identifier: s, Type: 4, Reg: 45, Value: hello, isConst = 0
+Scope: 1, Identifier: b, Type: 5, Reg: 46, Value: 1, isConst = 0
+Scope: 1, Identifier: y, Type: 4, Reg: 47, Value: falsehello, isConst = 0
+Scope: 1, Identifier: q, Type: 1, Reg: 49, Value: 5, isConst = 1
+Scope: 1, Identifier: e, Type: 3, Reg: 50, Value: a, isConst = 1
+Scope: 1, Identifier: r, Type: 4, Reg: 51, Value: hello, isConst = 1
+Scope: 1, Identifier: t, Type: 5, Reg: 52, Value: 1, isConst = 1
+Scope: 1, Identifier: a1, Type: 1, Reg: 56, Value: -1448584798, isConst = 0
+Scope: 1, Identifier: a2, Type: 1, Reg: 60, Value: -1448584808, isConst = 0
+Scope: 1, Identifier: a3, Type: 1, Reg: 64, Value: 1347010577, isConst = 0
+Scope: 1, Identifier: a4, Type: 1, Reg: 68, Value: -289716960, isConst = 0
+Scope: 1, Identifier: a5, Type: 1, Reg: 72, Value: -3, isConst = 0
+Scope: 1, Identifier: a6, Type: 1, Reg: 74, Value: -1448583872, isConst = 0
+Scope: 1, Identifier: a7, Type: 1, Reg: 76, Value: -1448583808, isConst = 0
+Scope: 1, Identifier: a8, Type: 1, Reg: 84, Value: 269402120, isConst = 0
+Scope: 1, Identifier: b1, Type: 2, Reg: 88, Value: 5.700000, isConst = 0
+Scope: 1, Identifier: b2, Type: 2, Reg: 92, Value: -5.300000, isConst = 0
+Scope: 1, Identifier: b3, Type: 2, Reg: 96, Value: 1.100000, isConst = 0
+Scope: 1, Identifier: b4, Type: 2, Reg: 100, Value: 0.036364, isConst = 0
+Scope: 1, Identifier: b8, Type: 2, Reg: 108, Value: 78.374992, isConst = 0
+Scope: 1, Identifier: s1, Type: 4, Reg: 109, Value: hello, isConst = 0
+Scope: 1, Identifier: s2, Type: 4, Reg: 110, Value: false, isConst = 0
+Scope: 1, Identifier: s3, Type: 4, Reg: 111, Value: falsehello, isConst = 0
+Scope: 1, Identifier: s4, Type: 4, Reg: 112, Value: hello, isConst = 0
+Scope: 1, Identifier: c1, Type: 5, Reg: 113, Value: 1, isConst = 0
+Scope: 1, Identifier: c2, Type: 5, Reg: 114, Value: 0, isConst = 0
+Scope: 1, Identifier: c3, Type: 5, Reg: 121, Value: 1, isConst = 0
+Scope: 1, Identifier: c4, Type: 5, Reg: 124, Value: 0, isConst = 0
+Scope: 1, Identifier: c5, Type: 5, Reg: 127, Value: 1, isConst = 0
+Scope: 1, Identifier: c6, Type: 5, Reg: 130, Value: 0, isConst = 0
+Scope: 1, Identifier: c7, Type: 5, Reg: 133, Value: 0, isConst = 0
+Scope: 1, Identifier: c8, Type: 5, Reg: 136, Value: 1, isConst = 0
+Scope: 1, Identifier: c9, Type: 5, Reg: 139, Value: 0, isConst = 0
+Scope: 1, Identifier: c10, Type: 5, Reg: 142, Value: 1, isConst = 0
+Scope: 1, Identifier: c11, Type: 5, Reg: 145, Value: 1, isConst = 0
+Scope: 1, Identifier: c12, Type: 5, Reg: 148, Value: 0, isConst = 0
+Scope: 1, Identifier: c13, Type: 5, Reg: 151, Value: 1, isConst = 0
+Scope: 1, Identifier: c14, Type: 5, Reg: 154, Value: 0, isConst = 0
+Scope: 1, Identifier: c15, Type: 5, Reg: 157, Value: 1, isConst = 0
+Scope: 1, Identifier: c16, Type: 5, Reg: 158, Value: 1, isConst = 0
 
 FUNCTION ENDED
-Scope: 1, Identifier: x, Type: 1, Reg: -1, Value: 5, isConst = 0
+Scope: 1, Identifier: x, Type: 1, Reg: 192, Value: 5, isConst = 0
 
 FUNCTION ENDED
-Scope: 1, Identifier: x, Type: 1, Reg: 143, Value: 5, isConst = 0
+Scope: 1, Identifier: x, Type: 1, Reg: 193, Value: 5, isConst = 0
 
 FUNCTION ENDED
-Scope: 1, Identifier: x, Type: 1, Reg: 146, Value: 5, isConst = 0
-Scope: 1, Identifier: y, Type: 1, Reg: 147, Value: 0, isConst = 0
+Scope: 1, Identifier: x, Type: 1, Reg: 196, Value: 5, isConst = 0
+Scope: 1, Identifier: y, Type: 1, Reg: 197, Value: 0, isConst = 0
 
 FUNCTION ENDED
-Scope: 1, Identifier: x, Type: 4, Reg: -1, Value: sfnd, isConst = 1
-Scope: 1, Identifier: y, Type: 1, Reg: -1, Value: 7, isConst = 0
+Scope: 1, Identifier: x, Type: 4, Reg: 200, Value: sfnd, isConst = 1
+Scope: 1, Identifier: y, Type: 1, Reg: 202, Value: 7, isConst = 0

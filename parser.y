@@ -32,6 +32,8 @@
 %type <iVal> intMathFactor
 %type <iVal> intMathPrimary
 %type <fVal> floatMathExpression
+%type <fVal> floatMathTerm
+%type <fVal> floatMathFactor
 %type <sVal> stringExpression
 %type <bVal> logicalExpression
 
@@ -50,6 +52,8 @@ blockStatements                 :   blockStatement
 blockStatement                  :   variableDeclarationStatement
                                 |   constDeclarationStatement
                                 |   assignmentStatement
+                                |   incStatement
+                                |   decStatement
                                 |   ifStatement
                                 |   switchStatement
                                 |   whileStatement
@@ -98,7 +102,7 @@ noSemiColumnAssignVariableDeclaration :  CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
                                                                             
                                                                             switch (ret){
                                                                               case 1:
-                                                                                allocateCharValReg($2);
+                                                                                allocateCharValReg($2, scope);
                                                                                 break;
                                                                               case 2:                                                            
                                                                                 exit(0);
@@ -119,7 +123,7 @@ noSemiColumnAssignVariableDeclaration :  CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
 
                                                                                   switch (ret){
                                                                                     case 1:
-                                                                                      allocateIntValReg($2);
+                                                                                      allocateIntValReg($2, scope);
                                                                                       break;
                                                                                     case 2:                                                            
                                                                                       exit(0);
@@ -140,7 +144,7 @@ noSemiColumnAssignVariableDeclaration :  CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
 
                                                                                     switch (ret){
                                                                                       case 1:
-                                                                                        allocateFloatValReg($2);
+                                                                                        allocateFloatValReg($2, scope);
                                                                                         break;
                                                                                       case 2:                                                            
                                                                                         exit(0);
@@ -161,7 +165,7 @@ noSemiColumnAssignVariableDeclaration :  CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
 
                                                                                   switch (ret){
                                                                                     case 1:
-                                                                                      allocateStringValReg($2);
+                                                                                      allocateStringValReg($2, scope);
                                                                                       break;
                                                                                     case 2:                                                            
                                                                                       exit(0);
@@ -182,7 +186,7 @@ noSemiColumnAssignVariableDeclaration :  CHAR IDENTIFIER ASSIGN CHAR_LITERAL {
 
                                                                                 switch (ret){
                                                                                   case 1:
-                                                                                    allocateBoolValReg($2);
+                                                                                    allocateBoolValReg($2, scope);
                                                                                     break;
                                                                                   case 2:                                                            
                                                                                     exit(0);
@@ -316,7 +320,7 @@ noSemiColumnConstDeclaration        : CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL 
                                                                                   
                                                                                   switch (ret){
                                                                                     case 1:
-                                                                                      allocateCharValReg($3);
+                                                                                      allocateCharValReg($3, scope);
                                                                                       break;
                                                                                     case 2:                                                            
                                                                                       exit(0);
@@ -337,7 +341,7 @@ noSemiColumnConstDeclaration        : CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL 
 
                                                                                       switch (ret){
                                                                                         case 1:
-                                                                                          allocateIntValReg($3); 
+                                                                                          allocateIntValReg($3, scope); 
                                                                                           break;
                                                                                         case 2:                                                            
                                                                                           exit(0);
@@ -358,7 +362,7 @@ noSemiColumnConstDeclaration        : CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL 
 
                                                                                           switch (ret){
                                                                                             case 1:
-                                                                                              allocateFloatValReg($3);
+                                                                                              allocateFloatValReg($3, scope);
                                                                                               break;
                                                                                             case 2:                                                            
                                                                                               exit(0);
@@ -379,7 +383,7 @@ noSemiColumnConstDeclaration        : CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL 
 
                                                                                         switch (ret){
                                                                                           case 1:
-                                                                                            allocateStringValReg($3);
+                                                                                            allocateStringValReg($3, scope);
                                                                                             break;
                                                                                           case 2:                                                            
                                                                                             exit(0);
@@ -400,7 +404,7 @@ noSemiColumnConstDeclaration        : CONST CHAR IDENTIFIER ASSIGN CHAR_LITERAL 
 
                                                                                         switch (ret){
                                                                                           case 1:
-                                                                                            allocateBoolValReg($3);
+                                                                                            allocateBoolValReg($3, scope);
                                                                                             break;
                                                                                           case 2:                                                            
                                                                                             exit(0);
@@ -554,7 +558,62 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                             }
                                                                             printf("assignmentStatement \n");
                                                                             };
-                              
+                            
+incStatement                        : IDENTIFIER INCREMENT ';' {
+                                                                  printf("incStatement \n");
+                                                                  int typeVar = getVariableType(scope, $1);
+                                                                  if (typeVar != 1){
+                                                                    if (typeVar == -1){
+                                                                      yyerror("Variable not found");
+                                                                      exit(0);
+                                                                    }
+                                                                    yyerror("Type mismatch");
+                                                                    exit(0);
+                                                                  }
+                                                                  else{
+                                                                    values val = getVariableValue(scope, $1);
+                                                                    if (val.isConst == 1){
+                                                                      yyerror("Cannot increment a constant");
+                                                                      exit(0);
+                                                                    }
+                                                                    else{
+                                                                        int update = updateVariable(scope, $1, val.intValue + 1, 0.0, '\0', "", 0);
+                                                                        incQuad(val.reg, $1);
+                                                                        if (update == -1){
+                                                                          yyerror("Variable not found");
+                                                                          exit(0);
+                                                                        }
+                                                                    }
+                                                                  }
+                                                                } ; 
+
+decStatement                        : IDENTIFIER DECREMENT ';' {
+                                                                  printf("decStatement \n");
+                                                                  int typeVar = getVariableType(scope, $1);
+                                                                  if (typeVar != 1){
+                                                                    if (typeVar == -1){
+                                                                      yyerror("Variable not found");
+                                                                      exit(0);
+                                                                    }
+                                                                    yyerror("Type mismatch");
+                                                                    exit(0);
+                                                                  }
+                                                                  else{
+                                                                    values val = getVariableValue(scope, $1);
+                                                                    if (val.isConst == 1){
+                                                                      yyerror("Cannot decrement a constant");
+                                                                      exit(0);
+                                                                    }
+                                                                    else{
+                                                                        int update = updateVariable(scope, $1, val.intValue - 1, 0.0, '\0', "", 0);
+                                                                        decQuad(val.reg, $1);
+                                                                        if (update == -1){
+                                                                          yyerror("Variable not found");
+                                                                          exit(0);
+                                                                        }
+                                                                    }
+                                                                  }
+                                                                } ;
 
 intMathExpression : intMathExpression PLUS intMathTerm {
                                                         printf("intMathExpression PLUS intMathExpression \n");
@@ -576,19 +635,66 @@ intMathTerm : intMathTerm MULTIPLY intMathFactor {
                                                 }
             | intMathTerm MODULO intMathFactor {
                                                   printf("intMathExpression MODULO intMathExpression \n");
-                                                  $$ = $1 % $3; modTwoInts($1, $3);
+                                                  $$ = $1 % $3; modTwoInts();
                                                }
             | intMathFactor;
 
+
 intMathFactor : intMathPrimary
-              | intMathFactor INCREMENT {
-                                          printf("intMathExpression INCREMENT \n");
-                                          $$ = $1 + 1; addTwoInts($1, 1);   /* TODO: from add to INC*/
+              | IDENTIFIER INCREMENT {
+                                        printf("incStatement \n");
+                                        int typeVar = getVariableType(scope, $1);
+                                        if (typeVar != 1){
+                                          if (typeVar == -1){
+                                            yyerror("Variable not found");
+                                            exit(0);
+                                          }
+                                          yyerror("Type mismatch");
+                                          exit(0);
                                         }
-              | intMathFactor DECREMENT {
-                                          printf("intMathExpression DECREMENT \n");
-                                          $$ = $1 - 1;  subTwoInts($1, 1);   /* TODO: from add to INC*/  
-                                        };
+                                        else{
+                                          values val = getVariableValue(scope, $1);
+                                          if (val.isConst == 1){
+                                            yyerror("Cannot increment a constant");
+                                            exit(0);
+                                          }
+                                          else{
+                                              int update = updateVariable(scope, $1, val.intValue + 1, 0.0, '\0', "", 0);
+                                              incQuad(val.reg, $1);
+                                              if (update == -1){
+                                                yyerror("Variable not found");
+                                                exit(0);
+                                              }
+                                          }
+                                        }
+                                     } ;
+              | IDENTIFIER DECREMENT {
+                                        printf("decStatement \n");
+                                        int typeVar = getVariableType(scope, $1);
+                                        if (typeVar != 1){
+                                          if (typeVar == -1){
+                                            yyerror("Variable not found");
+                                            exit(0);
+                                          }
+                                          yyerror("Type mismatch");
+                                          exit(0);
+                                        }
+                                        else{
+                                          values val = getVariableValue(scope, $1);
+                                          if (val.isConst == 1){
+                                            yyerror("Cannot decrement a constant");
+                                            exit(0);
+                                          }
+                                          else{
+                                              int update = updateVariable(scope, $1, val.intValue - 1, 0.0, '\0', "", 0);
+                                              decQuad(val.reg, $1);
+                                              if (update == -1){
+                                                yyerror("Variable not found");
+                                                exit(0);
+                                              }
+                                          }
+                                        }
+                                     } ;
 
 intMathPrimary : IDENTIFIER {
                               values val = getVariableValue(scope, $1);
@@ -597,43 +703,44 @@ intMathPrimary : IDENTIFIER {
                | DIGIT { $$ = $1; allocateDigitReg($1); }
                | LEFT_PARENTHESIS intMathExpression RIGHT_PARENTHESIS {
                                                                         printf("LEFT_PARENTHESIS intMathExpression RIGHT_PARENTHESIS \n");
-                                                                        $$ = $2; /* TODO: ADD quad */
+                                                                        $$ = $2; 
                                                                       };
 
 
 
                                     
-floatMathExpression                 :   IDENTIFIER  {
-                                                      printf("floatExpression \n");
-                                                      values val = getVariableValue(scope, $1);
-                                                      $$ = val.floatValue;
-                                                    }
-                                    |   FLOAT_LITERAL { $$ = $1; }
-                                    |   floatMathExpression PLUS floatMathExpression {
-                                                                                        printf("floatMathExpression PLUS floatMathExpression \n");
-                                                                                        $$ = $1 + $3;
-                                                                                        addTwoFloats($1, $3);  
-                                                                                      }
-                                    |   floatMathExpression MINUS floatMathExpression {
-                                                                                        printf("floatMathExpression MINUS floatMathExpression \n");
-                                                                                        $$ = $1 - $3;
-                                                                                        subTwoFloats($1, $3);  
-                                                                                      }
-                                    |   floatMathExpression MULTIPLY floatMathExpression {
-                                                                                          printf("floatMathExpression MULTIPLY floatMathExpression \n");
-                                                                                          $$ = $1 * $3;
-                                                                                          mulTwoFloats($1, $3);
-                                                                                        }
-                                    |   floatMathExpression DIVIDE floatMathExpression {
-                                                                                        printf("floatMathExpression DIVIDE floatMathExpression \n");
-                                                                                        $$ = $1 / $3;
-                                                                                        divTwoFloats($1, $3);
-                                                                                      }
-                                    |   LEFT_PARENTHESIS floatMathExpression RIGHT_PARENTHESIS {
-                                                                                                printf("LEFT_PARENTHESIS floatMathExpression RIGHT_PARENTHESIS \n");
-                                                                                                $$ = $2;
-                                                                                                // TODO: ADD quad 
-                                                                                              }
+floatMathExpression : floatMathExpression PLUS floatMathTerm {
+                                                              printf("floatMathExpression PLUS floatMathExpression \n");
+                                                              $$ = $1 + $3; addTwoFloats();
+                                                            }
+                    | floatMathExpression MINUS floatMathTerm {
+                                                                printf("floatMathExpression MINUS floatMathExpression \n");
+                                                                $$ = $1 - $3; subTwoFloats();
+                                                              }
+                    | floatMathTerm;
+
+floatMathTerm : floatMathTerm MULTIPLY floatMathFactor {
+                                                          printf("floatMathExpression MULTIPLY floatMathExpression \n");
+                                                          $$ = $1 * $3; mulTwoFloats();
+                                                        }
+              | floatMathTerm DIVIDE floatMathFactor { 
+                                                        printf("floatMathExpression DIVIDE floatMathExpression \n");
+                                                        $$ = $1 / $3; divTwoFloats();
+                                                     }
+              | floatMathFactor;
+
+floatMathFactor : IDENTIFIER {  
+                                printf("floatMathFactorIDENTIFIER \n");
+                                values val = getVariableValue(scope, $1);
+                                $$ = val.floatValue; allocateIdentifierReg(val.reg);
+                              }
+                 | FLOAT_LITERAL { $$ = $1; allocateFloatReg($1); }
+                 | LEFT_PARENTHESIS floatMathExpression RIGHT_PARENTHESIS {
+                                                                            printf("LEFT_PARENTHESIS floatMathExpression RIGHT_PARENTHESIS \n");
+                                                                            $$ = $2; 
+                                                                          };
+
+                                            
                                 
 stringExpression                    :   STRING_LITERAL {
                                         char* result = NULL;
