@@ -430,6 +430,7 @@ assignmentStatement                 : IDENTIFIER ASSIGN intMathExpression ';' {
                                                                                     yyerror("Cannot assign to a constant");
                                                                                   }
                                                                                   else{
+                                                                                      printf("ASSIGN INT: %d %d\n", val.reg, scope);
                                                                                       int update = updateVariable(scope, $1, $3, 0.0, '\0', "", 0);
                                                                                       assignIntValReg(val.reg, $1);
                                                                                       if (update == -1){

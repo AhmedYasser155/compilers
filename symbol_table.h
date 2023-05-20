@@ -180,7 +180,7 @@ typedef struct {
 values getVariableValue(int scope, char* identifier) {
 
     // Iterate through the variables in the scope
-    for (int i = scope; i > 0; i--) {
+    for (int i = scope; i >= 0; i--) {
         VariableEntry* entry = &symbolTable[i][0];
         for (int i = 0; i < MAX_VARIABLES; i++) {
             if (strcmp(entry->identifier, identifier) == 0) {
