@@ -1003,26 +1003,7 @@ functionCallStatement   : IDENTIFIER {
                                           }
                                         }
                                      } LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';' {printf("functionCall \n");}
-                       /* | IDENTIFIER ASSIGN IDENTIFIER LEFT_PARENTHESIS argument RIGHT_PARENTHESIS { 
-                                                          int typeVar = getVariableType(scope, $1);
-                                                          int typefunc = getVariableType(scope, $3);
-                                                          if (typefunc != typeVar) {
-                                                            yyerror("Function type does not match variable type");
-                                                          }
-                                                          else{
-                                                            values val = getVariableValue(scope, $1);
-                                                            if (val.isConst == 1){
-                                                              yyerror("Cannot assign to a constant");
-                                                            }
-                                                            else{
-                                                              int update = updateVariable(scope, $1, 0, 0.0, '\0', "", 0);
-                                                              if (update == -1){
-                                                                yyerror("Function not found");
-                                                              }
-                                                            }
-                                                          }
- 
-                                                       }*/
+
 argument        : expression ',' argument
                 | expression
                 | /* empty */
@@ -1044,7 +1025,7 @@ int yyerror(const char* s)
   }
   fprintf(file, "%s\n",s);
   fclose(file);
-  exit(0);
+  // exit(0);
   return 1;
 }
 

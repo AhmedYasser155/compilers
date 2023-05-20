@@ -1061,26 +1061,3 @@ MOV x, R15
 
 SWITCH_END_34: 
 
-MOV R344, "hello world"
-
-MOV R345, R15
-
-MOV R346, "hello"
-
-JMP LABEL_myFunction3_2:
-
-MOV R347, R15
-
-MOV R348, R17
-
-JMP LABEL_myFunction1_0:
-
-JMP LABEL_myFunction1_0:
-
-MAIN_END:
-MOV R349, 5
-
-MOV R350, 3
-
-ADD R351, R349, R350
-
