@@ -87,9 +87,10 @@ int variableExists(int scope, const char* identifier) {
 // 3 for scope overflow
 int  addVariable(int scope, const char* identifier, bool isConst, int type, int intValue, float floatValue, char charValue, const char* stringValue, int boolValue) {
     if(variableExists(scope, identifier)==1) {
-        printf("Variable %s already exists in scope %d\n", identifier, scope);
+        printf("Variable or Function %s already exists in scope %d\n", identifier, scope);
         return 2;
     }
+    
     // printf("PRINTING INPUTS %d %s %d %d %d %f %c %s %d \n",scope, identifier, isConst, type, intValue, floatValue, charValue, stringValue, boolValue);
     VariableEntry* entry = &symbolTable[scope][0];
     // Find the first available slot in the scope
@@ -345,6 +346,12 @@ labelEntry getLabel(char* name)
     entry.identifier = "";
     entry.label = -1;
     return entry;
+}
+
+void endMainQuad() {
+    FILE* qFile = fopen("finalQuads.txt", "a");
+    fprintf(qFile, "MAIN_END:\n");
+    fclose(qFile);
 }
 
 void createLabel(char* name)
@@ -731,6 +738,32 @@ void endWhileQuad(int val){
 
     fclose(qFile);
 }
+int forCondNum = 0;
+void forDeclareQuad(){
+    FILE* qFile = fopen("finalQuads.txt", "a");
+
+    fprintf(qFile, "FOR_LABEL_%d: \n", forCondNum);
+
+    fclose(qFile);
+}
+int forStartQuad(){
+    FILE* qFile = fopen("finalQuads.txt", "a");
+
+    fprintf(qFile, "CMP R%d, %d\n", registerNumber-1, 1);
+    fprintf(qFile, "JNE FOR_END_%d\n\n", forCondNum);
+
+    fclose(qFile);
+    return forCondNum++;
+}
+void forEndQuad(int val){
+    FILE* qFile = fopen("finalQuads.txt", "a");
+
+    fprintf(qFile, "JMP FOR_LABEL_%d:\n", val);
+    fprintf(qFile, "FOR_END_%d: \n\n", val);
+
+    fclose(qFile);
+}
+
 int openRepeatQuad(){
     FILE* qFile = fopen("finalQuads.txt", "a");
 

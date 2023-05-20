@@ -1,18 +1,19 @@
-function myFunction1() {
+int function myFunction1() {
     int x = 5;
 }
 
-function myFunction2(int x) {
+
+float function myFunction2(int x) {
     x = 5;
     return x;
 }
 
-function myFunction3(int x, int y) {
+char function myFunction3(int x, int y) {
     x = 5;
     return x;
 }
 
-function myFunction4(const string x = "sfnd", int y = 6) {
+string function myFunction4(const string x = "sfnd", int y = 6) {
     y = 7;
     return x;
 }
@@ -152,12 +153,12 @@ main()
     } until (true)
 
 
-    for (int i = 0; i < 10; i++) 
+    for (int i = 0; i < 11; i++) 
     {
         x = 5 + i;
     }
 
-    for (i = 0; i < 10; i++) {
+    for (int n = 0; n < 10; n++) {
         x = 5;
         z = 'k';
         int kkk;
@@ -199,5 +200,5 @@ main()
 // TODO: 
 // handle default values for variable declaration
 // Handle registers order
-// Quads for --> for, main, print, continue, return, enum, 
+// Quads for --> main, print, continue, return, enum, 
 

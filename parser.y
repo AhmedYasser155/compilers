@@ -6,6 +6,7 @@
     int main(void);
     int scope = 0;
     int whileConditionNum = 0;
+    int forConditionNum = 0;
     int repeatConditionNum = 0;
     int switchIdentifierReg = 0;
     int switchCondition = 0;
@@ -53,6 +54,7 @@
 %type <bVal> logicalFactor
 %type <bVal> logicalPrimary
 %type <values> values
+%type <iVal> types
 
 
 %%
@@ -84,11 +86,11 @@ blockStatement                  :   variableDeclarationStatement
                                 |   functionCallStatement
                                 |   comment
 
-/*types                           :   INT
-                                |   CHAR
-                                |   FLOAT
-                                |   STRING
-                                |   BOOL*/
+types                           :   INT { $$ = 1; }
+                                |   CHAR { $$ = 3; }
+                                |   FLOAT { $$ = 2; }
+                                |   STRING { $$ = 4; }
+                                |   BOOL { $$ = 5; }
 
 
 values                          :   DIGIT { $$.intValue = $1; printf("values int value %d\n", $$.intValue); }
@@ -862,21 +864,16 @@ whileStatement  : WHILE LEFT_PARENTHESIS logicalExpression {whileConditionNum = 
 repeatStatement : REPEAT LEFT_CURLY_BRACE {repeatConditionNum = openRepeatQuad(); scope+=1;} blockStatements RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression {endRepeatQuad(repeatConditionNum);}
                   RIGHT_PARENTHESIS {printTable("\nREPEAT STATEMENT ENDED", scope); removeScope(scope); scope-=1; printf("repeatStatement \n");}
 
-forAssignment   : IDENTIFIER ASSIGN intMathExpression {printf("forAssignment \n");}
-                | IDENTIFIER ASSIGN floatMathExpression {printf("forAssignment \n");}
-                | IDENTIFIER ASSIGN stringExpression {printf("forAssignment \n");}
-                | IDENTIFIER ASSIGN BOOL_LITERAL {printf("forAssignment \n");}
-                | IDENTIFIER INCREMENT
-                | IDENTIFIER DECREMENT
+forAssignment   : IDENTIFIER ASSIGN expression { printf("forAssignment \n"); }
+                | IDENTIFIER INCREMENT { printf("forAssignment \n"); }
+                | IDENTIFIER DECREMENT { printf("forAssignment \n"); }
 
-forDeclaration  : IDENTIFIER ASSIGN intMathExpression ';' {printf("forDeclaration \n");}
-                | IDENTIFIER ASSIGN floatMathExpression ';' {printf("forDeclaration \n");}
-                | IDENTIFIER ASSIGN stringExpression ';' {printf("forDeclaration \n");}
-                | IDENTIFIER ASSIGN BOOL_LITERAL ';' {printf("forDeclaration \n");}
+forDeclaration  : IDENTIFIER ASSIGN expression ';' { printf("forDeclaration \n"); }
                 | assignVariableDeclaration
 
-forStatement    : FOR LEFT_PARENTHESIS {scope+=1;} forDeclaration logicalExpression ';' forAssignment RIGHT_PARENTHESIS 
-                  LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printTable("\nFOR STATEMENT ENDED", scope); removeScope(scope); scope-=1; printf("forStatement \n");}
+forStatement    : FOR LEFT_PARENTHESIS { scope += 1; }
+                  forDeclaration {forDeclareQuad();} logicalExpression {forConditionNum = forStartQuad();} ';' forAssignment RIGHT_PARENTHESIS 
+                  LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE { forEndQuad(forConditionNum); printTable("\nFOR STATEMENT ENDED", scope); removeScope(scope); scope -= 1; printf("forStatement \n"); }
 
 
 switchStatement : SWITCH LEFT_PARENTHESIS IDENTIFIER {
@@ -909,8 +906,28 @@ enumIdentifiers : IDENTIFIER ',' enumIdentifiers
 enumStatement   : ENUM IDENTIFIER LEFT_CURLY_BRACE {scope+=1;} enumIdentifiers RIGHT_CURLY_BRACE {printTable("\nENUM STATEMENT ENDED", scope); removeScope(scope); scope-=1; printf("enumStatement \n");}
 
 
-functionStatement : FUNCTION IDENTIFIER { createLabel($2); } LEFT_PARENTHESIS {scope+=1;} parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+functionStatement : types FUNCTION IDENTIFIER {
+                                                int ret = addVariable(scope, $3, 0, $1, 0, 0.0, '\0', "", 0);
+                                                                            
+                                                switch (ret){
+                                                  case 1:
+                                                    createLabel($3); 
+                                                    break;
+                                                  case 2:                                                            
+                                                    yyerror("Function already declared");
+                                                    break;
+                                                  case 3:
+                                                    yyerror("Overflow in symbol table");
+                                                    break;  
+                                                  default:
+                                                    yyerror("Unknown error");
+                                                    break;
+                                                }   
+
+                                              } 
+                    LEFT_PARENTHESIS {scope+=1;} parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
                     {printTable("\nFUNCTION ENDED", scope); functionEndQuad(); removeScope(scope); scope-=1; printf("functionStatement \n");}
+
 
 
 parameter       : noSemiColumnVariableDeclarationStatement ',' parameter
@@ -935,12 +952,49 @@ printStatement  : PRINT LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';' {printf(
                 | PRINT LEFT_PARENTHESIS RIGHT_PARENTHESIS ';' {printf("printStatement \n");}
 
 functionCallStatement   : IDENTIFIER { 
-                                       int ret = functionCallQuad($1);
-                                        if(ret == -1){
-                                            yyerror("Function not found");
+
+                                        int typeVar = getVariableType(scope, $1);
+                                        printf("typeVar: %d, %s\n", typeVar, $1);
+                                        if (typeVar == -1){
+                                          yyerror("Function not found");
+                                        }
+                                        else{
+                                          values val = getVariableValue(scope, $1);
+                                          if (val.isConst == 1){
+                                            yyerror("Cannot assign to a constant");
+                                          }
+                                          else{
+                                              int update = updateVariable(scope, $1, 0, 0.0, '\0', "", 0);
+                                               int ret = functionCallQuad($1);
+                                              if(ret == -1){
+                                                  yyerror("Function not found");
+                                              }
+                                              if (update == -1){
+                                                yyerror("Function not found");
+                                              }
+                                          }
                                         }
                                      } LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';' {printf("functionCall \n");}
-
+                       /* | IDENTIFIER ASSIGN IDENTIFIER LEFT_PARENTHESIS argument RIGHT_PARENTHESIS { 
+                                                          int typeVar = getVariableType(scope, $1);
+                                                          int typefunc = getVariableType(scope, $3);
+                                                          if (typefunc != typeVar) {
+                                                            yyerror("Function type does not match variable type");
+                                                          }
+                                                          else{
+                                                            values val = getVariableValue(scope, $1);
+                                                            if (val.isConst == 1){
+                                                              yyerror("Cannot assign to a constant");
+                                                            }
+                                                            else{
+                                                              int update = updateVariable(scope, $1, 0, 0.0, '\0', "", 0);
+                                                              if (update == -1){
+                                                                yyerror("Function not found");
+                                                              }
+                                                            }
+                                                          }
+ 
+                                                       }*/
 argument        : expression ',' argument
                 | expression
                 | /* empty */
@@ -948,7 +1002,7 @@ argument        : expression ',' argument
 
 comment         : COMMENT {printf("comment \n");}
 
-main            : MAIN {createLabel("MAIN");} LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE {printTable("\nMAIN FUNCTION ENDED", scope); removeScope(scope); scope-=1; printf("main \n");}
+main            : MAIN {createLabel("MAIN");} LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE { endMainQuad(); printTable("\nMAIN FUNCTION ENDED", scope); removeScope(scope); scope-=1; printf("main \n");}
 
 %%
 
