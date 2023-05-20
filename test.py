@@ -90,7 +90,8 @@ def compileAll():
             input_text.tag_config("underline", underline=True)
             #scroll to the line
             input_text.see(str(i+1)+".0")
-
+            break
+            
     scanner_process.stdin.close()
     scanner_process.wait()
     readFiles()

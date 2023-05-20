@@ -1,3 +1,5 @@
 
+MAIN FUNCTION ENDED
+Scope: 1, Identifier: x, Type: 1, Reg: 1, Value: 0, isConst = 0
+
 PROGRAM ENDED
-Scope: 0, Identifier: x, Type: 1, Reg: 0, Value: 3, isConst = 0

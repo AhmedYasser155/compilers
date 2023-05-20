@@ -1,2 +1,204 @@
-int x;
-x=3;
+int function myFunction1() {
+    int x = 5;
+}
+
+
+float function myFunction2(int x) {
+    x = 5;
+    return x;
+}
+
+char function myFunction3(int x, int y) {
+    x = 5;
+    return x;
+}
+
+string function myFunction4(const string x = "sfnd", int y = 6) {
+    y = 7;
+    return x;
+}
+
+
+main()
+{
+    int x;
+    int y = 5;
+    x = 5+8;
+    x = (x++ + 3) - 1 * 2 - 4 / 2 + 5 * 6;
+    int sss = x%5;
+    x++;
+    
+
+    float a = 0.2;
+    float bbb = (a + 5.5) * 5.5/0.4 + 5.5 * 5.5 - 5.5;
+    bbb = 5.1 + a;
+
+    string jjj = "hhhh";
+    jjj = "hello" + jjj;
+    jjj = "hello" + "hello";
+
+    bool w = true;
+    bool zz = false;
+    bool zzz = (5 + 3) > (5 - 2);
+    w = w || zz;
+    zzz = w && zz;
+    bool zzz1 = w && zz || w;
+    bool zzz2 = w && zz || w && zz;
+    w = !zzz;
+    bool w0 = 5 > 3;
+    bool w1 = 5 < 3;
+    bool w2 = 5 >= 3;
+    bool w3 = 5 <= 3;
+    bool w4 = 5 == 3;
+    bool w5 = 5 != 3;
+
+    bool w6 = 5.5 == 3.5;
+    bool w7 = 5.5 != 3.5;
+    bool w8 = 5.5 >= 3.5;
+    bool w9 = 5.5 <= 3.5;
+    bool w10 = 5.5 > 3.5;
+    bool w11 = 5.5 < 3.5;
+
+     
+
+
+    char z;
+
+
+//    int z = 5;
+//    int x = 5;
+    char c = 'a';
+//    float a = 5.5;
+    string s = "hello";
+    bool b = true;
+    string yy = "false";
+
+    const int q = 5;
+//    const int q = 5;
+//    const float w = 5.5;
+    const char e = 'a';
+    const string r = "hello";
+    const bool t = true;
+
+    int a1 = x + 5;
+    int a2 = x - 5;
+    int a3 = x * 5;
+    int a4 = x / 5;
+    int a5 = x % 5;
+    int a6 = x++;
+    int a7 = x--;
+    int a8 = (x + 5) * 5/q;
+
+    float b1 = a + 5.5;
+    float b2 = a - 5.5;
+    float b3 = a * 5.5;
+    float b4 = a / 5.5;
+    float b8 = (a + 5.5) * 5.5/0.4;
+
+    string s1 =  "hello";
+    string s2 = yy;
+    string s3 = yy + "hello";
+    string s4 = ("hello");
+
+    bool c1 = true;
+    bool c2 = false;
+    bool c3 = (5 + 3) > (5 - 2);
+    bool c4 = 5 < 3;
+    bool c5 = 5 >= 3;
+    bool c6 = 5 <= 3;
+    bool c7 = 5 == 3;
+    bool c8 = 5 != 3;
+
+    bool c9 = 5.5 == 3.5;
+    bool c10 = 5.5 != 3.5;
+    bool c11 = 5.5 >= 3.5;
+    bool c12 = 5.5 <= 3.5;
+    bool c13 = 5.5 > 3.5;
+    bool c14 = 5.5 < 3.5;
+
+    bool c15 = c1 == c2;    
+
+//    bool c15 = (5.5 == 3);
+    bool c16 = c1 && c2;
+
+    if (5>3) {
+        int xxx = 5;
+    } 
+
+    // yyy = 5; // variable not found
+
+    if (5>3) {    
+        int fff = 5;
+    } else if (5>3) {
+        int eee = 5;
+    } else {
+        int ddd = 9;
+    }
+
+    x = 7;
+    a=2.5;
+    string jnk;
+    jnk="sdaa";
+    z='s';
+    w=true;
+
+    while (x > 0) {
+        x = 5;
+        x = x - 1;
+    }
+
+    repeat {
+        x = 5;
+        z = 'f';
+    } until (true)
+
+
+    for (int i = 0; i < 11; i++) 
+    {
+        x = 5 + i;
+    }
+
+    for (int n = 0; n < 10; n++) {
+        x = 5;
+        z = 'k';
+        int kkk;
+    }
+
+    // kkk = 6;  // variable not type
+
+    switch (s) {
+        case "sfdg":
+            x = 5;
+            break;
+        case "sd":
+            x = 5;
+            break;
+        default:
+            x = 5;
+            break;
+    }
+
+    enum MyEnum {
+        A,
+        B,
+        C
+    }
+
+    itn c;
+
+    print("hello world");
+    print(x);
+    print("hello");
+
+
+    myFunction3(x, y);
+    myFunction1();
+    myFunction1();
+}
+
+
+
+// TODO: 
+// handle default values for variable declaration
+// Handle registers order
+// Quads for --> continue, return, enum, 
