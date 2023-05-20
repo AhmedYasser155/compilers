@@ -73,28 +73,30 @@ def readFiles():
 
 def compileAll():
     # like compileNext but for queue[lineNumber]
-    on_enter("<Return>")
+    
     os.system("./a.sh")
     global lineNumber
     global queue
     #loop through the queue and compile each line
     #read the files after each line and if there is an error, underline the line and continue
-    queue=queue[0].split("\n")
+   
     for i in range(len(queue)):
         scanner_process=subprocess.Popen(["./scanner"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
         scanner_process.stdin.write(queue[i].encode())
         error = scanner_process.communicate()[1].decode()
-        #flush the input
-
         if error != "":
             #underline the line
             input_text.tag_add("underline", str(i+1)+".0", str(i+1)+".end")
             input_text.tag_config("underline", underline=True)
+            #scroll to the line
+            input_text.see(str(i+1)+".0")
 
-        scanner_process.stdin.close()
-        scanner_process.wait()
-        readFiles()
+    scanner_process.stdin.close()
+    scanner_process.wait()
+    readFiles()
+
     
+
 
 
 def reset():
