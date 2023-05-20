@@ -1,8 +1,27 @@
-int xsd = 5;
+function myFunction1() {
+    int x = 5;
+}
+
+function myFunction2(int x) {
+    x = 5;
+    return x;
+}
+
+function myFunction3(int x, int y) {
+    x = 5;
+    return x;
+}
+
+function myFunction4(const string x = "sfnd", int y = 6) {
+    y = 7;
+    return x;
+}
+
 
 main()
 {
     int x;
+    int y = 5;
     x = 5+8;
     x = (x++ + 3) - 1 * 2 - 4 / 2 + 5 * 6;
     int sss = x%5;
@@ -51,8 +70,7 @@ main()
 //    float a = 5.5;
     string s = "hello";
     bool b = true;
-string    y = "false";
-
+    string yy = "false";
 
     const int q = 5;
 //    const int q = 5;
@@ -77,8 +95,8 @@ string    y = "false";
     float b8 = (a + 5.5) * 5.5/0.4;
 
     string s1 =  "hello";
-    string s2 = y;
-    string s3 = y + "hello";
+    string s2 = yy;
+    string s3 = yy + "hello";
     string s4 = ("hello");
 
     bool c1 = true;
@@ -103,21 +121,20 @@ string    y = "false";
     bool c16 = c1 && c2;
 
     if (5>3) {
-        if (true) {
-            int yyy = 5;
-        }
         int xxx = 5;
     } 
 
     // yyy = 5; // variable not found
 
-    //if (5>3) {    
-    //    int fff = 5;
-    //} else {
-    //    int eee = 5;
-    //}
+    if (5>3) {    
+        int fff = 5;
+    } else if (5>3) {
+        int eee = 5;
+    } else {
+        int ddd = 9;
+    }
 
-    x = 5;
+    x = 7;
     a=2.5;
     string jnk;
     jnk="sdaa";
@@ -169,31 +186,14 @@ string    y = "false";
 
     print("hello world");
     print(x);
-    print("hello", y);
+    print("hello", yy);
 
+
+    myFunction3(x, y);
+    myFunction1();
+    myFunction1();
 }
 
-function myFunction() {
-    int x = 5;
-}
-
-function myFunction(int x) {
-    x = 5;
-    return x;
-}
-
-function myFunction(int x, int y) {
-    x = 5;
-    return x;
-}
-
-function myFunction(const string x = "sfnd", int y = 6) {
-    y = 7;
-    return x;
-}
-
-myFunction(x, y);
-myFunction();
 
 
 // TODO: 

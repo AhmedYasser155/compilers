@@ -833,15 +833,37 @@ logicalPrimary : intMathExpression GREATER intMathExpression {
                     $$ = val.boolValue; allocateIdentifierReg(val.reg);
                 };
 
+/*
+ifStatement : IF LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS 
+              LEFT_CURLY_BRACE { scope += 1; } blockStatements RIGHT_CURLY_BRACE {
+                  
+              }
+            | IF LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS 
+              LEFT_CURLY_BRACE { scope += 1; } blockStatements RIGHT_CURLY_BRACE elseStatement
 
-ifStatement                           : IF {ifStatementBegin();} LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS 
-                                        LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE {printTable("\nIF STATEMENT ENDED", scope); removeScope(scope); scope-=1; ifStatementEnd(); printf("ifStatement \n");} 
-                                      | IF {ifStatementBegin();} LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS 
-                                        LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE {printTable("\nIF STATEMENT ENDED", scope); removeScope(scope); scope-=1; ifStatementEnd();} 
-                                        ELSE {ifStatementElseBegin();} LEFT_CURLY_BRACE {scope+=1;} blockStatements RIGHT_CURLY_BRACE {printTable("\nELSE STATEMENT ENDED", scope); removeScope(scope); scope-=1; ifStatementElseEnd(); printf("if-else-Statement \n");}
-                                    
-                                    /* TODO: ifelse expression??*/
-    
+elseStatement : ELSE LEFT_CURLY_BRACE { scope += 1; } blockStatements RIGHT_CURLY_BRACE {
+                  
+              } */
+
+ifStatement : IF LEFT_PARENTHESIS logicalExpression {checkIfConditionQuad();} RIGHT_PARENTHESIS 
+              LEFT_CURLY_BRACE { scope += 1; } blockStatements RIGHT_CURLY_BRACE {
+                                                                                    printTable("\nIF STATEMENT ENDED", scope);
+                                                                                    removeScope(scope);
+                                                                                    scope -= 1;
+                                                                                    endIfQuad();
+                                                                                    printf("ifStatement \n");
+                                                                                 }
+              elsePart {finishIfQuad();}
+
+elsePart : ELSE ifStatement 
+         | ELSE LEFT_CURLY_BRACE { scope += 1; } blockStatements RIGHT_CURLY_BRACE {
+                                                                                      printTable("\nELSE STATEMENT ENDED", scope);
+                                                                                      removeScope(scope);
+                                                                                      scope -= 1;
+                                                                                      printf("if-else-Statement \n");
+                                                                                    }
+         | /* empty */
+
 
 
 
@@ -898,8 +920,8 @@ enumIdentifiers : IDENTIFIER ',' enumIdentifiers
 enumStatement   : ENUM IDENTIFIER LEFT_CURLY_BRACE {scope+=1;} enumIdentifiers RIGHT_CURLY_BRACE {printTable("\nENUM STATEMENT ENDED", scope); removeScope(scope); scope-=1; printf("enumStatement \n");}
 
 
-functionStatement : FUNCTION IDENTIFIER LEFT_PARENTHESIS {scope+=1;} parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printTable("\nFUNCTION ENDED", scope); removeScope(scope); scope-=1; printf("functionStatement \n");}
-//                  | FUNCTION IDENTIFIER LEFT_PARENTHESIS {scope+=1;} RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE {printTable("\nFUNCTION ENDED", scope); removeScope(scope); scope-=1; printf("functionStatement \n");}
+functionStatement : FUNCTION IDENTIFIER { createLabel($2); } LEFT_PARENTHESIS {scope+=1;} parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
+                    {printTable("\nFUNCTION ENDED", scope); functionEndQuad(); removeScope(scope); scope-=1; printf("functionStatement \n");}
 
 
 parameter       : noSemiColumnVariableDeclarationStatement ',' parameter
@@ -923,11 +945,16 @@ continueBreakStatement  : BREAK ';' {printf("breakStatement1 \n");}
 printStatement  : PRINT LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';' {printf("printStatement \n");}
                 | PRINT LEFT_PARENTHESIS RIGHT_PARENTHESIS ';' {printf("printStatement \n");}
 
-functionCallStatement   : IDENTIFIER LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';' {printf("functionCall \n");}
-                | IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS ';' {printf("functionCall \n");}
+functionCallStatement   : IDENTIFIER { 
+                                       int ret = functionCallQuad($1);
+                                        if(ret == -1){
+                                            yyerror("Function not found");
+                                        }
+                                     } LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';' {printf("functionCall \n");}
 
 argument        : expression ',' argument
                 | expression
+                | /* empty */
 
 
 comment         : COMMENT {printf("comment \n");}
@@ -957,6 +984,7 @@ int main(void)
       printf("Failed to open the file.\n");
       return 1;
   }
+  fprintf(file, "JMP LABEL_MAIN\n\n");
   fclose(file);
   FILE *pfile = fopen("parseTable.txt", "w");
   if (pfile == NULL) {
@@ -973,7 +1001,10 @@ int main(void)
   // Close the file to clear its contents
   
   initializeSymbolTable();
+  initializeLabelTable();
+
   yyparse();
+  
   printTable("\nPROGRAM ENDED", 0);
   return 0;
 }

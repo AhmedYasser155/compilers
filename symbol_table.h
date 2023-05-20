@@ -318,18 +318,82 @@ int labelEntries = 0;
 int conditionNumber = 0;
 int caseCount = 0;
 
+void initializeLabelTable() {
+    for (int i = 0; i < MAX_LABELS; i++) {
+        labelTable[i].identifier = "";
+        labelTable[i].label = -1;
+    }
+}
+
+void printLables() {
+    printf("Label Table:\n");
+    for (int i = 0; i < labelEntries; i++) {
+        if (labelTable[i].label == -1) {
+            break;
+        }
+    }
+}
+
+labelEntry getLabel(char* name)
+{
+    for (int i = 0; i < labelEntries; i++) {
+        if (strcmp(labelTable[i].identifier, name) == 0) {
+            return labelTable[i];
+        }
+    }
+    labelEntry entry;
+    entry.identifier = "";
+    entry.label = -1;
+    return entry;
+}
+
 void createLabel(char* name)
 {
     labelEntry entry;
     entry.identifier = name;
     entry.label = labelNumber;
     labelTable[labelEntries++] = entry;
-
     FILE* qFile = fopen("finalQuads.txt", "a");
-    fprintf(qFile, "LABEL%s%d:\n\n", name, labelNumber++);
+
+    if (strcmp(name, "MAIN") == 0) {
+        fprintf(qFile, "LABEL_%s:\n\n", name);
+    } else {
+        fprintf(qFile, "LABEL_%s_%d:\n\n", name, labelNumber++);
+    }
+    
     fclose(qFile);
 }
 
+
+int functionCallQuad(char* name) {
+    labelEntry entry = getLabel(name);
+
+    if (entry.label == -1) {
+        return -1;
+    }
+    
+    FILE* qFile = fopen("finalQuads.txt", "a");
+
+    fprintf(qFile, "JMP LABEL_%s_%d:\n\n", name, entry.label);
+    // fprintf(qFile, "CALL_LABEL_%s_%d:\n\n", name, entry.label);
+    
+
+    fclose(qFile);
+
+    return 1;
+}
+
+void functionEndQuad() {
+
+    
+    FILE* qFile = fopen("finalQuads.txt", "a");
+
+    fprintf(qFile, "JMP LINE_NO\n\n");    
+
+    fclose(qFile);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
 void allocateRegister(char* id, int currentScope)
 {
     updateVariableReg(currentScope, id, registerNumber);
@@ -701,12 +765,12 @@ int getSwitchCondition(){
 void startCaseQuad(int type, int reg, int intVal, float floatVal, char charVal, char* stringVal, int boolVal){
     FILE* qFile = fopen("finalQuads.txt", "a");
 
-    printf("type INT: %d\n", intVal);
-    printf("type FLOAT: %f\n", floatVal);
-    printf("type CHAR: %c\n", charVal);
-    printf("type STRING: %s\n", stringVal);
-    printf("type BOOL: %d\n", boolVal);
-    printf("type: %d\n", type);
+    // printf("type INT: %d\n", intVal);
+    // printf("type FLOAT: %f\n", floatVal);
+    // printf("type CHAR: %c\n", charVal);
+    // printf("type STRING: %s\n", stringVal);
+    // printf("type BOOL: %d\n", boolVal);
+    // printf("type: %d\n", type);
 
     switch (type)
     {
@@ -756,148 +820,42 @@ void endSwitchQuad(int condition){
 
     fclose(qFile);    
 }
-
-
-
 ////////////////////////////////////////////////////////////////////////////////////////
-//Function that checks for the conditions
-void consitionsQuad(char* symbol, int firstComparater, int secondComparater)
-{
-    FILE* qFile = fopen("quads.txt", "a");
-    if(symbol == ">=")
-    {
-        printf("CMP T,Value1: %d,Value2: %d\n", firstComparater, secondComparater);      
-        printf("JNeg T,end \n");
-    }
+int ifCounter = 0;
+int ifCondsCounter = 0;
+int maxIf = 0;
+int checkIfConditionQuad(){
+    if (maxIf>ifCounter) ifCounter = maxIf;
+    FILE* qFile = fopen("finalQuads.txt", "a");
 
-    else if(symbol == "<=")
-    {
-        printf("CMP T,Value1: %d,Value2: %d\n", firstComparater, secondComparater);      
-        printf("JPos T,end \n");
-    }
-
-    else if(symbol == ">")
-    {
-        printf("CMP T,Value1: %d,Value2: %d\n", firstComparater, secondComparater);      
-        printf("JZ T,end \n");
-    }
-
-    else if(symbol == "<")
-    {
-        printf("CMP T,Value1: %d,Value2: %d\n", firstComparater, secondComparater);      
-        printf("JNZ T,end \n");
-    }
-
-    else if(symbol == "==")
-    {
-        printf("CMP T,Value1: %d,Value2: %d\n", firstComparater, secondComparater);      
-        printf("JE T,end \n");
-    }
-
-    else if(symbol == "!=")
-    {
-        printf("CMP T,Value1: %d,Value2: %d\n", firstComparater, secondComparater);      
-        printf("JNE T,end \n");
-    }
-    fclose(qFile);
-}
-
-///////////////////////////////////////////
-/////////////////////IF////////////////////
-///////////////////////////////////////////
-// Function to allocate a Label
-void allocateLabel()
-{   
-    FILE* qFile = fopen("quads.txt", "a");
-
-    fprintf(qFile, "LABEL L%d\n", labelNumber);
+    fprintf(qFile, "IF_LABEL_%d: \n", ++ifCounter);
+    fprintf(qFile, "CMP R%d, %d\n", registerNumber-1, 1);
+    fprintf(qFile, "JNE IF_END_%d\n\n", ifCondsCounter);
 
     fclose(qFile);
+    return ifCounter;
 }
+void endIfQuad(){
+    FILE* qFile = fopen("finalQuads.txt", "a");
 
-void ifStatementBegin()
-{
-    allocateLabel();
-    FILE* qFile = fopen("quads.txt", "a");
-    if (firstIfLabel == -1)
-    {
-        fprintf(qFile, "JMP L%d\n", labelNumber);
-        firstIfLabel = labelNumber;
-    }
-    else
-    {
-        fprintf(qFile, "JMP L%d\n", labelNumber);
-    }
+
+    fprintf(qFile, "JMP IF_FINISHED_%d:\n", ifCounter);
+    fprintf(qFile, "IF_END_%d:\n\n", ifCondsCounter);
+
     fclose(qFile);
-}
 
-void ifStatementEnd()
-{   
-    FILE* qFile = fopen("quads.txt", "a");
-    fprintf(qFile, "END L%d\n", labelNumber);
-    labelNumber++;
+    ifCondsCounter++;
+}
+void finishIfQuad(){
+    FILE* qFile = fopen("finalQuads.txt", "a");
+
+    fprintf(qFile, "IF_FINISHED_%d: \n\n", ifCounter);
+
     fclose(qFile);
+    maxIf = ifCounter--;
 }
+////////////////////////////////////////////////////////////////////////////////////////
 
-void ifStatementElseBegin()
-{
-    if (firstIfLabel == -1)
-    {   
-        FILE* qFile = fopen("quads.txt", "a");
-        fprintf(qFile, "No if condition exists\n");
-        fclose(qFile);
-        exit(EXIT_FAILURE);
-    }
-
-    else
-    {
-        FILE* qFile = fopen("quads.txt", "a");
-        fprintf(qFile, "JMP END%d\n", firstIfLabel);
-        fprintf(qFile, "LABEL L%d\n", labelNumber);
-        fclose(qFile);
-    }
-}
-
-void ifStatementElseEnd()
-{   
-    FILE* qFile = fopen("quads.txt", "a");
-    fprintf(qFile, "END L%d\n", labelNumber);
-    labelNumber++;
-    firstIfLabel = -1;
-    fclose(qFile);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-/////////////////////////------------ helper functions ------------------/////////////////////////
-// void handleReturn(int ret, char* id, void* function){
-//     switch (ret){
-//         case 1:
-//             function(id);
-//             break;
-//         case 2:                                                            
-//             exit(0);
-//             break;
-//         case 3:
-//             yyerror("Overflow in symbol table");
-//             exit(0);
-//             break;
-//         default:
-//             yyerror("Unknown error");
-//             exit(0);
-//             break;
-//     }  
-// }                                 ///// WRONG FUNCTION
 
 
 #endif /* SYMBOL_TABLE_H */
