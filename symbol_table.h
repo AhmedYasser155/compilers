@@ -87,7 +87,7 @@ int variableExists(int scope, const char* identifier) {
 // 3 for scope overflow
 int  addVariable(int scope, const char* identifier, bool isConst, int type, int intValue, float floatValue, char charValue, const char* stringValue, int boolValue) {
     if(variableExists(scope, identifier)==1) {
-        printf("Variable or Function %s already exists in scope %d\n", identifier, scope);
+        // printf("Variable or Function %s already exists in scope %d\n", identifier, scope);
         return 2;
     }
     
@@ -244,7 +244,7 @@ void printTable(char* text, int scope) {
     // fprintf("Symbol Table:\n");
     FILE* file = fopen("parseTable.txt", "a");
     if (file == NULL) {
-        printf("Error opening file.\n");
+        // printf("Error opening file.\n");
         return;
     }
     fprintf(file, "%s\n", text);
@@ -327,7 +327,7 @@ void initializeLabelTable() {
 }
 
 void printLables() {
-    printf("Label Table:\n");
+    // printf("Label Table:\n");
     for (int i = 0; i < labelEntries; i++) {
         if (labelTable[i].label == -1) {
             break;

@@ -13,9 +13,8 @@ State 10 conflicts: 1 shift/reduce
 State 13 conflicts: 1 shift/reduce
 State 22 conflicts: 18 shift/reduce
 State 68 conflicts: 20 reduce/reduce
-State 91 conflicts: 1 shift/reduce
 State 119 conflicts: 12 reduce/reduce
-State 228 conflicts: 1 shift/reduce
+State 229 conflicts: 1 shift/reduce
 State 332 conflicts: 1 shift/reduce
 State 342 conflicts: 1 shift/reduce
 
@@ -252,32 +251,34 @@ Grammar
   163                       | CONTINUE IDENTIFIER ';'
   164                       | CONTINUE
 
-  165 printStatement: PRINT LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
-  166               | PRINT LEFT_PARENTHESIS RIGHT_PARENTHESIS ';'
+  165 printStatement: PRINT LEFT_PARENTHESIS printVal RIGHT_PARENTHESIS ';'
 
-  167 $@18: %empty
+  166 printVal: CHAR_LITERAL
+  167         | expression
 
-  168 functionCallStatement: IDENTIFIER $@18 LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
+  168 $@18: %empty
 
-  169 argument: expression ',' argument
-  170         | expression
-  171         | %empty
+  169 functionCallStatement: IDENTIFIER $@18 LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
 
-  172 comment: COMMENT
+  170 argument: expression ',' argument
+  171         | expression
+  172         | %empty
 
-  173 $@19: %empty
+  173 comment: COMMENT
 
-  174 $@20: %empty
+  174 $@19: %empty
 
-  175 main: MAIN $@19 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@20 blockStatements RIGHT_CURLY_BRACE
+  175 $@20: %empty
+
+  176 main: MAIN $@19 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@20 blockStatements RIGHT_CURLY_BRACE
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
-    ',' (44) 145 152 154 169
+    ',' (44) 145 152 154 170
     ':' (58) 141 144
-    ';' (59) 42 48 54 60 61 62 63 64 65 66 131 136 141 144 157 158 159 160 162 163 165 166 168
+    ';' (59) 42 48 54 60 61 62 63 64 65 66 131 136 141 144 157 158 159 160 162 163 165 169
     error (256)
     INT (258) 24 44 49 56
     CHAR (259) 25 43 50 55
@@ -317,23 +318,23 @@ Terminals, with rules where they appear
     RETURN (293) 157 158
     REPEAT (294) 127
     UNTIL (295) 127
-    LEFT_CURLY_BRACE (296) 117 120 124 127 136 139 148 151 175
-    RIGHT_CURLY_BRACE (297) 117 120 124 127 136 139 148 151 175
-    LEFT_PARENTHESIS (298) 79 88 92 111 117 124 127 136 139 151 165 166 168 175
-    RIGHT_PARENTHESIS (299) 79 88 92 111 117 124 127 136 139 151 165 166 168 175
+    LEFT_CURLY_BRACE (296) 117 120 124 127 136 139 148 151 176
+    RIGHT_CURLY_BRACE (297) 117 120 124 127 136 139 148 151 176
+    LEFT_PARENTHESIS (298) 79 88 92 111 117 124 127 136 139 151 165 169 176
+    RIGHT_PARENTHESIS (299) 79 88 92 111 117 124 127 136 139 151 165 169 176
     LEFT_SQUARE_BRACKET (300)
     RIGHT_SQUARE_BRACKET (301)
     ENUM (302) 148
     FUNCTION (303) 151
-    MAIN (304) 175
-    PRINT (305) 165 166
+    MAIN (304) 176
+    PRINT (305) 165
     SCAN (306)
-    COMMENT (307) 172
-    IDENTIFIER <sVal> (308) 43 44 45 46 47 49 50 51 52 53 55 56 57 58 59 60 61 62 63 64 65 66 75 76 77 86 90 113 128 129 130 131 139 145 146 148 151 160 163 168
+    COMMENT (307) 173
+    IDENTIFIER <sVal> (308) 43 44 45 46 47 49 50 51 52 53 55 56 57 58 59 60 61 62 63 64 65 66 75 76 77 86 90 113 128 129 130 131 139 145 146 148 151 160 163 169
     DIGIT <iVal> (309) 29 78
     FLOAT_LITERAL <fVal> (310) 30 87
     STRING_LITERAL <sVal> (311) 31 89
-    CHAR_LITERAL <cVal> (312) 32 43 55 64
+    CHAR_LITERAL <cVal> (312) 32 43 55 64 166
     BOOL_LITERAL <bVal> (313) 33 112
 
 
@@ -349,7 +350,7 @@ Nonterminals, with rules where they appear
         on right: 1 2
     blockStatements (65)
         on left: 6 7
-        on right: 3 7 117 120 124 127 136 141 144 151 175
+        on right: 3 7 117 120 124 127 136 141 144 151 176
     blockStatement (66)
         on left: 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
         on right: 6 7
@@ -359,9 +360,9 @@ Nonterminals, with rules where they appear
     values <values> (68)
         on left: 29 30 31 32 33
         on right: 144
-    expression (69)
+    expression <values> (69)
         on left: 34 35 36 37
-        on right: 128 131 169 170
+        on right: 128 131 167 170 171
     variableDeclarationStatement (70)
         on left: 38 39
         on right: 8
@@ -531,29 +532,32 @@ Nonterminals, with rules where they appear
         on left: 159 160 161 162 163 164
         on right: 21
     printStatement (126)
-        on left: 165 166
+        on left: 165
         on right: 20
-    functionCallStatement (127)
-        on left: 168
+    printVal (127)
+        on left: 166 167
+        on right: 165
+    functionCallStatement (128)
+        on left: 169
         on right: 22
-    $@18 (128)
-        on left: 167
-        on right: 168
-    argument (129)
-        on left: 169 170 171
-        on right: 157 165 168 169
-    comment (130)
-        on left: 172
-        on right: 23
-    main (131)
-        on left: 175
-        on right: 5
-    $@19 (132)
+    $@18 (129)
+        on left: 168
+        on right: 169
+    argument (130)
+        on left: 170 171 172
+        on right: 157 169 170
+    comment (131)
         on left: 173
-        on right: 175
-    $@20 (133)
+        on right: 23
+    main (132)
+        on left: 176
+        on right: 5
+    $@19 (133)
         on left: 174
-        on right: 175
+        on right: 176
+    $@20 (134)
+        on left: 175
+        on right: 176
 
 
 State 0
@@ -748,7 +752,7 @@ State 13
     BOOL_LITERAL      shift, and go to state 72
     ';'               shift, and go to state 73
 
-    ';'  [reduce using rule 171 (argument)]
+    ';'  [reduce using rule 172 (argument)]
 
     expression           go to state 74
     intMathExpression    go to state 75
@@ -782,26 +786,25 @@ State 15
 
 State 16
 
-  175 main: MAIN . $@19 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@20 blockStatements RIGHT_CURLY_BRACE
+  176 main: MAIN . $@19 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@20 blockStatements RIGHT_CURLY_BRACE
 
-    $default  reduce using rule 173 ($@19)
+    $default  reduce using rule 174 ($@19)
 
     $@19  go to state 90
 
 
 State 17
 
-  165 printStatement: PRINT . LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
-  166               | PRINT . LEFT_PARENTHESIS RIGHT_PARENTHESIS ';'
+  165 printStatement: PRINT . LEFT_PARENTHESIS printVal RIGHT_PARENTHESIS ';'
 
     LEFT_PARENTHESIS  shift, and go to state 91
 
 
 State 18
 
-  172 comment: COMMENT .
+  173 comment: COMMENT .
 
-    $default  reduce using rule 172 (comment)
+    $default  reduce using rule 173 (comment)
 
 
 State 19
@@ -813,13 +816,13 @@ State 19
    64                    | IDENTIFIER . ASSIGN CHAR_LITERAL ';'
    65 incStatement: IDENTIFIER . INCREMENT ';'
    66 decStatement: IDENTIFIER . DECREMENT ';'
-  168 functionCallStatement: IDENTIFIER . $@18 LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
+  169 functionCallStatement: IDENTIFIER . $@18 LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
 
     INCREMENT  shift, and go to state 92
     DECREMENT  shift, and go to state 93
     ASSIGN     shift, and go to state 94
 
-    $default  reduce using rule 167 ($@18)
+    $default  reduce using rule 168 ($@18)
 
     $@18  go to state 95
 
@@ -1444,12 +1447,12 @@ State 73
 
 State 74
 
-  169 argument: expression . ',' argument
-  170         | expression .
+  170 argument: expression . ',' argument
+  171         | expression .
 
     ','  shift, and go to state 135
 
-    $default  reduce using rule 170 (argument)
+    $default  reduce using rule 171 (argument)
 
 
 State 75
@@ -1616,28 +1619,25 @@ State 89
 
 State 90
 
-  175 main: MAIN $@19 . LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@20 blockStatements RIGHT_CURLY_BRACE
+  176 main: MAIN $@19 . LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@20 blockStatements RIGHT_CURLY_BRACE
 
     LEFT_PARENTHESIS  shift, and go to state 163
 
 
 State 91
 
-  165 printStatement: PRINT LEFT_PARENTHESIS . argument RIGHT_PARENTHESIS ';'
-  166               | PRINT LEFT_PARENTHESIS . RIGHT_PARENTHESIS ';'
+  165 printStatement: PRINT LEFT_PARENTHESIS . printVal RIGHT_PARENTHESIS ';'
 
-    NOT                shift, and go to state 66
-    LEFT_PARENTHESIS   shift, and go to state 67
-    RIGHT_PARENTHESIS  shift, and go to state 164
-    IDENTIFIER         shift, and go to state 68
-    DIGIT              shift, and go to state 69
-    FLOAT_LITERAL      shift, and go to state 70
-    STRING_LITERAL     shift, and go to state 71
-    BOOL_LITERAL       shift, and go to state 72
+    NOT               shift, and go to state 66
+    LEFT_PARENTHESIS  shift, and go to state 67
+    IDENTIFIER        shift, and go to state 68
+    DIGIT             shift, and go to state 69
+    FLOAT_LITERAL     shift, and go to state 70
+    STRING_LITERAL    shift, and go to state 71
+    CHAR_LITERAL      shift, and go to state 164
+    BOOL_LITERAL      shift, and go to state 72
 
-    RIGHT_PARENTHESIS  [reduce using rule 171 (argument)]
-
-    expression           go to state 74
+    expression           go to state 165
     intMathExpression    go to state 75
     intMathTerm          go to state 76
     intMathFactor        go to state 77
@@ -1650,21 +1650,21 @@ State 91
     logicalTerm          go to state 84
     logicalFactor        go to state 85
     logicalPrimary       go to state 86
-    argument             go to state 165
+    printVal             go to state 166
 
 
 State 92
 
    65 incStatement: IDENTIFIER INCREMENT . ';'
 
-    ';'  shift, and go to state 166
+    ';'  shift, and go to state 167
 
 
 State 93
 
    66 decStatement: IDENTIFIER DECREMENT . ';'
 
-    ';'  shift, and go to state 167
+    ';'  shift, and go to state 168
 
 
 State 94
@@ -1681,18 +1681,18 @@ State 94
     DIGIT             shift, and go to state 69
     FLOAT_LITERAL     shift, and go to state 70
     STRING_LITERAL    shift, and go to state 71
-    CHAR_LITERAL      shift, and go to state 168
+    CHAR_LITERAL      shift, and go to state 169
     BOOL_LITERAL      shift, and go to state 72
 
-    intMathExpression    go to state 169
+    intMathExpression    go to state 170
     intMathTerm          go to state 76
     intMathFactor        go to state 77
     intMathPrimary       go to state 78
-    floatMathExpression  go to state 170
+    floatMathExpression  go to state 171
     floatMathTerm        go to state 80
     floatMathFactor      go to state 81
-    stringExpression     go to state 171
-    logicalExpression    go to state 172
+    stringExpression     go to state 172
+    logicalExpression    go to state 173
     logicalTerm          go to state 84
     logicalFactor        go to state 85
     logicalPrimary       go to state 86
@@ -1700,9 +1700,9 @@ State 94
 
 State 95
 
-  168 functionCallStatement: IDENTIFIER $@18 . LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
+  169 functionCallStatement: IDENTIFIER $@18 . LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';'
 
-    LEFT_PARENTHESIS  shift, and go to state 173
+    LEFT_PARENTHESIS  shift, and go to state 174
 
 
 State 96
@@ -1770,7 +1770,7 @@ State 104
 
   151 functionStatement: types FUNCTION . IDENTIFIER $@16 LEFT_PARENTHESIS $@17 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
-    IDENTIFIER  shift, and go to state 174
+    IDENTIFIER  shift, and go to state 175
 
 
 State 105
@@ -1798,11 +1798,11 @@ State 108
 
    44 noSemiColumnAssignVariableDeclaration: INT IDENTIFIER ASSIGN . intMathExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 175
-    IDENTIFIER        shift, and go to state 176
+    LEFT_PARENTHESIS  shift, and go to state 176
+    IDENTIFIER        shift, and go to state 177
     DIGIT             shift, and go to state 69
 
-    intMathExpression  go to state 177
+    intMathExpression  go to state 178
     intMathTerm        go to state 76
     intMathFactor      go to state 77
     intMathPrimary     go to state 78
@@ -1812,18 +1812,18 @@ State 109
 
    43 noSemiColumnAssignVariableDeclaration: CHAR IDENTIFIER ASSIGN . CHAR_LITERAL
 
-    CHAR_LITERAL  shift, and go to state 178
+    CHAR_LITERAL  shift, and go to state 179
 
 
 State 110
 
    45 noSemiColumnAssignVariableDeclaration: FLOAT IDENTIFIER ASSIGN . floatMathExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 179
-    IDENTIFIER        shift, and go to state 180
+    LEFT_PARENTHESIS  shift, and go to state 180
+    IDENTIFIER        shift, and go to state 181
     FLOAT_LITERAL     shift, and go to state 70
 
-    floatMathExpression  go to state 181
+    floatMathExpression  go to state 182
     floatMathTerm        go to state 80
     floatMathFactor      go to state 81
 
@@ -1832,46 +1832,46 @@ State 111
 
    46 noSemiColumnAssignVariableDeclaration: STRING IDENTIFIER ASSIGN . stringExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 182
-    IDENTIFIER        shift, and go to state 183
+    LEFT_PARENTHESIS  shift, and go to state 183
+    IDENTIFIER        shift, and go to state 184
     STRING_LITERAL    shift, and go to state 71
 
-    stringExpression  go to state 184
+    stringExpression  go to state 185
 
 
 State 112
 
    56 noSemiColumnConstDeclaration: CONST INT IDENTIFIER . ASSIGN intMathExpression
 
-    ASSIGN  shift, and go to state 185
+    ASSIGN  shift, and go to state 186
 
 
 State 113
 
    55 noSemiColumnConstDeclaration: CONST CHAR IDENTIFIER . ASSIGN CHAR_LITERAL
 
-    ASSIGN  shift, and go to state 186
+    ASSIGN  shift, and go to state 187
 
 
 State 114
 
    57 noSemiColumnConstDeclaration: CONST FLOAT IDENTIFIER . ASSIGN floatMathExpression
 
-    ASSIGN  shift, and go to state 187
+    ASSIGN  shift, and go to state 188
 
 
 State 115
 
    58 noSemiColumnConstDeclaration: CONST STRING IDENTIFIER . ASSIGN stringExpression
 
-    ASSIGN  shift, and go to state 188
+    ASSIGN  shift, and go to state 189
 
 
 State 116
 
    59 noSemiColumnConstDeclaration: CONST BOOL IDENTIFIER . ASSIGN logicalExpression
 
-    ASSIGN  shift, and go to state 189
+    ASSIGN  shift, and go to state 190
 
 
 State 117
@@ -1892,7 +1892,7 @@ State 117
     floatMathExpression  go to state 121
     floatMathTerm        go to state 80
     floatMathFactor      go to state 81
-    logicalExpression    go to state 190
+    logicalExpression    go to state 191
     logicalTerm          go to state 84
     logicalFactor        go to state 85
     logicalPrimary       go to state 86
@@ -2016,7 +2016,7 @@ State 122
 
     $default  reduce using rule 114 ($@1)
 
-    $@1  go to state 191
+    $@1  go to state 192
 
 
 State 123
@@ -2025,7 +2025,7 @@ State 123
 
     $default  reduce using rule 137 ($@12)
 
-    $@12  go to state 192
+    $@12  go to state 193
 
 
 State 124
@@ -2051,23 +2051,23 @@ State 126
 
     $default  reduce using rule 122 ($@5)
 
-    $@5  go to state 193
+    $@5  go to state 194
 
 
 State 127
 
   136 forStatement: FOR LEFT_PARENTHESIS $@9 . forDeclaration $@10 logicalExpression $@11 ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
-    INT         shift, and go to state 194
-    CHAR        shift, and go to state 195
-    FLOAT       shift, and go to state 196
-    STRING      shift, and go to state 197
-    BOOL        shift, and go to state 198
-    IDENTIFIER  shift, and go to state 199
+    INT         shift, and go to state 195
+    CHAR        shift, and go to state 196
+    FLOAT       shift, and go to state 197
+    STRING      shift, and go to state 198
+    BOOL        shift, and go to state 199
+    IDENTIFIER  shift, and go to state 200
 
-    assignVariableDeclaration              go to state 200
+    assignVariableDeclaration              go to state 201
     noSemiColumnAssignVariableDeclaration  go to state 27
-    forDeclaration                         go to state 201
+    forDeclaration                         go to state 202
 
 
 State 128
@@ -2097,7 +2097,7 @@ State 129
     LESS_EQUAL         shift, and go to state 141
     EQUAL              shift, and go to state 142
     NOT_EQUAL          shift, and go to state 143
-    RIGHT_PARENTHESIS  shift, and go to state 202
+    RIGHT_PARENTHESIS  shift, and go to state 203
 
 
 State 130
@@ -2120,7 +2120,7 @@ State 130
     LESS_EQUAL         shift, and go to state 152
     EQUAL              shift, and go to state 153
     NOT_EQUAL          shift, and go to state 154
-    RIGHT_PARENTHESIS  shift, and go to state 203
+    RIGHT_PARENTHESIS  shift, and go to state 204
 
 
 State 131
@@ -2129,7 +2129,7 @@ State 131
    92                 | LEFT_PARENTHESIS stringExpression . RIGHT_PARENTHESIS
 
     PLUS               shift, and go to state 157
-    RIGHT_PARENTHESIS  shift, and go to state 204
+    RIGHT_PARENTHESIS  shift, and go to state 205
 
 
 State 132
@@ -2138,7 +2138,7 @@ State 132
   111 logicalPrimary: LEFT_PARENTHESIS logicalExpression . RIGHT_PARENTHESIS
 
     OR                 shift, and go to state 158
-    RIGHT_PARENTHESIS  shift, and go to state 205
+    RIGHT_PARENTHESIS  shift, and go to state 206
 
 
 State 133
@@ -2157,7 +2157,7 @@ State 134
 
 State 135
 
-  169 argument: expression ',' . argument
+  170 argument: expression ',' . argument
 
     NOT               shift, and go to state 66
     LEFT_PARENTHESIS  shift, and go to state 67
@@ -2167,7 +2167,7 @@ State 135
     STRING_LITERAL    shift, and go to state 71
     BOOL_LITERAL      shift, and go to state 72
 
-    $default  reduce using rule 171 (argument)
+    $default  reduce using rule 172 (argument)
 
     expression           go to state 74
     intMathExpression    go to state 75
@@ -2182,18 +2182,18 @@ State 135
     logicalTerm          go to state 84
     logicalFactor        go to state 85
     logicalPrimary       go to state 86
-    argument             go to state 206
+    argument             go to state 207
 
 
 State 136
 
    67 intMathExpression: intMathExpression PLUS . intMathTerm
 
-    LEFT_PARENTHESIS  shift, and go to state 175
-    IDENTIFIER        shift, and go to state 176
+    LEFT_PARENTHESIS  shift, and go to state 176
+    IDENTIFIER        shift, and go to state 177
     DIGIT             shift, and go to state 69
 
-    intMathTerm     go to state 207
+    intMathTerm     go to state 208
     intMathFactor   go to state 77
     intMathPrimary  go to state 78
 
@@ -2202,11 +2202,11 @@ State 137
 
    68 intMathExpression: intMathExpression MINUS . intMathTerm
 
-    LEFT_PARENTHESIS  shift, and go to state 175
-    IDENTIFIER        shift, and go to state 176
+    LEFT_PARENTHESIS  shift, and go to state 176
+    IDENTIFIER        shift, and go to state 177
     DIGIT             shift, and go to state 69
 
-    intMathTerm     go to state 208
+    intMathTerm     go to state 209
     intMathFactor   go to state 77
     intMathPrimary  go to state 78
 
@@ -2215,11 +2215,11 @@ State 138
 
    99 logicalPrimary: intMathExpression GREATER . intMathExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 175
-    IDENTIFIER        shift, and go to state 176
+    LEFT_PARENTHESIS  shift, and go to state 176
+    IDENTIFIER        shift, and go to state 177
     DIGIT             shift, and go to state 69
 
-    intMathExpression  go to state 209
+    intMathExpression  go to state 210
     intMathTerm        go to state 76
     intMathFactor      go to state 77
     intMathPrimary     go to state 78
@@ -2229,11 +2229,11 @@ State 139
 
   100 logicalPrimary: intMathExpression LESS . intMathExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 175
-    IDENTIFIER        shift, and go to state 176
+    LEFT_PARENTHESIS  shift, and go to state 176
+    IDENTIFIER        shift, and go to state 177
     DIGIT             shift, and go to state 69
 
-    intMathExpression  go to state 210
+    intMathExpression  go to state 211
     intMathTerm        go to state 76
     intMathFactor      go to state 77
     intMathPrimary     go to state 78
@@ -2243,11 +2243,11 @@ State 140
 
   101 logicalPrimary: intMathExpression GREATER_EQUAL . intMathExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 175
-    IDENTIFIER        shift, and go to state 176
+    LEFT_PARENTHESIS  shift, and go to state 176
+    IDENTIFIER        shift, and go to state 177
     DIGIT             shift, and go to state 69
 
-    intMathExpression  go to state 211
+    intMathExpression  go to state 212
     intMathTerm        go to state 76
     intMathFactor      go to state 77
     intMathPrimary     go to state 78
@@ -2257,11 +2257,11 @@ State 141
 
   102 logicalPrimary: intMathExpression LESS_EQUAL . intMathExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 175
-    IDENTIFIER        shift, and go to state 176
+    LEFT_PARENTHESIS  shift, and go to state 176
+    IDENTIFIER        shift, and go to state 177
     DIGIT             shift, and go to state 69
 
-    intMathExpression  go to state 212
+    intMathExpression  go to state 213
     intMathTerm        go to state 76
     intMathFactor      go to state 77
     intMathPrimary     go to state 78
@@ -2271,11 +2271,11 @@ State 142
 
   103 logicalPrimary: intMathExpression EQUAL . intMathExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 175
-    IDENTIFIER        shift, and go to state 176
+    LEFT_PARENTHESIS  shift, and go to state 176
+    IDENTIFIER        shift, and go to state 177
     DIGIT             shift, and go to state 69
 
-    intMathExpression  go to state 213
+    intMathExpression  go to state 214
     intMathTerm        go to state 76
     intMathFactor      go to state 77
     intMathPrimary     go to state 78
@@ -2285,11 +2285,11 @@ State 143
 
   104 logicalPrimary: intMathExpression NOT_EQUAL . intMathExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 175
-    IDENTIFIER        shift, and go to state 176
+    LEFT_PARENTHESIS  shift, and go to state 176
+    IDENTIFIER        shift, and go to state 177
     DIGIT             shift, and go to state 69
 
-    intMathExpression  go to state 214
+    intMathExpression  go to state 215
     intMathTerm        go to state 76
     intMathFactor      go to state 77
     intMathPrimary     go to state 78
@@ -2299,11 +2299,11 @@ State 144
 
    70 intMathTerm: intMathTerm MULTIPLY . intMathFactor
 
-    LEFT_PARENTHESIS  shift, and go to state 175
-    IDENTIFIER        shift, and go to state 176
+    LEFT_PARENTHESIS  shift, and go to state 176
+    IDENTIFIER        shift, and go to state 177
     DIGIT             shift, and go to state 69
 
-    intMathFactor   go to state 215
+    intMathFactor   go to state 216
     intMathPrimary  go to state 78
 
 
@@ -2311,11 +2311,11 @@ State 145
 
    71 intMathTerm: intMathTerm DIVIDE . intMathFactor
 
-    LEFT_PARENTHESIS  shift, and go to state 175
-    IDENTIFIER        shift, and go to state 176
+    LEFT_PARENTHESIS  shift, and go to state 176
+    IDENTIFIER        shift, and go to state 177
     DIGIT             shift, and go to state 69
 
-    intMathFactor   go to state 216
+    intMathFactor   go to state 217
     intMathPrimary  go to state 78
 
 
@@ -2323,11 +2323,11 @@ State 146
 
    72 intMathTerm: intMathTerm MODULO . intMathFactor
 
-    LEFT_PARENTHESIS  shift, and go to state 175
-    IDENTIFIER        shift, and go to state 176
+    LEFT_PARENTHESIS  shift, and go to state 176
+    IDENTIFIER        shift, and go to state 177
     DIGIT             shift, and go to state 69
 
-    intMathFactor   go to state 217
+    intMathFactor   go to state 218
     intMathPrimary  go to state 78
 
 
@@ -2335,11 +2335,11 @@ State 147
 
    80 floatMathExpression: floatMathExpression PLUS . floatMathTerm
 
-    LEFT_PARENTHESIS  shift, and go to state 179
-    IDENTIFIER        shift, and go to state 180
+    LEFT_PARENTHESIS  shift, and go to state 180
+    IDENTIFIER        shift, and go to state 181
     FLOAT_LITERAL     shift, and go to state 70
 
-    floatMathTerm    go to state 218
+    floatMathTerm    go to state 219
     floatMathFactor  go to state 81
 
 
@@ -2347,11 +2347,11 @@ State 148
 
    81 floatMathExpression: floatMathExpression MINUS . floatMathTerm
 
-    LEFT_PARENTHESIS  shift, and go to state 179
-    IDENTIFIER        shift, and go to state 180
+    LEFT_PARENTHESIS  shift, and go to state 180
+    IDENTIFIER        shift, and go to state 181
     FLOAT_LITERAL     shift, and go to state 70
 
-    floatMathTerm    go to state 219
+    floatMathTerm    go to state 220
     floatMathFactor  go to state 81
 
 
@@ -2359,11 +2359,11 @@ State 149
 
   105 logicalPrimary: floatMathExpression GREATER . floatMathExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 179
-    IDENTIFIER        shift, and go to state 180
+    LEFT_PARENTHESIS  shift, and go to state 180
+    IDENTIFIER        shift, and go to state 181
     FLOAT_LITERAL     shift, and go to state 70
 
-    floatMathExpression  go to state 220
+    floatMathExpression  go to state 221
     floatMathTerm        go to state 80
     floatMathFactor      go to state 81
 
@@ -2372,11 +2372,11 @@ State 150
 
   106 logicalPrimary: floatMathExpression LESS . floatMathExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 179
-    IDENTIFIER        shift, and go to state 180
+    LEFT_PARENTHESIS  shift, and go to state 180
+    IDENTIFIER        shift, and go to state 181
     FLOAT_LITERAL     shift, and go to state 70
 
-    floatMathExpression  go to state 221
+    floatMathExpression  go to state 222
     floatMathTerm        go to state 80
     floatMathFactor      go to state 81
 
@@ -2385,11 +2385,11 @@ State 151
 
   107 logicalPrimary: floatMathExpression GREATER_EQUAL . floatMathExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 179
-    IDENTIFIER        shift, and go to state 180
+    LEFT_PARENTHESIS  shift, and go to state 180
+    IDENTIFIER        shift, and go to state 181
     FLOAT_LITERAL     shift, and go to state 70
 
-    floatMathExpression  go to state 222
+    floatMathExpression  go to state 223
     floatMathTerm        go to state 80
     floatMathFactor      go to state 81
 
@@ -2398,11 +2398,11 @@ State 152
 
   108 logicalPrimary: floatMathExpression LESS_EQUAL . floatMathExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 179
-    IDENTIFIER        shift, and go to state 180
+    LEFT_PARENTHESIS  shift, and go to state 180
+    IDENTIFIER        shift, and go to state 181
     FLOAT_LITERAL     shift, and go to state 70
 
-    floatMathExpression  go to state 223
+    floatMathExpression  go to state 224
     floatMathTerm        go to state 80
     floatMathFactor      go to state 81
 
@@ -2411,11 +2411,11 @@ State 153
 
   109 logicalPrimary: floatMathExpression EQUAL . floatMathExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 179
-    IDENTIFIER        shift, and go to state 180
+    LEFT_PARENTHESIS  shift, and go to state 180
+    IDENTIFIER        shift, and go to state 181
     FLOAT_LITERAL     shift, and go to state 70
 
-    floatMathExpression  go to state 224
+    floatMathExpression  go to state 225
     floatMathTerm        go to state 80
     floatMathFactor      go to state 81
 
@@ -2424,11 +2424,11 @@ State 154
 
   110 logicalPrimary: floatMathExpression NOT_EQUAL . floatMathExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 179
-    IDENTIFIER        shift, and go to state 180
+    LEFT_PARENTHESIS  shift, and go to state 180
+    IDENTIFIER        shift, and go to state 181
     FLOAT_LITERAL     shift, and go to state 70
 
-    floatMathExpression  go to state 225
+    floatMathExpression  go to state 226
     floatMathTerm        go to state 80
     floatMathFactor      go to state 81
 
@@ -2437,33 +2437,33 @@ State 155
 
    83 floatMathTerm: floatMathTerm MULTIPLY . floatMathFactor
 
-    LEFT_PARENTHESIS  shift, and go to state 179
-    IDENTIFIER        shift, and go to state 180
+    LEFT_PARENTHESIS  shift, and go to state 180
+    IDENTIFIER        shift, and go to state 181
     FLOAT_LITERAL     shift, and go to state 70
 
-    floatMathFactor  go to state 226
+    floatMathFactor  go to state 227
 
 
 State 156
 
    84 floatMathTerm: floatMathTerm DIVIDE . floatMathFactor
 
-    LEFT_PARENTHESIS  shift, and go to state 179
-    IDENTIFIER        shift, and go to state 180
+    LEFT_PARENTHESIS  shift, and go to state 180
+    IDENTIFIER        shift, and go to state 181
     FLOAT_LITERAL     shift, and go to state 70
 
-    floatMathFactor  go to state 227
+    floatMathFactor  go to state 228
 
 
 State 157
 
    91 stringExpression: stringExpression PLUS . stringExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 182
-    IDENTIFIER        shift, and go to state 183
+    LEFT_PARENTHESIS  shift, and go to state 183
+    IDENTIFIER        shift, and go to state 184
     STRING_LITERAL    shift, and go to state 71
 
-    stringExpression  go to state 228
+    stringExpression  go to state 229
 
 
 State 158
@@ -2484,7 +2484,7 @@ State 158
     floatMathExpression  go to state 121
     floatMathTerm        go to state 80
     floatMathFactor      go to state 81
-    logicalTerm          go to state 229
+    logicalTerm          go to state 230
     logicalFactor        go to state 85
     logicalPrimary       go to state 86
 
@@ -2507,7 +2507,7 @@ State 159
     floatMathExpression  go to state 121
     floatMathTerm        go to state 80
     floatMathFactor      go to state 81
-    logicalFactor        go to state 230
+    logicalFactor        go to state 231
     logicalPrimary       go to state 86
 
 
@@ -2541,7 +2541,7 @@ State 161
     COMMENT     shift, and go to state 18
     IDENTIFIER  shift, and go to state 19
 
-    blockStatements                           go to state 231
+    blockStatements                           go to state 232
     blockStatement                            go to state 23
     variableDeclarationStatement              go to state 25
     assignVariableDeclaration                 go to state 26
@@ -2572,52 +2572,59 @@ State 162
 
     $default  reduce using rule 147 ($@15)
 
-    $@15  go to state 232
+    $@15  go to state 233
 
 
 State 163
 
-  175 main: MAIN $@19 LEFT_PARENTHESIS . RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@20 blockStatements RIGHT_CURLY_BRACE
+  176 main: MAIN $@19 LEFT_PARENTHESIS . RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@20 blockStatements RIGHT_CURLY_BRACE
 
-    RIGHT_PARENTHESIS  shift, and go to state 233
+    RIGHT_PARENTHESIS  shift, and go to state 234
 
 
 State 164
 
-  166 printStatement: PRINT LEFT_PARENTHESIS RIGHT_PARENTHESIS . ';'
+  166 printVal: CHAR_LITERAL .
 
-    ';'  shift, and go to state 234
+    $default  reduce using rule 166 (printVal)
 
 
 State 165
 
-  165 printStatement: PRINT LEFT_PARENTHESIS argument . RIGHT_PARENTHESIS ';'
+  167 printVal: expression .
+
+    $default  reduce using rule 167 (printVal)
+
+
+State 166
+
+  165 printStatement: PRINT LEFT_PARENTHESIS printVal . RIGHT_PARENTHESIS ';'
 
     RIGHT_PARENTHESIS  shift, and go to state 235
 
 
-State 166
+State 167
 
    65 incStatement: IDENTIFIER INCREMENT ';' .
 
     $default  reduce using rule 65 (incStatement)
 
 
-State 167
+State 168
 
    66 decStatement: IDENTIFIER DECREMENT ';' .
 
     $default  reduce using rule 66 (decStatement)
 
 
-State 168
+State 169
 
    64 assignmentStatement: IDENTIFIER ASSIGN CHAR_LITERAL . ';'
 
     ';'  shift, and go to state 236
 
 
-State 169
+State 170
 
    60 assignmentStatement: IDENTIFIER ASSIGN intMathExpression . ';'
    67 intMathExpression: intMathExpression . PLUS intMathTerm
@@ -2640,7 +2647,7 @@ State 169
     ';'            shift, and go to state 237
 
 
-State 170
+State 171
 
    61 assignmentStatement: IDENTIFIER ASSIGN floatMathExpression . ';'
    80 floatMathExpression: floatMathExpression . PLUS floatMathTerm
@@ -2663,7 +2670,7 @@ State 170
     ';'            shift, and go to state 238
 
 
-State 171
+State 172
 
    62 assignmentStatement: IDENTIFIER ASSIGN stringExpression . ';'
    91 stringExpression: stringExpression . PLUS stringExpression
@@ -2672,7 +2679,7 @@ State 171
     ';'   shift, and go to state 239
 
 
-State 172
+State 173
 
    63 assignmentStatement: IDENTIFIER ASSIGN logicalExpression . ';'
    94 logicalExpression: logicalExpression . OR logicalTerm
@@ -2681,9 +2688,9 @@ State 172
     ';'  shift, and go to state 240
 
 
-State 173
+State 174
 
-  168 functionCallStatement: IDENTIFIER $@18 LEFT_PARENTHESIS . argument RIGHT_PARENTHESIS ';'
+  169 functionCallStatement: IDENTIFIER $@18 LEFT_PARENTHESIS . argument RIGHT_PARENTHESIS ';'
 
     NOT               shift, and go to state 66
     LEFT_PARENTHESIS  shift, and go to state 67
@@ -2693,7 +2700,7 @@ State 173
     STRING_LITERAL    shift, and go to state 71
     BOOL_LITERAL      shift, and go to state 72
 
-    $default  reduce using rule 171 (argument)
+    $default  reduce using rule 172 (argument)
 
     expression           go to state 74
     intMathExpression    go to state 75
@@ -2711,7 +2718,7 @@ State 173
     argument             go to state 241
 
 
-State 174
+State 175
 
   151 functionStatement: types FUNCTION IDENTIFIER . $@16 LEFT_PARENTHESIS $@17 parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
@@ -2720,12 +2727,12 @@ State 174
     $@16  go to state 242
 
 
-State 175
+State 176
 
    79 intMathPrimary: LEFT_PARENTHESIS . intMathExpression RIGHT_PARENTHESIS
 
-    LEFT_PARENTHESIS  shift, and go to state 175
-    IDENTIFIER        shift, and go to state 176
+    LEFT_PARENTHESIS  shift, and go to state 176
+    IDENTIFIER        shift, and go to state 177
     DIGIT             shift, and go to state 69
 
     intMathExpression  go to state 243
@@ -2734,7 +2741,7 @@ State 175
     intMathPrimary     go to state 78
 
 
-State 176
+State 177
 
    75 intMathFactor: IDENTIFIER . INCREMENT
    76              | IDENTIFIER . DECREMENT
@@ -2746,7 +2753,7 @@ State 176
     $default  reduce using rule 77 (intMathPrimary)
 
 
-State 177
+State 178
 
    44 noSemiColumnAssignVariableDeclaration: INT IDENTIFIER ASSIGN intMathExpression .
    67 intMathExpression: intMathExpression . PLUS intMathTerm
@@ -2758,19 +2765,19 @@ State 177
     $default  reduce using rule 44 (noSemiColumnAssignVariableDeclaration)
 
 
-State 178
+State 179
 
    43 noSemiColumnAssignVariableDeclaration: CHAR IDENTIFIER ASSIGN CHAR_LITERAL .
 
     $default  reduce using rule 43 (noSemiColumnAssignVariableDeclaration)
 
 
-State 179
+State 180
 
    88 floatMathFactor: LEFT_PARENTHESIS . floatMathExpression RIGHT_PARENTHESIS
 
-    LEFT_PARENTHESIS  shift, and go to state 179
-    IDENTIFIER        shift, and go to state 180
+    LEFT_PARENTHESIS  shift, and go to state 180
+    IDENTIFIER        shift, and go to state 181
     FLOAT_LITERAL     shift, and go to state 70
 
     floatMathExpression  go to state 244
@@ -2778,14 +2785,14 @@ State 179
     floatMathFactor      go to state 81
 
 
-State 180
+State 181
 
    86 floatMathFactor: IDENTIFIER .
 
     $default  reduce using rule 86 (floatMathFactor)
 
 
-State 181
+State 182
 
    45 noSemiColumnAssignVariableDeclaration: FLOAT IDENTIFIER ASSIGN floatMathExpression .
    80 floatMathExpression: floatMathExpression . PLUS floatMathTerm
@@ -2797,25 +2804,25 @@ State 181
     $default  reduce using rule 45 (noSemiColumnAssignVariableDeclaration)
 
 
-State 182
+State 183
 
    92 stringExpression: LEFT_PARENTHESIS . stringExpression RIGHT_PARENTHESIS
 
-    LEFT_PARENTHESIS  shift, and go to state 182
-    IDENTIFIER        shift, and go to state 183
+    LEFT_PARENTHESIS  shift, and go to state 183
+    IDENTIFIER        shift, and go to state 184
     STRING_LITERAL    shift, and go to state 71
 
     stringExpression  go to state 131
 
 
-State 183
+State 184
 
    90 stringExpression: IDENTIFIER .
 
     $default  reduce using rule 90 (stringExpression)
 
 
-State 184
+State 185
 
    46 noSemiColumnAssignVariableDeclaration: STRING IDENTIFIER ASSIGN stringExpression .
    91 stringExpression: stringExpression . PLUS stringExpression
@@ -2825,12 +2832,12 @@ State 184
     $default  reduce using rule 46 (noSemiColumnAssignVariableDeclaration)
 
 
-State 185
+State 186
 
    56 noSemiColumnConstDeclaration: CONST INT IDENTIFIER ASSIGN . intMathExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 175
-    IDENTIFIER        shift, and go to state 176
+    LEFT_PARENTHESIS  shift, and go to state 176
+    IDENTIFIER        shift, and go to state 177
     DIGIT             shift, and go to state 69
 
     intMathExpression  go to state 245
@@ -2839,19 +2846,19 @@ State 185
     intMathPrimary     go to state 78
 
 
-State 186
+State 187
 
    55 noSemiColumnConstDeclaration: CONST CHAR IDENTIFIER ASSIGN . CHAR_LITERAL
 
     CHAR_LITERAL  shift, and go to state 246
 
 
-State 187
+State 188
 
    57 noSemiColumnConstDeclaration: CONST FLOAT IDENTIFIER ASSIGN . floatMathExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 179
-    IDENTIFIER        shift, and go to state 180
+    LEFT_PARENTHESIS  shift, and go to state 180
+    IDENTIFIER        shift, and go to state 181
     FLOAT_LITERAL     shift, and go to state 70
 
     floatMathExpression  go to state 247
@@ -2859,18 +2866,18 @@ State 187
     floatMathFactor      go to state 81
 
 
-State 188
+State 189
 
    58 noSemiColumnConstDeclaration: CONST STRING IDENTIFIER ASSIGN . stringExpression
 
-    LEFT_PARENTHESIS  shift, and go to state 182
-    IDENTIFIER        shift, and go to state 183
+    LEFT_PARENTHESIS  shift, and go to state 183
+    IDENTIFIER        shift, and go to state 184
     STRING_LITERAL    shift, and go to state 71
 
     stringExpression  go to state 248
 
 
-State 189
+State 190
 
    59 noSemiColumnConstDeclaration: CONST BOOL IDENTIFIER ASSIGN . logicalExpression
 
@@ -2894,7 +2901,7 @@ State 189
     logicalPrimary       go to state 86
 
 
-State 190
+State 191
 
    47 noSemiColumnAssignVariableDeclaration: BOOL IDENTIFIER ASSIGN logicalExpression .
    94 logicalExpression: logicalExpression . OR logicalTerm
@@ -2904,77 +2911,77 @@ State 190
     $default  reduce using rule 47 (noSemiColumnAssignVariableDeclaration)
 
 
-State 191
+State 192
 
   117 ifStatement: IF LEFT_PARENTHESIS logicalExpression $@1 . RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@2 blockStatements RIGHT_CURLY_BRACE $@3 elsePart
 
     RIGHT_PARENTHESIS  shift, and go to state 250
 
 
-State 192
+State 193
 
   139 switchStatement: SWITCH LEFT_PARENTHESIS IDENTIFIER $@12 . RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@13 caseList RIGHT_CURLY_BRACE
 
     RIGHT_PARENTHESIS  shift, and go to state 251
 
 
-State 193
+State 194
 
   124 whileStatement: WHILE LEFT_PARENTHESIS logicalExpression $@5 . RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@6 blockStatements RIGHT_CURLY_BRACE
 
     RIGHT_PARENTHESIS  shift, and go to state 252
 
 
-State 194
+State 195
 
    44 noSemiColumnAssignVariableDeclaration: INT . IDENTIFIER ASSIGN intMathExpression
 
     IDENTIFIER  shift, and go to state 253
 
 
-State 195
+State 196
 
    43 noSemiColumnAssignVariableDeclaration: CHAR . IDENTIFIER ASSIGN CHAR_LITERAL
 
     IDENTIFIER  shift, and go to state 254
 
 
-State 196
+State 197
 
    45 noSemiColumnAssignVariableDeclaration: FLOAT . IDENTIFIER ASSIGN floatMathExpression
 
     IDENTIFIER  shift, and go to state 255
 
 
-State 197
+State 198
 
    46 noSemiColumnAssignVariableDeclaration: STRING . IDENTIFIER ASSIGN stringExpression
 
     IDENTIFIER  shift, and go to state 256
 
 
-State 198
+State 199
 
    47 noSemiColumnAssignVariableDeclaration: BOOL . IDENTIFIER ASSIGN logicalExpression
 
     IDENTIFIER  shift, and go to state 257
 
 
-State 199
+State 200
 
   131 forDeclaration: IDENTIFIER . ASSIGN expression ';'
 
     ASSIGN  shift, and go to state 258
 
 
-State 200
+State 201
 
   132 forDeclaration: assignVariableDeclaration .
 
     $default  reduce using rule 132 (forDeclaration)
 
 
-State 201
+State 202
 
   136 forStatement: FOR LEFT_PARENTHESIS $@9 forDeclaration . $@10 logicalExpression $@11 ';' forAssignment RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
 
@@ -2983,42 +2990,42 @@ State 201
     $@10  go to state 259
 
 
-State 202
+State 203
 
    79 intMathPrimary: LEFT_PARENTHESIS intMathExpression RIGHT_PARENTHESIS .
 
     $default  reduce using rule 79 (intMathPrimary)
 
 
-State 203
+State 204
 
    88 floatMathFactor: LEFT_PARENTHESIS floatMathExpression RIGHT_PARENTHESIS .
 
     $default  reduce using rule 88 (floatMathFactor)
 
 
-State 204
+State 205
 
    92 stringExpression: LEFT_PARENTHESIS stringExpression RIGHT_PARENTHESIS .
 
     $default  reduce using rule 92 (stringExpression)
 
 
-State 205
+State 206
 
   111 logicalPrimary: LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS .
 
     $default  reduce using rule 111 (logicalPrimary)
 
 
-State 206
-
-  169 argument: expression ',' argument .
-
-    $default  reduce using rule 169 (argument)
-
-
 State 207
+
+  170 argument: expression ',' argument .
+
+    $default  reduce using rule 170 (argument)
+
+
+State 208
 
    67 intMathExpression: intMathExpression PLUS intMathTerm .
    70 intMathTerm: intMathTerm . MULTIPLY intMathFactor
@@ -3032,7 +3039,7 @@ State 207
     $default  reduce using rule 67 (intMathExpression)
 
 
-State 208
+State 209
 
    68 intMathExpression: intMathExpression MINUS intMathTerm .
    70 intMathTerm: intMathTerm . MULTIPLY intMathFactor
@@ -3046,7 +3053,7 @@ State 208
     $default  reduce using rule 68 (intMathExpression)
 
 
-State 209
+State 210
 
    67 intMathExpression: intMathExpression . PLUS intMathTerm
    68                  | intMathExpression . MINUS intMathTerm
@@ -3058,7 +3065,7 @@ State 209
     $default  reduce using rule 99 (logicalPrimary)
 
 
-State 210
+State 211
 
    67 intMathExpression: intMathExpression . PLUS intMathTerm
    68                  | intMathExpression . MINUS intMathTerm
@@ -3070,7 +3077,7 @@ State 210
     $default  reduce using rule 100 (logicalPrimary)
 
 
-State 211
+State 212
 
    67 intMathExpression: intMathExpression . PLUS intMathTerm
    68                  | intMathExpression . MINUS intMathTerm
@@ -3082,7 +3089,7 @@ State 211
     $default  reduce using rule 101 (logicalPrimary)
 
 
-State 212
+State 213
 
    67 intMathExpression: intMathExpression . PLUS intMathTerm
    68                  | intMathExpression . MINUS intMathTerm
@@ -3094,7 +3101,7 @@ State 212
     $default  reduce using rule 102 (logicalPrimary)
 
 
-State 213
+State 214
 
    67 intMathExpression: intMathExpression . PLUS intMathTerm
    68                  | intMathExpression . MINUS intMathTerm
@@ -3106,7 +3113,7 @@ State 213
     $default  reduce using rule 103 (logicalPrimary)
 
 
-State 214
+State 215
 
    67 intMathExpression: intMathExpression . PLUS intMathTerm
    68                  | intMathExpression . MINUS intMathTerm
@@ -3118,28 +3125,28 @@ State 214
     $default  reduce using rule 104 (logicalPrimary)
 
 
-State 215
+State 216
 
    70 intMathTerm: intMathTerm MULTIPLY intMathFactor .
 
     $default  reduce using rule 70 (intMathTerm)
 
 
-State 216
+State 217
 
    71 intMathTerm: intMathTerm DIVIDE intMathFactor .
 
     $default  reduce using rule 71 (intMathTerm)
 
 
-State 217
+State 218
 
    72 intMathTerm: intMathTerm MODULO intMathFactor .
 
     $default  reduce using rule 72 (intMathTerm)
 
 
-State 218
+State 219
 
    80 floatMathExpression: floatMathExpression PLUS floatMathTerm .
    83 floatMathTerm: floatMathTerm . MULTIPLY floatMathFactor
@@ -3151,7 +3158,7 @@ State 218
     $default  reduce using rule 80 (floatMathExpression)
 
 
-State 219
+State 220
 
    81 floatMathExpression: floatMathExpression MINUS floatMathTerm .
    83 floatMathTerm: floatMathTerm . MULTIPLY floatMathFactor
@@ -3163,7 +3170,7 @@ State 219
     $default  reduce using rule 81 (floatMathExpression)
 
 
-State 220
+State 221
 
    80 floatMathExpression: floatMathExpression . PLUS floatMathTerm
    81                    | floatMathExpression . MINUS floatMathTerm
@@ -3175,7 +3182,7 @@ State 220
     $default  reduce using rule 105 (logicalPrimary)
 
 
-State 221
+State 222
 
    80 floatMathExpression: floatMathExpression . PLUS floatMathTerm
    81                    | floatMathExpression . MINUS floatMathTerm
@@ -3187,7 +3194,7 @@ State 221
     $default  reduce using rule 106 (logicalPrimary)
 
 
-State 222
+State 223
 
    80 floatMathExpression: floatMathExpression . PLUS floatMathTerm
    81                    | floatMathExpression . MINUS floatMathTerm
@@ -3199,7 +3206,7 @@ State 222
     $default  reduce using rule 107 (logicalPrimary)
 
 
-State 223
+State 224
 
    80 floatMathExpression: floatMathExpression . PLUS floatMathTerm
    81                    | floatMathExpression . MINUS floatMathTerm
@@ -3211,7 +3218,7 @@ State 223
     $default  reduce using rule 108 (logicalPrimary)
 
 
-State 224
+State 225
 
    80 floatMathExpression: floatMathExpression . PLUS floatMathTerm
    81                    | floatMathExpression . MINUS floatMathTerm
@@ -3223,7 +3230,7 @@ State 224
     $default  reduce using rule 109 (logicalPrimary)
 
 
-State 225
+State 226
 
    80 floatMathExpression: floatMathExpression . PLUS floatMathTerm
    81                    | floatMathExpression . MINUS floatMathTerm
@@ -3235,21 +3242,21 @@ State 225
     $default  reduce using rule 110 (logicalPrimary)
 
 
-State 226
+State 227
 
    83 floatMathTerm: floatMathTerm MULTIPLY floatMathFactor .
 
     $default  reduce using rule 83 (floatMathTerm)
 
 
-State 227
+State 228
 
    84 floatMathTerm: floatMathTerm DIVIDE floatMathFactor .
 
     $default  reduce using rule 84 (floatMathTerm)
 
 
-State 228
+State 229
 
    91 stringExpression: stringExpression . PLUS stringExpression
    91                 | stringExpression PLUS stringExpression .
@@ -3260,7 +3267,7 @@ State 228
     $default  reduce using rule 91 (stringExpression)
 
 
-State 229
+State 230
 
    94 logicalExpression: logicalExpression OR logicalTerm .
    96 logicalTerm: logicalTerm . AND logicalFactor
@@ -3270,14 +3277,14 @@ State 229
     $default  reduce using rule 94 (logicalExpression)
 
 
-State 230
+State 231
 
    96 logicalTerm: logicalTerm AND logicalFactor .
 
     $default  reduce using rule 96 (logicalTerm)
 
 
-State 231
+State 232
 
     7 blockStatements: blockStatements . blockStatement
   127 repeatStatement: REPEAT LEFT_CURLY_BRACE $@7 blockStatements . RIGHT_CURLY_BRACE UNTIL LEFT_PARENTHESIS logicalExpression $@8 RIGHT_PARENTHESIS
@@ -3326,7 +3333,7 @@ State 231
     comment                                   go to state 46
 
 
-State 232
+State 233
 
   148 enumStatement: ENUM IDENTIFIER LEFT_CURLY_BRACE $@15 . enumIdentifiers RIGHT_CURLY_BRACE
 
@@ -3335,23 +3342,16 @@ State 232
     enumIdentifiers  go to state 262
 
 
-State 233
+State 234
 
-  175 main: MAIN $@19 LEFT_PARENTHESIS RIGHT_PARENTHESIS . LEFT_CURLY_BRACE $@20 blockStatements RIGHT_CURLY_BRACE
+  176 main: MAIN $@19 LEFT_PARENTHESIS RIGHT_PARENTHESIS . LEFT_CURLY_BRACE $@20 blockStatements RIGHT_CURLY_BRACE
 
     LEFT_CURLY_BRACE  shift, and go to state 263
 
 
-State 234
-
-  166 printStatement: PRINT LEFT_PARENTHESIS RIGHT_PARENTHESIS ';' .
-
-    $default  reduce using rule 166 (printStatement)
-
-
 State 235
 
-  165 printStatement: PRINT LEFT_PARENTHESIS argument RIGHT_PARENTHESIS . ';'
+  165 printStatement: PRINT LEFT_PARENTHESIS printVal RIGHT_PARENTHESIS . ';'
 
     ';'  shift, and go to state 264
 
@@ -3393,7 +3393,7 @@ State 240
 
 State 241
 
-  168 functionCallStatement: IDENTIFIER $@18 LEFT_PARENTHESIS argument . RIGHT_PARENTHESIS ';'
+  169 functionCallStatement: IDENTIFIER $@18 LEFT_PARENTHESIS argument . RIGHT_PARENTHESIS ';'
 
     RIGHT_PARENTHESIS  shift, and go to state 265
 
@@ -3413,7 +3413,7 @@ State 243
 
     PLUS               shift, and go to state 136
     MINUS              shift, and go to state 137
-    RIGHT_PARENTHESIS  shift, and go to state 202
+    RIGHT_PARENTHESIS  shift, and go to state 203
 
 
 State 244
@@ -3424,7 +3424,7 @@ State 244
 
     PLUS               shift, and go to state 147
     MINUS              shift, and go to state 148
-    RIGHT_PARENTHESIS  shift, and go to state 203
+    RIGHT_PARENTHESIS  shift, and go to state 204
 
 
 State 245
@@ -3611,23 +3611,23 @@ State 262
 
 State 263
 
-  175 main: MAIN $@19 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE . $@20 blockStatements RIGHT_CURLY_BRACE
+  176 main: MAIN $@19 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE . $@20 blockStatements RIGHT_CURLY_BRACE
 
-    $default  reduce using rule 174 ($@20)
+    $default  reduce using rule 175 ($@20)
 
     $@20  go to state 275
 
 
 State 264
 
-  165 printStatement: PRINT LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';' .
+  165 printStatement: PRINT LEFT_PARENTHESIS printVal RIGHT_PARENTHESIS ';' .
 
     $default  reduce using rule 165 (printStatement)
 
 
 State 265
 
-  168 functionCallStatement: IDENTIFIER $@18 LEFT_PARENTHESIS argument RIGHT_PARENTHESIS . ';'
+  169 functionCallStatement: IDENTIFIER $@18 LEFT_PARENTHESIS argument RIGHT_PARENTHESIS . ';'
 
     ';'  shift, and go to state 276
 
@@ -3712,7 +3712,7 @@ State 274
 
 State 275
 
-  175 main: MAIN $@19 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@20 . blockStatements RIGHT_CURLY_BRACE
+  176 main: MAIN $@19 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@20 . blockStatements RIGHT_CURLY_BRACE
 
     INT         shift, and go to state 98
     CHAR        shift, and go to state 99
@@ -3760,9 +3760,9 @@ State 275
 
 State 276
 
-  168 functionCallStatement: IDENTIFIER $@18 LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';' .
+  169 functionCallStatement: IDENTIFIER $@18 LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';' .
 
-    $default  reduce using rule 168 (functionCallStatement)
+    $default  reduce using rule 169 (functionCallStatement)
 
 
 State 277
@@ -3942,7 +3942,7 @@ State 284
 State 285
 
     7 blockStatements: blockStatements . blockStatement
-  175 main: MAIN $@19 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@20 blockStatements . RIGHT_CURLY_BRACE
+  176 main: MAIN $@19 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@20 blockStatements . RIGHT_CURLY_BRACE
 
     INT                shift, and go to state 98
     CHAR               shift, and go to state 99
@@ -4190,9 +4190,9 @@ State 298
 
 State 299
 
-  175 main: MAIN $@19 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@20 blockStatements RIGHT_CURLY_BRACE .
+  176 main: MAIN $@19 LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_CURLY_BRACE $@20 blockStatements RIGHT_CURLY_BRACE .
 
-    $default  reduce using rule 175 (main)
+    $default  reduce using rule 176 (main)
 
 
 State 300

@@ -30,7 +30,10 @@
     int boolValue;
     int isConst;
     int reg;
+    int type;
 } values;  
+
+
 }
 %token INT CHAR FLOAT STRING CONST BOOL VOID
 %token PLUS MINUS MULTIPLY  DIVIDE  MODULO  INCREMENT  DECREMENT  GREATER  LESS  GREATER_EQUAL  LESS_EQUAL  EQUAL  NOT_EQUAL  AND  OR  NOT  ASSIGN  IF  ELSE  SWITCH  CASE  DEFAULT  CONTINUE   BREAK  THEN  WHILE  DO  FOR  RETURN  REPEAT  UNTIL  LEFT_CURLY_BRACE  RIGHT_CURLY_BRACE  LEFT_PARENTHESIS  RIGHT_PARENTHESIS  LEFT_SQUARE_BRACKET  RIGHT_SQUARE_BRACKET  ENUM  FUNCTION  MAIN  PRINT  SCAN  COMMENT 
@@ -55,6 +58,8 @@
 %type <bVal> logicalPrimary
 %type <values> values
 %type <iVal> types
+%type <values> expression
+
 
 
 %%
@@ -100,10 +105,10 @@ values                          :   DIGIT { $$.intValue = $1; printf("values int
                                 |   BOOL_LITERAL { $$.boolValue = $1; printf("values bool value %d\n", $$.boolValue); }
 
 
-expression                      : intMathExpression
-                                | floatMathExpression
-                                | stringExpression
-                                | logicalExpression
+expression                      : intMathExpression { $$.intValue = $1; $$.type = 1; }
+                                | floatMathExpression { $$.floatValue = $1; $$.type = 2; }
+                                | stringExpression { $$.stringValue = $1; $$.type = 4; }
+                                | logicalExpression { $$.boolValue = $1; $$.type = 5; }
 
 variableDeclarationStatement    :  assignVariableDeclaration
                                 |  nonAssignVariableDeclaration
@@ -923,7 +928,6 @@ functionStatement : types FUNCTION IDENTIFIER {
                                                     yyerror("Unknown error");
                                                     break;
                                                 }   
-
                                               } 
                     LEFT_PARENTHESIS {scope+=1;} parameter RIGHT_PARENTHESIS LEFT_CURLY_BRACE blockStatements RIGHT_CURLY_BRACE
                     {printTable("\nFUNCTION ENDED", scope); functionEndQuad(); removeScope(scope); scope-=1; printf("functionStatement \n");}
@@ -948,8 +952,32 @@ continueBreakStatement  : BREAK ';' {printf("breakStatement1 \n");}
                
 
 
-printStatement  : PRINT LEFT_PARENTHESIS argument RIGHT_PARENTHESIS ';' {printf("printStatement \n");}
-                | PRINT LEFT_PARENTHESIS RIGHT_PARENTHESIS ';' {printf("printStatement \n");}
+printStatement  : PRINT LEFT_PARENTHESIS printVal RIGHT_PARENTHESIS ';' {  printf("printStatement \n");}
+
+
+printVal    : CHAR_LITERAL {printf("PRINT STATEMENT: %c\n", $1);}
+            | expression {
+              switch ($1.type){
+                case 1:
+                  printf("PRINT STATEMENT: %d\n", $1.intValue);
+                  break;
+                case 2:
+                  printf("PRINT STATEMENT: %f\n", $1.floatValue);
+                  break;
+                case 3:
+                  printf("PRINT STATEMENT: %c\n", $1.charValue);
+                  break;
+                case 4:
+                  printf("PRINT STATEMENT: %s\n", $1.stringValue);
+                  break;
+                case 5:
+                  printf("PRINT STATEMENT: %s\n", $1.boolValue ? "true" : "false");
+                  break;
+                default:
+                  yyerror("Unknown error");
+                  break;
+              }
+            }
 
 functionCallStatement   : IDENTIFIER { 
 

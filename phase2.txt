@@ -187,7 +187,7 @@ main()
 
     print("hello world");
     print(x);
-    print("hello", yy);
+    print("hello");
 
 
     myFunction3(x, y);
@@ -200,5 +200,4 @@ main()
 // TODO: 
 // handle default values for variable declaration
 // Handle registers order
-// Quads for --> main, print, continue, return, enum, 
-
+// Quads for --> continue, return, enum, 
