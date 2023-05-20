@@ -833,17 +833,6 @@ logicalPrimary : intMathExpression GREATER intMathExpression {
                     $$ = val.boolValue; allocateIdentifierReg(val.reg);
                 };
 
-/*
-ifStatement : IF LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS 
-              LEFT_CURLY_BRACE { scope += 1; } blockStatements RIGHT_CURLY_BRACE {
-                  
-              }
-            | IF LEFT_PARENTHESIS logicalExpression RIGHT_PARENTHESIS 
-              LEFT_CURLY_BRACE { scope += 1; } blockStatements RIGHT_CURLY_BRACE elseStatement
-
-elseStatement : ELSE LEFT_CURLY_BRACE { scope += 1; } blockStatements RIGHT_CURLY_BRACE {
-                  
-              } */
 
 ifStatement : IF LEFT_PARENTHESIS logicalExpression {checkIfConditionQuad();} RIGHT_PARENTHESIS 
               LEFT_CURLY_BRACE { scope += 1; } blockStatements RIGHT_CURLY_BRACE {

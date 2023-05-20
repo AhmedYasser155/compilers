@@ -199,4 +199,5 @@ main()
 // TODO: 
 // handle default values for variable declaration
 // Handle registers order
+// Quads for --> for, main, print, continue, return, enum, 
 
